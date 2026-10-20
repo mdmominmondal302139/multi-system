@@ -1,96 +1,393 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Income Management</title><link rel="stylesheet" href="/static/app.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Income Management System</title>
 <style>
-/* Working-page layout: preserve the existing sidebar and make the two content forms separate views. */
-*{box-sizing:border-box}html,body{margin:0;background:#f4f8fd;color:#334155;font:14px Arial,Helvetica,sans-serif;font-weight:400} .ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;height:100vh;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.05);display:flex;flex-direction:column;z-index:1000;overflow:hidden}.ssa-brand{padding:16px 18px 13px;border-bottom:1px solid #e7edf4;flex:0 0 auto}.ssa-brand-title{font-size:16px;font-weight:700;color:#12355e;line-height:1.25}.ssa-brand-subtitle{font-size:12px;color:#314b68;margin-top:4px}.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:4px;letter-spacing:.4px}.ssa-nav{padding:8px 10px 12px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}.ssa-nav-group{font-size:10px;color:#8b9aab;text-transform:uppercase;padding:9px 10px 6px;letter-spacing:.7px}.ssa-nav a,.ssa-nav summary{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:8px 10px;border-radius:8px;margin:2px 0;font-size:13px;line-height:1.35;cursor:pointer;list-style:none}.ssa-nav summary::-webkit-details-marker{display:none}.ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}.ssa-nav a:hover,.ssa-nav summary:hover{background:#eef6ff;color:#0d65bd}.ssa-nav a.active,.ssa-nav summary.active{background:#e9f3ff;color:#0b67c0;font-weight:700}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}.ssa-subnav{padding:0 0 4px 27px}.ssa-subnav a{font-size:12px;padding:7px 9px;color:#58728c}.ssa-profile{position:relative;flex:0 0 auto;margin-top:auto;border-top:1px solid #e7edf4;padding:10px 12px;background:#fbfdff}.ssa-profile-trigger{display:flex;align-items:center;gap:9px;width:100%;border:1px solid transparent;border-radius:10px;padding:7px;background:transparent;color:#45627e;text-align:left;cursor:pointer}.ssa-avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#4a8bc8}.ssa-profile-copy{display:block;min-width:0;flex:1}.ssa-profile-name{display:block;color:#45627e;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ssa-profile-role{display:block;color:#8298b0;margin-top:3px;font-size:10px}.ssa-profile-dropdown{display:none;position:absolute;left:12px;right:12px;bottom:calc(100% - 3px);padding:5px;border:1px solid #e1eaf4;border-radius:10px;background:#fff;box-shadow:0 8px 24px rgba(16,44,80,.12);z-index:1001}.ssa-profile-dropdown.is-open{display:block}.ssa-profile-dropdown a{display:block;padding:10px;border-radius:7px;text-decoration:none;font-size:12px;color:#4b7fae;background:#f5f9ff;margin:2px 0}.ssa-profile-dropdown a.logout-option{background:#fff3f3;color:#df5c66}
-.ssa-content{margin-left:280px;min-height:100vh;width:calc(100% - 280px);background:#f4f8fd}.page{width:100%;max-width:none;margin:0;padding:24px 24px 32px}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}h1{font-size:25px;font-weight:500;margin:0;color:#263d59}.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity span{color:#73869c;font-size:11px}.card{background:#fff;border:1px solid #e2eaf3;border-radius:14px;padding:22px;margin:0 0 20px;box-shadow:0 5px 18px rgba(37,73,117,.06)}.card h2{font-size:19px;font-weight:500;color:#294561;margin:0 0 18px}.card form{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:16px 14px}.card form label{display:flex;flex-direction:column;gap:7px;color:#40566f}.card form input,.card form select,.card form textarea{width:100%;min-width:0;border:1px solid #d6e1ed;border-radius:9px;padding:11px 12px;background:#fff;color:#334155;font-size:14px;outline:none}.card form input:focus,.card form select:focus,.card form textarea:focus{border-color:#74aee7;box-shadow:0 0 0 3px rgba(43,125,204,.10)}.card form input[type=hidden]{display:none}.card form button,.primary-btn{align-self:end;border:1px solid #b9dfca;border-radius:9px;background:#e6f7ed;color:#237748;font-weight:500;padding:11px 18px;cursor:pointer}.card form button:hover,.primary-btn:hover{background:#d6f1e1}.secondary-btn{background:#f2f7fd!important;color:#45627e!important;border:1px solid #d7e4f1!important}.csv-download-btn{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:10px 15px;border-radius:9px;background:#e8f7ee;border:1px solid #b8e3c8;color:#237748;text-decoration:none;font-size:14px;cursor:pointer}.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:12px;background:#fff}.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:14px;background:#fff}.record-table th{padding:13px 15px;text-align:left;background:#edf5ff;color:#344b66;font-weight:500;border-bottom:1px solid #d9e2ec;white-space:nowrap}.record-table td{padding:12px 15px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}.record-table tbody tr:hover td{background:#f5faff}.record-table tbody tr:last-child td{border-bottom:0}.record-table .empty{text-align:center;padding:28px;color:#64748b}.inline-action{display:inline;margin:0}.record-table td:last-child button{background:#fff0f0;color:#c24141;border:1px solid #f3b8b8;border-radius:8px;padding:8px 12px;cursor:pointer}.record-table td:last-child button:hover{background:#ffe1e1}.ok{padding:12px 15px;margin-bottom:15px;border-radius:9px;background:#e8f7ee;color:#237748}.err{padding:12px 15px;margin-bottom:15px;border-radius:9px;background:#fff0f0;color:#b83232}
-/* Only one main section is visible at a time. */
-[hidden]{display:none!important}.view-note{font-size:13px;color:#74869b;margin:-8px 0 18px}
-@media(max-width:1000px){.card form{grid-template-columns:repeat(2,minmax(150px,1fr))}}@media(max-width:700px){.ssa-sidebar{width:220px}.ssa-content{margin-left:220px;width:calc(100% - 220px)}.page{padding:16px}.card{padding:16px}.card form{grid-template-columns:1fr}.ssa-page-identity{margin-left:0}}
-
-/* Bright-light page, deep green/red action buttons, normal black button text, no button borders. */
-.ssa-sidebar{background:#ffffff;border-right:0;box-shadow:3px 0 18px rgba(44,91,145,.07)}
-.card{background:#ffffff;border:0;box-shadow:0 7px 24px rgba(52,105,164,.08)}
-.ssa-page-identity{border:0;background:#eef6ff}
-button,.card form button,.primary-btn,.secondary-btn,.csv-download-btn,.record-table td:last-child button,.ssa-profile-trigger{border:0!important;box-shadow:none!important;outline-offset:2px;color:#000000!important}
-.card form button[type=submit],#incomeSubmitButton,.primary-btn,.record-table td:last-child .update-btn{background:#16803c!important;color:#000000!important;border:0!important;border-radius:9px;font-weight:500}
-.card form button[type=submit]:hover,#incomeSubmitButton:hover,.primary-btn:hover,.record-table td:last-child .update-btn:hover{background:#0f682f!important;color:#000000!important}
-.record-table td:last-child .danger,.record-table td:last-child button.danger{background:#c62828!important;color:#000000!important;border:0!important;border-radius:8px;padding:8px 12px;font-weight:500}
-.record-table td:last-child .danger:hover,.record-table td:last-child button.danger:hover{background:#a91f1f!important;color:#000000!important}
-.secondary-btn{background:#eef5fc!important;color:#000000!important}
-.csv-download-btn{background:#16803c!important;color:#000000!important;border:0!important;border-radius:9px}
-.csv-download-btn:hover{background:#0f682f!important;color:#000000!important}
-#incomeSearchForm button{background:#e5f1ff!important;color:#000000!important;border:0!important;border-radius:9px}
-.ssa-profile-dropdown{border:0;box-shadow:0 8px 24px rgba(16,44,80,.12)}
-.record-table-wrap{border:0;box-shadow:0 4px 16px rgba(52,105,164,.05)}
-.record-table th{background:#edf6ff;border-bottom:0}
-
-/* Requested refinement: keep sidebar links at a fixed position and use normal-weight text. */
-.ssa-nav a,.ssa-nav summary,.ssa-subnav a,
-.ssa-nav a.active,.ssa-nav summary.active{font-weight:400!important;line-height:1.35;}
-.ssa-nav a,.ssa-nav summary{min-height:34px;}
-/* New Income working page typography: normal weight throughout the entry form. */
-#newIncomeSection,#newIncomeSection h2,#newIncomeSection p,
-#newIncomeSection form label,#newIncomeSection form input,
-#newIncomeSection form select,#newIncomeSection form textarea,
-#newIncomeSection form button{font-weight:400!important;}
-#newIncomeSection h2{font-weight:400!important;}
-/* Keep action buttons borderless and their labels black and normal-weight. */
-button,.primary-btn,.secondary-btn,.csv-download-btn,.record-table td:last-child button{font-weight:400!important;}
+:root{
+  --green:#176b4d;--green-dark:#10543c;--green-light:#e9f5ee;
+  --bg:#f4f7f5;--white:#fff;--text:#1f2933;--muted:#667085;
+  --border:#d9e2dc;--danger:#c0392b;--shadow:0 4px 18px rgba(16,84,60,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:15px}
+.container{max-width:1500px;margin:0 auto;padding:24px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+h1{font-size:26px;margin:0;color:var(--green-dark)}
+.subtitle{color:var(--muted);margin:7px 0 0;font-size:14px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.card-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-head h2{font-size:20px;margin:0}
+.card-body{padding:20px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.field{min-width:0}
+label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}
+input,select,textarea{width:100%;min-width:0;border:1px solid #cbd5ce;border-radius:8px;padding:11px 12px;font:inherit;color:var(--text);background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(23,107,77,.12)}
+textarea{min-height:76px;resize:vertical}
+.section-title{font-size:17px;margin:24px 0 12px}
+.item-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+.item-table{width:100%;border-collapse:collapse;min-width:780px}
+.item-table th{font-size:16px;background:#edf4ef;text-align:left;padding:13px 12px;color:#234b38;border-bottom:1px solid var(--border)}
+.item-table td{padding:10px 12px;border-bottom:1px solid #e7ece8;vertical-align:middle}
+.item-table tr:last-child td{border-bottom:0}
+.item-table input,.item-table select{padding:10px;font-size:14px}
+.item-no{font-size:13px;color:var(--muted);white-space:nowrap}
+.amount-cell{min-width:130px}
+.receipt-cell{min-width:170px}
+.btn{border:1px solid transparent;border-radius:8px;padding:11px 15px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+.btn:focus-visible{outline:3px solid #9ed8bd;outline-offset:2px}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green-dark)}
+.btn-outline{background:#fff;color:var(--green);border-color:var(--green)}.btn-outline:hover{background:var(--green-light)}
+.btn-soft{background:var(--green-light);color:var(--green-dark)}
+.btn-danger{background:#fff1f0;color:var(--danger);border-color:#f1c3bf}
+.btn-small{padding:7px 9px;font-size:12px}
+.item-controls{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.total-row{display:flex;align-items:center;justify-content:flex-end;gap:18px;background:#f7faf8;border:1px solid var(--border);border-radius:10px;padding:15px 18px;margin-top:18px}
+.total-label{font-weight:700}.total-value{font-size:24px;font-weight:800;color:var(--green-dark);font-variant-numeric:tabular-nums}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:18px}
+.booking-area{margin:18px 0 22px;text-align:center}
+.booking-toggle{min-width:190px}
+.hidden{display:none!important}
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.summary-card{border:1px solid var(--border);border-radius:12px;padding:17px 18px;background:#f9fbf9}
+.summary-label{color:var(--muted);font-size:14px;margin-bottom:8px}
+.summary-value{font-size:25px;font-weight:800;color:var(--green-dark);font-variant-numeric:tabular-nums}
+.filters{display:grid;grid-template-columns:repeat(5,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.filters .field label{font-size:13px}
+.filters input,.filters select{padding:10px;font-size:14px}
+.search-row{display:flex;gap:10px;margin-bottom:14px}
+.search-row input{flex:1}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+.data-table{width:100%;min-width:1120px;border-collapse:collapse}
+.data-table th{font-size:16px;text-align:left;background:#edf4ef;color:#234b38;padding:14px 12px;white-space:nowrap;border-bottom:1px solid var(--border)}
+.data-table td{font-size:15px;padding:14px 12px;border-bottom:1px solid #e7ece8;vertical-align:top}
+.data-table tbody tr:hover{background:#fafcfb}
+.data-table tbody tr:last-child td{border-bottom:0}
+.amount{text-align:right;white-space:nowrap;font-weight:700;font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:6px;white-space:nowrap}
+.empty{text-align:center!important;color:var(--muted);padding:32px!important}
+.table-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:13px}
+.pagination{display:flex;align-items:center;gap:8px}
+.pagination select{width:auto;padding:7px}
+.note{color:var(--muted);font-size:12px;line-height:1.5;margin-top:16px}
+.toast{position:fixed;right:22px;bottom:22px;max-width:360px;background:#173f2f;color:white;padding:13px 17px;border-radius:10px;box-shadow:var(--shadow);z-index:50;display:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(10,25,17,.48);display:flex;align-items:center;justify-content:center;padding:20px;z-index:40}
+.modal{width:min(620px,100%);max-height:85vh;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 20px 60px #0002}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.modal-head h3{margin:0;font-size:19px}.modal-body{padding:20px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.detail{padding:12px;background:#f7faf8;border-radius:8px}.detail small{display:block;color:var(--muted);margin-bottom:6px}.detail strong{overflow-wrap:anywhere}
+.modal-items{width:100%;border-collapse:collapse;margin-top:18px}.modal-items th,.modal-items td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.container{padding:12px}.topbar{align-items:flex-start;flex-direction:column}h1{font-size:22px}.card-head,.card-body{padding:15px}.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.total-row{justify-content:space-between}.total-value{font-size:21px}.form-actions .btn{flex:1}.detail-grid{grid-template-columns:1fr}.search-row{flex-direction:column}}
 </style>
 </head>
 <body>
-<div class="ssa-shell">
-<aside class="ssa-sidebar">
-<div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
-<nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
-<a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav">
-<a href="?view=new" data-income-view="new" title="New Income">New Income</a>
-<a href="?view=list" data-income-view="list" title="Income List">Income List</a>
-</div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav"><a href="/system_super_administrator/expense-management">New Expense</a><a href="/system_super_administrator/expense-management">Expense List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav"><a href="/system_super_administrator/meal-management">New Meal</a><a href="/system_super_administrator/meal-management">Meal List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav"><a href="/system_super_administrator/savings-management">New Savings</a><a href="/system_super_administrator/savings-management">Savings List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav"><a href="/system_super_administrator/information-directory">New Information</a><a href="/system_super_administrator/information-directory">Information List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav"><a href="/system_super_administrator/blood-donor-management">New Donor</a><a href="/system_super_administrator/blood-donor-management">Donor List</a><a href="/system_super_administrator/blood-donor-management">Blood Request</a><a href="/system_super_administrator/blood-donor-management">Reports</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav"><a href="/system_super_administrator/branch-management">New Branch</a><a href="/system_super_administrator/branch-management">Branch List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav"><a href="/system_super_administrator/member-management">New Member</a><a href="/system_super_administrator/member-management">Member List</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav"><a href="/system_super_administrator/financial-management">Member Wise</a><a href="/system_super_administrator/financial-management">Branch Wise</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav"><a href="/system_super_administrator/reports">Generate</a><a href="/system_super_administrator/reports">Download XLSX</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav"><a href="/system_super_administrator/access-management">Member</a><a href="/system_super_administrator/access-management">Branch</a></div></details>
-<details class="ssa-nav-item"><summary><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav"><a href="/system_super_administrator/documentation">Writeable / Noteable</a></div></details>
-<a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a><div class="ssa-nav-group">Account</div><a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-</nav>
-<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span>⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div>
-</aside>
-<div class="ssa-content"><main class="page">
-<header><h1>Income Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>
-{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}
-<section class="card" id="newIncomeSection"><h2>New Income</h2><p class="view-note">Enter and save a new income record.</p>
-<form method="post" id="incomeEntryForm"><label>Amount<input name="amount" type="number" min="0.01" step="0.01" required></label><label>Income Type<select name="type" required><option value="">Select Income Type</option><option>Salary</option><option>Membership Fee</option><option>Donation</option><option>Contribution</option><option>Business Income</option><option>Service Income</option><option>Interest Income</option><option>Other</option></select></label><label>Received Method<select name="method" required><option value="">Select Received Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></label><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><label>Note<input name="note" required></label><input type="hidden" name="action" value="save" id="incomeFormAction"><input type="hidden" name="record_id" value="" id="incomeRecordId"><button type="submit" id="incomeSubmitButton">Save Income</button><button type="button" class="secondary-btn" id="incomeCancelEdit" hidden onclick="cancelIncomeEdit()">Cancel Edit</button></form>
-</section>
-<section class="card" id="incomeListSection" hidden><h2>Income List</h2><p class="view-note">Search, review, update, delete, or export income records.</p><a class="csv-download-btn" href="{{ url_for('system_super_administrator_income_management_bp.export_csv', **request.args.to_dict()) }}" title="Download income records as CSV"><span aria-hidden="true">⇩</span> Download CSV</a>
-<form method="get" id="incomeSearchForm"><input type="hidden" name="view" value="list"><label>Search Income<input name="search" placeholder="Search income records" value="{{ request.args.get('search','') }}"></label><button type="submit">Search</button></form>
-<div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><div class="inline-action"><button type="button" class="update-btn" data-id="{{ r.get('_id','') }}" data-amount="{{ r.get('amount','')|e }}" data-type="{{ r.get('type','')|e }}" data-method="{{ r.get('method','')|e }}" data-date="{{ r.get('date','')|e }}" data-time="{{ r.get('time','')|e }}" data-note="{{ r.get('note','')|e }}" onclick="editIncomeRecord(this)">Update</button> <form method="post" class="inline-action" style="display:inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><input type="hidden" name="return_view" value="list"><button class="danger" type="submit">Delete</button></form></div></td></tr>{% else %}<tr><td colspan="8" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div>
-</section>
-</main></div></div>
+<div class="container">
+  <header class="topbar">
+    <div>
+      <h1>Income Management System</h1>
+      <p class="subtitle">Record, review, and manage income in one place.</p>
+    </div>
+  </header>
+
+  <section class="card" id="entryCard">
+    <div class="card-head">
+      <h2 id="formTitle">Income Entry Form</h2>
+    </div>
+    <div class="card-body">
+      <form id="incomeForm">
+        <div class="grid">
+          <div class="field"><label for="incomeDate">Income Date *</label><input id="incomeDate" type="date" required /></div>
+          <div class="field"><label for="project">Department / Project *</label><input id="project" list="projectOptions" placeholder="Enter or select project" required /><datalist id="projectOptions"><option value="Administration"><option value="Operations"><option value="Marketing"><option value="Training"><option value="General"></datalist></div>
+          <div class="field"><label for="submittedBy">Submitted By *</label><select id="submittedBy" required><option value="">Select active member</option><option>Member 1</option><option>Member 2</option><option>Member 3</option><option>Member 4</option><option>Other</option></select></div>
+          <div class="field"><label for="paymentMethod">Payment Method *</label><select id="paymentMethod" required><option value="">Select method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></div>
+        </div>
+
+        <h3 class="section-title">Income Items</h3>
+        <div class="item-table-wrap">
+          <table class="item-table">
+            <thead><tr><th style="width:22%">Income Type</th><th style="width:17%">Amount (৳)</th><th style="width:31%">Description</th><th style="width:23%">Money Receipt No.</th><th style="width:7%">Action</th></tr></thead>
+            <tbody id="itemRows"></tbody>
+          </table>
+        </div>
+        <div class="item-controls">
+          <button class="btn btn-outline" id="addItemBtn" type="button">＋ Add Income Item</button>
+          <span class="item-no">Each item appears in one row.</span>
+        </div>
+        <div class="total-row"><span class="total-label">Total Income</span><span class="total-value" id="totalIncome">৳ 0.00</span></div>
+        <div class="field" style="margin-top:18px"><label for="remarks">Remarks</label><textarea id="remarks" placeholder="Additional notes (optional)"></textarea></div>
+        <div class="form-actions">
+          <button class="btn btn-outline" type="button" id="saveDraftBtn">Save Draft (JSON)</button>
+          <button class="btn btn-primary" type="submit" id="submitBtn">Submit Income</button>
+          <button class="btn btn-outline hidden" type="button" id="cancelEditBtn">Cancel Edit</button>
+        </div>
+      </form>
+      <p class="note">Demo note: records are kept in this page's browser session only. Refreshing or closing the page may clear them. Connect a backend/database for permanent storage and real active-member/project lists.</p>
+    </div>
+  </section>
+
+  <div class="booking-area">
+    <button class="btn btn-primary booking-toggle" id="bookingToggle" type="button" aria-expanded="false">▾ Booking — Show Income List</button>
+  </div>
+
+  <section class="card hidden" id="listCard">
+    <div class="card-head list-head">
+      <h2>Income List</h2>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="item-no" id="recordCountLabel">0 records</span>
+        <button class="btn btn-outline" id="reportBtn" type="button">Report</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="summary">
+        <div class="summary-card"><div class="summary-label">Total Entries</div><div class="summary-value" id="totalEntries">0</div></div>
+        <div class="summary-card"><div class="summary-label">Total Income (filtered)</div><div class="summary-value" id="listTotalIncome">৳ 0.00</div></div>
+      </div>
+      <div class="search-row">
+        <input id="searchInput" type="search" placeholder="Search receipt no., description, project or member..." aria-label="Search income records" />
+        <button class="btn btn-outline" id="clearFiltersBtn" type="button">Clear Filters</button>
+      </div>
+      <div class="filters">
+        <div class="field"><label for="dateFrom">From Date</label><input type="date" id="dateFrom" /></div>
+        <div class="field"><label for="dateTo">To Date</label><input type="date" id="dateTo" /></div>
+        <div class="field"><label for="filterType">Income Type</label><select id="filterType"><option value="">All types</option></select></div>
+        <div class="field"><label for="filterProject">Department / Project</label><select id="filterProject"><option value="">All projects</option></select></div>
+        <div class="field"><label for="filterMember">Submitted By</label><select id="filterMember"><option value="">All members</option></select></div>
+        <div class="field"><label for="filterMethod">Payment Method</label><select id="filterMethod"><option value="">All methods</option></select></div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Receipt No.</th><th>Income Date</th><th>Department / Project</th><th>Income Type</th><th>Description</th><th>Submitted By</th><th>Payment Method</th><th style="text-align:right">Amount</th><th>Action</th></tr></thead>
+          <tbody id="recordsBody"><tr><td colspan="9" class="empty">No income records yet. Submit an income to see it here.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="pageInfo">Showing 0 records</span>
+        <div class="pagination">
+          <label for="pageSize" style="margin:0;font-weight:400">Rows:</label>
+          <select id="pageSize"><option>10</option><option>25</option><option>50</option></select>
+          <button class="btn btn-outline btn-small" id="prevPage" type="button">Previous</button>
+          <span id="pageNumber">1 / 1</span>
+          <button class="btn btn-outline btn-small" id="nextPage" type="button">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">Income Details</h3><button class="btn btn-outline btn-small" id="closeModal" type="button">Close ✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-(function(){
- const params=new URLSearchParams(window.location.search); const view=params.get('view')==='list'?'list':'new';
- const entry=document.getElementById('newIncomeSection'), list=document.getElementById('incomeListSection');
- function showView(v){entry.hidden=v!=='new';list.hidden=v!=='list';document.querySelectorAll('[data-income-view]').forEach(a=>{a.classList.toggle('active',a.dataset.incomeView===v);});}
- showView(view);
- document.querySelectorAll('[data-income-view]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const v=this.dataset.incomeView;const url=new URL(window.location.href);url.searchParams.set('view',v);history.pushState({view:v},'',url);showView(v);}));
- window.addEventListener('popstate',()=>showView(new URLSearchParams(location.search).get('view')==='list'?'list':'new'));
- function pad(n){return String(n).padStart(2,'0')}const now=new Date(),date=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate()),time=pad(now.getHours())+':'+pad(now.getMinutes());document.querySelectorAll('input[name="date"]').forEach(el=>{if(!el.value)el.value=date});document.querySelectorAll('input[name="time"]').forEach(el=>{if(!el.value)el.value=time});
+(() => {
+  const $ = id => document.getElementById(id);
+  const money = n => '৳ ' + Number(n || 0).toLocaleString('en-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const today = new Date();
+  const localDate = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  $('incomeDate').value = localDate;
+
+  const types = ['Donation','Membership Fee','Course Fee','Event Income','Sales','Grant','Service Income','Interest Income','Refund','Other'];
+  const methods = ['Cash','Bank Transfer','Mobile Banking','Cheque','Card','Other'];
+  let items = [];
+  let records = [];
+  let nextReceipt = 1;
+  let editingId = null;
+  let currentPage = 1;
+  let toastTimer;
+
+  function showToast(message){
+    const el=$('toast'); el.textContent=message; el.style.display='block';
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.style.display='none',3000);
+  }
+  function nextReceiptNo(){ return 'INC-' + String(nextReceipt++).padStart(5,'0'); }
+  function addItem(item = {}){
+    items.push({id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()), type:item.type||'', amount:item.amount ?? '', description:item.description||'', receipt:item.receipt||nextReceiptNo()});
+    renderItems();
+  }
+  function renderItems(){
+    const body=$('itemRows');
+    if(!items.length){ body.innerHTML='<tr><td colspan="5" class="empty">No items. Click “Add Income Item”.</td></tr>'; updateTotal(); return; }
+    body.innerHTML=items.map((item,index)=>`
+      <tr data-id="${escapeHtml(item.id)}">
+        <td><select class="item-type" aria-label="Income type for item ${index+1}" required><option value="">Select type</option>${types.map(t=>`<option ${item.type===t?'selected':''}>${escapeHtml(t)}</option>`).join('')}</select><div class="item-no" style="margin-top:5px">Item ${index+1}</div></td>
+        <td class="amount-cell"><input class="item-amount" type="number" min="0" step="0.01" value="${escapeHtml(item.amount)}" placeholder="0.00" aria-label="Amount for item ${index+1}" required /></td>
+        <td><input class="item-description" type="text" value="${escapeHtml(item.description)}" placeholder="Income description" aria-label="Description for item ${index+1}" required /></td>
+        <td class="receipt-cell"><input class="item-receipt" type="text" value="${escapeHtml(item.receipt)}" aria-label="Money receipt number for item ${index+1}" required /></td>
+        <td><button class="btn btn-danger btn-small remove-item" type="button" aria-label="Remove item ${index+1}" title="Remove item">✕</button></td>
+      </tr>`).join('');
+    body.querySelectorAll('tr[data-id]').forEach(row=>{
+      const id=row.dataset.id;
+      row.querySelector('.item-type').addEventListener('change',e=>{findItem(id).type=e.target.value; refreshFilterOptions();});
+      row.querySelector('.item-amount').addEventListener('input',e=>{findItem(id).amount=e.target.value;updateTotal();});
+      row.querySelector('.item-description').addEventListener('input',e=>findItem(id).description=e.target.value);
+      row.querySelector('.item-receipt').addEventListener('input',e=>findItem(id).receipt=e.target.value.trim());
+      row.querySelector('.remove-item').addEventListener('click',()=>{items=items.filter(x=>x.id!==id);renderItems();});
+    });
+    updateTotal();
+  }
+  function findItem(id){return items.find(x=>x.id===id);}
+  function updateTotal(){ $('totalIncome').textContent=money(items.reduce((sum,x)=>sum+Number(x.amount||0),0)); }
+  function getFormData(){
+    return {date:$('incomeDate').value,project:$('project').value.trim(),submittedBy:$('submittedBy').value,paymentMethod:$('paymentMethod').value,remarks:$('remarks').value.trim(),items:items.map(x=>({...x,amount:Number(x.amount)})),total:items.reduce((s,x)=>s+Number(x.amount||0),0)};
+  }
+  function validateItems(){
+    if(!items.length){showToast('Please add at least one income item.');return false;}
+    const receipts=new Set();
+    for(let i=0;i<items.length;i++){
+      const x=items[i];
+      if(!x.type || x.amount==='' || !Number.isFinite(Number(x.amount)) || Number(x.amount)<0 || !x.description.trim() || !x.receipt.trim()){
+        showToast(`Please complete all fields in Income Item ${i+1}.`);return false;
+      }
+      const r=x.receipt.trim().toLowerCase();
+      if(receipts.has(r)){showToast('Money Receipt No. must be unique within this entry.');return false;}
+      receipts.add(r);
+    }
+    return true;
+  }
+  function resetForm(){
+    $('incomeForm').reset();$('incomeDate').value=localDate;$('remarks').value='';
+    items=[];addItem();editingId=null;$('formTitle').textContent='Income Entry Form';
+    $('submitBtn').textContent='Submit Income';$('cancelEditBtn').classList.add('hidden');
+  }
+  $('addItemBtn').addEventListener('click',()=>addItem());
+  $('incomeForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    if(!validateItems())return;
+    const data=getFormData();
+    const allReceipts=new Set(records.filter(r=>r.id!==editingId).flatMap(r=>r.items.map(i=>i.receipt.toLowerCase())));
+    for(const item of data.items){if(allReceipts.has(item.receipt.toLowerCase())){showToast(`Receipt number ${item.receipt} already exists in another record.`);return;}}
+    if(editingId){
+      const idx=records.findIndex(r=>r.id===editingId);
+      if(idx>=0)records[idx]={...records[idx],...data,updatedAt:new Date().toISOString()};
+      showToast('Income record updated.');
+    }else{
+      records.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),...data,createdAt:new Date().toISOString()});
+      showToast('Income submitted successfully.');
+    }
+    resetForm();currentPage=1;renderRecords();$('listCard').classList.remove('hidden');$('bookingToggle').setAttribute('aria-expanded','true');$('bookingToggle').textContent='▴ Booking — Hide Income List';
+    $('listCard').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  $('cancelEditBtn').addEventListener('click',resetForm);
+  $('saveDraftBtn').addEventListener('click',()=>{
+    const data=getFormData();
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='income-draft.json';a.click();URL.revokeObjectURL(a.href);
+    showToast('Draft JSON downloaded to your device.');
+  });
+  $('bookingToggle').addEventListener('click',()=>{
+    const open=$('listCard').classList.toggle('hidden');
+    $('bookingToggle').setAttribute('aria-expanded',String(!open));
+    $('bookingToggle').textContent=open?'▾ Booking — Show Income List':'▴ Booking — Hide Income List';
+    if(!open)renderRecords();
+  });
+
+  function fillSelect(id, values, firstLabel){
+    const el=$(id), old=el.value;
+    el.innerHTML=`<option value="">${escapeHtml(firstLabel)}</option>`+values.sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    if(values.includes(old))el.value=old;
+  }
+  function refreshFilterOptions(){
+    fillSelect('filterType',[...new Set([...types,...records.flatMap(r=>r.items.map(i=>i.type))])],'All types');
+    fillSelect('filterProject',[...new Set(records.map(r=>r.project))],'All projects');
+    fillSelect('filterMember',[...new Set(records.map(r=>r.submittedBy))],'All members');
+    fillSelect('filterMethod',[...new Set(records.map(r=>r.paymentMethod))],'All methods');
+  }
+  function filteredRecords(){
+    const q=$('searchInput').value.trim().toLowerCase();
+    return records.filter(r=>{
+      const hay=[r.id,r.project,r.submittedBy,r.paymentMethod,r.remarks,...r.items.flatMap(i=>[i.receipt,i.type,i.description])].join(' ').toLowerCase();
+      return (!q||hay.includes(q))&&(!$('dateFrom').value||r.date>=$('dateFrom').value)&&(!$('dateTo').value||r.date<=$('dateTo').value)&&(!$('filterType').value||r.items.some(i=>i.type===$('filterType').value))&&(!$('filterProject').value||r.project===$('filterProject').value)&&(!$('filterMember').value||r.submittedBy===$('filterMember').value)&&(!$('filterMethod').value||r.paymentMethod===$('filterMethod').value);
+    });
+  }
+  function renderRecords(){
+    refreshFilterOptions();
+    const list=filteredRecords(), totalPages=Math.max(1,Math.ceil(list.length/Number($('pageSize').value)));
+    currentPage=Math.min(currentPage,totalPages);
+    const start=(currentPage-1)*Number($('pageSize').value), page=list.slice(start,start+Number($('pageSize').value));
+    $('totalEntries').textContent=list.length;
+    $('recordCountLabel').textContent=`${list.length} record${list.length===1?'':'s'}`;
+    $('listTotalIncome').textContent=money(list.reduce((sum,r)=>sum+r.total,0));
+    $('pageInfo').textContent=list.length?`Showing ${start+1}–${Math.min(start+page.length,list.length)} of ${list.length} records`:'Showing 0 records';
+    $('pageNumber').textContent=`${currentPage} / ${totalPages}`;
+    $('prevPage').disabled=currentPage<=1;$('nextPage').disabled=currentPage>=totalPages;
+    $('prevPage').style.opacity=$('prevPage').disabled?'.45':'1';$('nextPage').style.opacity=$('nextPage').disabled?'.45':'1';
+    if(!page.length){$('recordsBody').innerHTML=`<tr><td colspan="9" class="empty">${records.length?'No records match these filters.':'No income records yet. Submit an income to see it here.'}</td></tr>`;return;}
+    $('recordsBody').innerHTML=page.map(r=>r.items.map((it,idx)=>`
+      <tr>
+        <td>${escapeHtml(it.receipt)}</td><td>${escapeHtml(r.date)}</td><td>${escapeHtml(r.project)}</td><td>${escapeHtml(it.type)}</td><td>${escapeHtml(it.description)}</td><td>${escapeHtml(r.submittedBy)}</td><td>${escapeHtml(r.paymentMethod)}</td><td class="amount">${money(it.amount)}</td>
+        ${idx===0?`<td rowspan="${r.items.length}"><div class="actions"><button class="btn btn-outline btn-small view-record" data-id="${escapeHtml(r.id)}" type="button">View</button><button class="btn btn-outline btn-small edit-record" data-id="${escapeHtml(r.id)}" type="button">Edit</button><button class="btn btn-danger btn-small delete-record" data-id="${escapeHtml(r.id)}" type="button">Delete</button></div></td>`:''}
+      </tr>`).join('')).join('');
+    $('recordsBody').querySelectorAll('.view-record').forEach(b=>b.addEventListener('click',()=>viewRecord(b.dataset.id)));
+    $('recordsBody').querySelectorAll('.edit-record').forEach(b=>b.addEventListener('click',()=>editRecord(b.dataset.id)));
+    $('recordsBody').querySelectorAll('.delete-record').forEach(b=>b.addEventListener('click',()=>deleteRecord(b.dataset.id)));
+  }
+  function viewRecord(id){
+    const r=records.find(x=>x.id===id);if(!r)return;
+    $('modalTitle').textContent='Income Details';
+    $('modalBody').innerHTML=`
+      <div class="detail-grid">
+        <div class="detail"><small>Income Date</small><strong>${escapeHtml(r.date)}</strong></div>
+        <div class="detail"><small>Department / Project</small><strong>${escapeHtml(r.project)}</strong></div>
+        <div class="detail"><small>Submitted By</small><strong>${escapeHtml(r.submittedBy)}</strong></div>
+        <div class="detail"><small>Payment Method</small><strong>${escapeHtml(r.paymentMethod)}</strong></div>
+      </div>
+      <table class="modal-items"><thead><tr><th>Income Type</th><th>Description</th><th>Receipt No.</th><th>Amount</th></tr></thead><tbody>${r.items.map(i=>`<tr><td>${escapeHtml(i.type)}</td><td>${escapeHtml(i.description)}</td><td>${escapeHtml(i.receipt)}</td><td>${money(i.amount)}</td></tr>`).join('')}</tbody></table>
+      <div class="total-row"><span class="total-label">Total Income</span><span class="total-value">${money(r.total)}</span></div>
+      <div style="margin-top:16px"><small style="color:var(--muted)">Remarks</small><p>${escapeHtml(r.remarks||'—')}</p></div>`;
+    $('modalBackdrop').classList.remove('hidden');
+  }
+  function editRecord(id){
+    const r=records.find(x=>x.id===id);if(!r)return;
+    editingId=id;$('incomeDate').value=r.date;$('project').value=r.project;$('submittedBy').value=r.submittedBy;$('paymentMethod').value=r.paymentMethod;$('remarks').value=r.remarks||'';
+    items=r.items.map(i=>({...i,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())}));renderItems();
+    $('formTitle').textContent='Edit Income Entry';$('submitBtn').textContent='Update Income';$('cancelEditBtn').classList.remove('hidden');
+    $('entryCard').scrollIntoView({behavior:'smooth',block:'start'});showToast('Record loaded for editing.');
+  }
+  function deleteRecord(id){
+    const r=records.find(x=>x.id===id);if(!r)return;
+    if(!confirm(`Delete income record for ${r.project} dated ${r.date}? This cannot be undone.`))return;
+    records=records.filter(x=>x.id!==id);renderRecords();showToast('Income record deleted.');
+  }
+  ['searchInput','dateFrom','dateTo','filterType','filterProject','filterMember','filterMethod'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',()=>{currentPage=1;renderRecords();}));
+  $('pageSize').addEventListener('change',()=>{currentPage=1;renderRecords();});
+  $('prevPage').addEventListener('click',()=>{if(currentPage>1){currentPage--;renderRecords();}});
+  $('nextPage').addEventListener('click',()=>{currentPage++;renderRecords();});
+  $('clearFiltersBtn').addEventListener('click',()=>{
+    ['searchInput','dateFrom','dateTo','filterType','filterProject','filterMember','filterMethod'].forEach(id=>$(id).value='');
+    currentPage=1;renderRecords();
+  });
+  $('closeModal').addEventListener('click',()=>$('modalBackdrop').classList.add('hidden'));
+  $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))$('modalBackdrop').classList.add('hidden');});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')$('modalBackdrop').classList.add('hidden');});
+  $('reportBtn').addEventListener('click',()=>{
+    const rows=[['Receipt No.','Income Date','Department / Project','Income Type','Description','Submitted By','Payment Method','Amount (BDT)','Remarks']];
+    filteredRecords().forEach(r=>r.items.forEach(i=>rows.push([i.receipt,r.date,r.project,i.type,i.description,r.submittedBy,r.paymentMethod,Number(i.amount)||0,r.remarks||''])));
+    if (typeof XLSX === 'undefined') {
+      showToast('Excel export library could not load. Please check your internet connection and try again.');
+      return;
+    }
+    const worksheet=XLSX.utils.aoa_to_sheet(rows);
+    worksheet['!cols']=[{wch:18},{wch:15},{wch:25},{wch:22},{wch:36},{wch:22},{wch:20},{wch:18},{wch:35}];
+    const workbook=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook,worksheet,'Income Report');
+    XLSX.writeFile(workbook,'Income-Records.xlsx');
+    showToast('Excel report downloaded.');
+  });
+
+  addItem();
+  renderRecords();
 })();
-(function(){const b=document.getElementById('ssaUnifiedProfileTrigger'),d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',e=>{e.preventDefault();const open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open)});document.addEventListener('click',e=>{if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open')}})})();
-function editIncomeRecord(button){const form=document.getElementById('incomeEntryForm');if(!form)return;const d=button.dataset;form.elements.amount.value=d.amount||'';form.elements.type.value=d.type||'';form.elements.method.value=d.method||'';form.elements.date.value=d.date||'';form.elements.time.value=d.time||'';form.elements.note.value=d.note||'';document.getElementById('incomeFormAction').value='update';document.getElementById('incomeRecordId').value=d.id||'';document.getElementById('incomeSubmitButton').textContent='Update Income';document.getElementById('incomeCancelEdit').hidden=false;const url=new URL(location.href);url.searchParams.set('view','new');history.pushState({view:'new'},'',url);document.getElementById('newIncomeSection').hidden=false;document.getElementById('incomeListSection').hidden=true;form.scrollIntoView({behavior:'smooth',block:'center'});}
-function cancelIncomeEdit(){const form=document.getElementById('incomeEntryForm');if(!form)return;form.reset();document.getElementById('incomeFormAction').value='save';document.getElementById('incomeRecordId').value='';document.getElementById('incomeSubmitButton').textContent='Save Income';document.getElementById('incomeCancelEdit').hidden=true;}
 </script>
-</body></html>
+</body>
+</html>
