@@ -1,246 +1,179 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Savings Management</title><link rel="stylesheet" href="/static/app.css"><style>
-/* Permanent System Super Administrator sidebar. */
-.ssa-shell{min-height:100vh}
-.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#fff;border-right:1px solid #dce5ef;box-shadow:2px 0 12px rgba(16,44,80,.06);display:flex;flex-direction:column;z-index:1000}
-.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #e7edf4;flex:0 0 auto}
-.ssa-brand-title{font-size:16px;font-weight:800;color:#12355e;line-height:1.25}
-.ssa-brand-scope{font-size:10px;color:#6f8299;margin-top:5px;letter-spacing:.6px}
-.ssa-nav{padding:12px 10px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto}
-.ssa-nav-group{font-size:10px;font-weight:800;color:#8b9aab;text-transform:uppercase;padding:9px 9px 6px;letter-spacing:.7px}
-.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#314b68;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:600;white-space:nowrap}
-.ssa-nav a:hover{background:#eef6ff;color:#0d65bd}
-.ssa-nav a.active{background:#e9f3ff;color:#0b67c0;font-weight:800}
-.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-.ssa-profile{flex:0 0 auto;border-top:1px solid #e7edf4;padding:12px 13px;background:#fbfdff}
-.ssa-profile-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:#15385f}
-.ssa-avatar{width:34px;height:34px;border-radius:50%;background:#e9f3ff;display:grid;place-items:center;color:#126ac1;font-weight:800}
-.ssa-profile strong{font-size:12px}.ssa-profile small{display:block;color:#8291a3;margin-top:2px}
-.ssa-logout{display:block;text-decoration:none;margin-top:9px;text-align:center;background:#ef4444;color:#fff;border-radius:7px;padding:8px;font-weight:800}
-.ssa-content{margin-left:280px;min-height:100vh}
-.ssa-content>.page{max-width:none;margin:0;padding:24px 24px 32px}
-@media(max-width:700px){.ssa-sidebar{width:280px}.ssa-content{margin-left:280px;min-width:820px}}
-
-.ssa-page-identity{display:flex;align-items:center;gap:10px;margin-left:auto;padding:7px 12px;border:1px solid #dce8f5;border-radius:9px;background:#fff;color:#15385f;font-size:13px}.ssa-page-identity strong{font-weight:800}.ssa-page-identity span{color:#73869c;font-size:11px}.ssa-content .card form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:16px 14px}.ssa-content .card form label{display:flex;flex-direction:column;gap:7px;font-weight:700;color:#203c5d}.ssa-content .card form label:has(textarea){grid-column:span 2}.ssa-content .card form input,.ssa-content .card form select,.ssa-content .card form textarea{width:100%;box-sizing:border-box;border:1px solid #cbd9e8;border-radius:9px;padding:11px 12px;background:#fff;color:#15385f;font-size:14px;outline:none}.ssa-content .card form input:focus,.ssa-content .card form select:focus,.ssa-content .card form textarea:focus{border-color:#2b7dcc;box-shadow:0 0 0 3px rgba(43,125,204,.12)}.ssa-content .card form textarea{min-height:90px;resize:vertical}.ssa-content .card form input[type=hidden]{display:none}.ssa-content .card form button{grid-column:span 1;border:0;outline:0;box-shadow:none;border-radius:9px;background:#178b58;color:#fff;font-weight:800;padding:11px 18px;cursor:pointer}.ssa-content .card form button:hover{filter:brightness(.96)}@media(max-width:1000px){.ssa-content .card form{grid-template-columns:repeat(2,minmax(180px,1fr))}}@media(max-width:700px){.ssa-content .card form{grid-template-columns:1fr}.ssa-content .card form label:has(textarea){grid-column:span 1}}
-
-/* v17: keep the sidebar permanently left and keep all working content in the right scroll area. */
-.ssa-sidebar{position:fixed !important;left:0 !important;top:0 !important;bottom:0 !important;width:280px !important;height:100vh !important;overflow:hidden !important;}
-.ssa-nav{overflow-y:auto !important;overflow-x:hidden !important;min-height:0 !important;}
-.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:0 !important;box-sizing:border-box !important;overflow-x:hidden !important;}
-.ssa-content>.page{width:100% !important;max-width:none !important;box-sizing:border-box !important;min-width:0 !important;}
-.ssa-content .card{max-width:100% !important;box-sizing:border-box !important;}
-.ssa-content table{max-width:100%;}
-.table-wrap{width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
-@media(max-width:700px){.ssa-content{margin-left:280px !important;width:calc(100% - 280px) !important;min-width:700px !important;}}
-</style><style>
-.record-table-wrap{width:100%;overflow-x:auto;border:1px solid #d9e2ec;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(15,23,42,.06)}
-.record-table{width:100%;min-width:900px;border-collapse:collapse;font-size:15px;background:#fff}
-.record-table th{padding:14px 16px;text-align:left;background:#f3f7fb;color:#243447;font-weight:700;border-bottom:2px solid #d9e2ec;white-space:nowrap}
-.record-table td{padding:13px 16px;border-bottom:1px solid #e7edf3;color:#334155;vertical-align:middle;white-space:nowrap}
-.record-table tbody tr:hover{background:#f8fbff}
-.record-table tbody tr:last-child td{border-bottom:0}
-.record-table .empty{text-align:center;padding:28px;color:#64748b}
-.inline-action{margin:0}
-.inline-action .danger{padding:8px 14px;border:0;border-radius:8px;cursor:pointer;font-weight:600}
-
-.records-tools{display:flex;justify-content:flex-start;margin:0 0 14px}
-.csv-download{border:0!important;outline:0!important;box-shadow:none!important;border-radius:9px;background:#e6f3ff;color:#075da8;padding:10px 15px;cursor:pointer;font-size:14px;font-weight:500}
-.csv-download:hover{background:#d7ebff}
-.ssa-content .card form button{border:0!important;outline:0!important;box-shadow:none!important}
-</style>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Savings Management System</title>
 <style>
-/* Same click-to-open Profile + Logout menu as Income Management. */
-.ssa-sidebar{background:#ffffff;color:#24364b}
-.ssa-brand{background:#ffffff}
-.ssa-nav a{font-weight:400;color:#334b65}
-.ssa-nav a.active{font-weight:500;background:#eaf4ff;color:#1769b2}
-.ssa-profile{position:relative;flex:0 0 auto;border-top:1px solid #e4edf6;padding:10px;background:#fff}
-.ssa-profile-trigger{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:#fff;border-radius:11px;padding:9px 8px;cursor:pointer;color:#24364b;font:inherit}
-.ssa-profile-trigger:hover,.ssa-profile-trigger[aria-expanded="true"]{background:#f2f8ff;border-color:#dceafa}
-.ssa-avatar{width:38px;height:38px;min-width:38px;border-radius:50%;background:#e3f0ff;color:#2366a8;display:grid;place-items:center;font-size:13px;font-weight:500}
-.ssa-profile-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
-.ssa-profile-name{font-size:12px;line-height:1.3;font-weight:400;color:#263b53;white-space:normal}
-.ssa-profile-role{font-size:11px;line-height:1.3;font-weight:400;color:#71839a}
-.ssa-profile-chevron{font-size:15px;color:#71839a;transform:rotate(0deg);transition:transform .15s}
-.ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)}
-.ssa-profile-dropdown{position:absolute;left:10px;right:10px;bottom:calc(100% + 8px);z-index:1200;background:#fff;border:1px solid #dce7f3;border-radius:12px;padding:6px;box-shadow:0 12px 30px rgba(31,62,96,.15)}
-.ssa-profile-dropdown.drop-down{top:calc(100% + 8px);bottom:auto}
-.ssa-profile-dropdown[hidden]{display:none}
-.ssa-profile-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:8px;text-decoration:none;color:#334b65;font-size:13px;font-weight:400}
-.ssa-profile-dropdown a:hover{background:#f0f7ff;color:#1769b2}
-.ssa-profile-dropdown a.logout-option{color:#d94848}
-.ssa-profile-dropdown a.logout-option:hover{background:#fff1f1;color:#c62828}
+:root{--green:#087451;--green-dark:#075b46;--pale:#eaf3ee;--bg:#f3f7f5;--border:#d4e1da;--text:#172b25;--muted:#61736b;--danger:#c0392b;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.45 "Segoe UI",Arial,sans-serif;color:var(--text)}
+main{max-width:1600px;margin:auto;padding:24px}
+h1{font-size:27px;color:var(--green-dark);margin:0 0 4px}h2{font-size:20px;margin:0;font-weight:650}h3{font-size:16px;margin:0 0 12px}
+.subtitle{color:var(--muted);margin:0 0 18px}.card{background:var(--white);border:1px solid var(--border);border-radius:15px;box-shadow:0 7px 22px #163d2c0a;margin-bottom:18px;overflow:hidden}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-body{padding:20px}.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}
+label{display:block;font-weight:600;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #c9d8cf;border-radius:9px;background:#fff;padding:10px 12px;font:inherit;color:var(--text);min-height:41px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #08745118}textarea{resize:vertical;min-height:74px}
+.items-wrap{border:1px solid var(--border);border-radius:11px;overflow:auto;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;min-width:850px}th{background:var(--pale);color:var(--green-dark);text-align:left;font-weight:650;padding:13px 12px;white-space:nowrap}td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}td input,td select{min-width:100px}.item-number{color:var(--muted);font-size:12px;margin-top:4px}
+button{font:inherit;font-weight:650;border:1px solid var(--green);border-radius:9px;padding:10px 15px;cursor:pointer;transition:.15s}
+button:hover{filter:brightness(.96)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--green);color:#fff}.outline{background:#fff;color:var(--green)}.ghost{background:#fff;color:var(--green)}.danger{border-color:#efb5af;color:var(--danger);background:#fff;padding:6px 10px}.small{padding:7px 10px;font-size:13px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.muted{color:var(--muted)}.hint{font-size:12px;color:var(--muted)}.total-box{margin-top:16px;background:#f6f9f7;border:1px solid var(--border);border-radius:11px;padding:17px 20px;display:flex;align-items:center;justify-content:flex-end;gap:22px}.total-box strong{font-size:25px;color:var(--green-dark)}.remarks{margin-top:18px}.form-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:18px}.demo-note{font-size:12px;color:var(--muted);padding:0 20px 18px}
+.toggle-area{display:flex;justify-content:center;margin:18px 0}.toggle{background:var(--green);color:#fff;border:0}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px}.stat{background:#f8faf9;border:1px solid var(--border);border-radius:13px;padding:16px 18px}.stat span{display:block;color:var(--muted);margin-bottom:6px}.stat strong{font-size:26px;color:var(--green-dark)}
+.search-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px}.filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;margin-bottom:18px}.table-footer{padding:14px 0 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.empty{text-align:center;color:var(--muted);padding:30px!important}.pill{display:inline-block;background:#e8f5ee;color:var(--green-dark);padding:4px 9px;border-radius:99px;font-size:12px}.action-buttons{display:flex;gap:6px}.notice{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;background:#edf7f0;color:#17633f}.notice.error{background:#fff0ee;color:#9d2e25}.hide{display:none!important}
+@media(max-width:1050px){main{padding:16px}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){main{padding:12px}h1{font-size:23px}.card-body{padding:14px}.form-grid,.filters,.stats{grid-template-columns:1fr}.total-box{justify-content:space-between;padding:14px}.total-box strong{font-size:21px}.card-head{padding:14px}.form-actions button{flex:1}.search-row{grid-template-columns:1fr}.demo-note{padding:0 14px 14px}}
 </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Savings Management System</h1>
+    <p class="subtitle">Record, review, and manage multiple savings in one place.</p>
+  </header>
 
-<style id="ssa-unified-sidebar-style">
-/* Shared System Super Administrator sidebar: based on Home HTML dimensions and colours. */
-.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;background:#fff!important;border-right:1px solid #dce5ef!important;box-shadow:2px 0 12px rgba(16,44,80,.05)!important;display:flex!important;flex-direction:column!important;z-index:10000!important;color:#102c50!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;overflow:hidden!important}
-.ssa-sidebar *{box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important}
-.ssa-sidebar .ssa-brand{display:block!important;flex:0 0 auto!important;padding:16px 18px 13px!important;border-bottom:1px solid #e7edf4!important;background:#fff!important}
-.ssa-sidebar .ssa-brand-title{font-size:16px!important;font-weight:700!important;color:#12355e!important;line-height:1.25!important;letter-spacing:0!important}
-.ssa-sidebar .ssa-brand-subtitle{font-size:12px!important;font-weight:400!important;color:#314b68!important;margin-top:4px!important;line-height:1.3!important}
-.ssa-sidebar .ssa-brand-scope{font-size:10px!important;font-weight:400!important;color:#6f8299!important;margin-top:4px!important;letter-spacing:.4px!important;text-transform:none!important}
-.ssa-sidebar .ssa-nav{padding:8px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;min-height:0!important;display:block!important}
-.ssa-sidebar .ssa-nav-group{font-size:10px!important;font-weight:700!important;color:#8b9aab!important;text-transform:uppercase!important;padding:9px 10px 6px!important;letter-spacing:.7px!important}
-.ssa-sidebar .ssa-nav a,.ssa-sidebar .ssa-nav summary{display:flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important;color:#314b68!important;padding:8px 10px!important;border-radius:8px!important;margin:2px 0!important;font-size:13px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
-.ssa-sidebar .ssa-nav summary::-webkit-details-marker{display:none!important}
-.ssa-sidebar .ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}
-.ssa-sidebar .ssa-nav a:hover,.ssa-sidebar .ssa-nav summary:hover{background:#eef6ff!important;color:#0d65bd!important}
-.ssa-sidebar .ssa-nav a.active,.ssa-sidebar .ssa-nav summary.active{background:#e9f3ff!important;color:#0b67c0!important;font-weight:700!important}
-.ssa-sidebar .ssa-ico{width:18px!important;min-width:18px!important;text-align:center!important;font-size:15px!important;font-weight:400!important;color:inherit!important}
-.ssa-sidebar .ssa-subnav{padding:0 0 4px 27px!important}
-.ssa-sidebar .ssa-subnav a{font-size:12px!important;padding:7px 9px!important;margin:1px 0!important;color:#58728c!important}
-.ssa-sidebar .ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;border-top:1px solid #e7edf4!important;padding:10px 12px!important;background:#fbfdff!important}
-.ssa-sidebar .ssa-profile-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;border:1px solid transparent!important;border-radius:10px!important;padding:7px!important;background:transparent!important;color:#45627e!important;text-align:left!important;font:inherit!important;font-weight:400!important;cursor:pointer!important}
-.ssa-sidebar .ssa-profile-trigger:hover,.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"]{background:#eef6ff!important;border-color:#d7e8fb!important}
-.ssa-sidebar .ssa-avatar{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;background:#e9f3ff!important;display:grid!important;place-items:center!important;color:#4a8bc8!important;font-size:13px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-copy{display:block!important;min-width:0!important;flex:1!important}
-.ssa-sidebar .ssa-profile-name{display:block!important;color:#45627e!important;font-size:12px!important;font-weight:400!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:175px!important}
-.ssa-sidebar .ssa-profile-role{display:block!important;color:#8298b0!important;margin-top:3px!important;font-size:10px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-chevron{margin-left:auto!important;color:#8298b0!important;font-size:11px!important;transition:transform .15s ease!important}
-.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)!important}
-.ssa-sidebar .ssa-profile-dropdown{display:none!important;position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% - 3px)!important;margin:0!important;padding:5px!important;border:1px solid #e1eaf4!important;border-radius:10px!important;background:#fff!important;box-shadow:0 8px 24px rgba(16,44,80,.12)!important;z-index:10001!important}
-.ssa-sidebar .ssa-profile-dropdown.is-open{display:block!important}
-.ssa-sidebar .ssa-profile-dropdown a{display:block!important;padding:10px!important;border-radius:7px!important;text-decoration:none!important;font-size:12px!important;font-weight:400!important;color:#4b7fae!important;background:#f5f9ff!important;margin:2px 0!important}
-.ssa-sidebar .ssa-profile-dropdown a.logout-option{background:#fff3f3!important;color:#df5c66!important}
-.ssa-sidebar .ssa-profile-dropdown a:hover{filter:brightness(.97)!important}
-@media(max-width:650px){.ssa-sidebar{position:relative!important;width:100%!important;height:auto!important;min-height:0!important}.ssa-sidebar .ssa-nav{max-height:60vh}.ssa-sidebar .ssa-profile{margin-top:0!important}}
-</style>
-</head><body><div class="ssa-shell"><aside class="ssa-sidebar">
-<div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
-<nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
-<a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/income-management" title="New Income">New Income</a>
-<a href="/system_super_administrator/income-management" title="Income List">Income List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/expense-management" title="New Expense">New Expense</a>
-<a href="/system_super_administrator/expense-management" title="Expense List">Expense List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/meal-management" title="New Meal">New Meal</a>
-<a href="/system_super_administrator/meal-management" title="Meal List">Meal List</a>
-</div></details>
-<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/savings-management" title="New Savings">New Savings</a>
-<a href="/system_super_administrator/savings-management" title="Savings List">Savings List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/information-directory" title="New Information">New Information</a>
-<a href="/system_super_administrator/information-directory" title="Information List">Information List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/blood-donor-management" title="New Donor">New Donor</a>
-<a href="/system_super_administrator/blood-donor-management" title="Donor List">Donor List</a>
-<a href="/system_super_administrator/blood-donor-management" title="Blood Request">Blood Request</a>
-<a href="/system_super_administrator/blood-donor-management" title="Reports">Reports</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/branch-management" title="New Branch">New Branch</a>
-<a href="/system_super_administrator/branch-management" title="Branch List">Branch List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/member-management" title="New Member">New Member</a>
-<a href="/system_super_administrator/member-management" title="Member List">Member List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/financial-management" title="Member Wise">Member Wise</a>
-<a href="/system_super_administrator/financial-management" title="Branch Wise">Branch Wise</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/reports" title="Generate">Generate</a>
-<a href="/system_super_administrator/reports" title="Download XLSX">Download XLSX</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/access-management" title="Member">Member</a>
-<a href="/system_super_administrator/access-management" title="Branch">Branch</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/documentation" title="Writeable / Noteable">Writeable / Noteable</a>
-</div></details>
-<a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
-<div class="ssa-nav-group">Account</div>
-<a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-</nav>
-<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div></aside><div class="ssa-content"><main class="page"><header><h1>Savings Management</h1><div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div></header>{% if message %}<div class="ok">{{ message }}</div>{% endif %}{% if error %}<div class="err">{{ error }}</div>{% endif %}<section class="card"><h2>Entry</h2><form method="post"><label>Member<select name="member_name" required><option value="">Select Member</option>{% for x in options.members %}<option>{{ x }}</option>{% endfor %}</select></label><label>Amount<input name="amount" type="number" min="0.01" step="0.01" required></label><label>Savings Type<select name="type" required><option value="">Select Savings Type</option><option>Monthly Savings</option><option>General Savings</option><option>Emergency Savings</option><option>Other</option></select></label><label>Date<input name="date" type="date" required></label><label>Time<input name="time" type="time" required></label><label>Method<select name="method" required><option value="">Select Method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Other</option></select></label><label>Note<input name="note" required></label><input type="hidden" name="action" value="save"><button>Save</button></form></section><section class="card"><h2>Records</h2><div class="records-tools"><button type="button" id="downloadSavingsCsv" class="csv-download">⇩ Download CSV</button></div><form method="get"><input name="search" placeholder="Search" value="{{ request.args.get('search','') }}"><button>Search</button></form><div class="record-table-wrap"><table class="record-table"><thead><tr><th>SL</th><th>Date</th><th>Time</th><th>Amount</th><th>Member</th><th>Type</th><th>Method</th><th>Note</th><th>Action</th></tr></thead><tbody>{% for r in records %}<tr><td>{{ loop.index }}</td><td>{{ r.get("date","") }}</td><td>{{ r.get("time","") }}</td><td>{{ r.get("amount","") }}</td><td>{{ r.get("member","") }}</td><td>{{ r.get("type","") }}</td><td>{{ r.get("method","") }}</td><td>{{ r.get("note","") }}</td><td><form method="post" class="inline-action"><input type="hidden" name="action" value="delete"><input type="hidden" name="record_id" value="{{ r.get('_id','') }}"><button class="danger" type="submit">Delete</button></form></td></tr>{% else %}<tr><td colspan="9" class="empty">No records found.</td></tr>{% endfor %}</tbody></table></div></section></main></div></div>
-<script>
-(function(){
-  function pad(n){return String(n).padStart(2,"0");}
-  function setCurrent(){
-    const now=new Date();
-    const date=now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate());
-    const time=pad(now.getHours())+":"+pad(now.getMinutes());
-    document.querySelectorAll('input[name="date"]').forEach(function(el){ if(!el.value) el.value=date; });
-    document.querySelectorAll('input[name="time"]').forEach(function(el){ if(!el.value) el.value=time; });
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",setCurrent); else setCurrent();
-})();
-</script>
-<script>
-(function(){
-  const entryForm=document.querySelector('.ssa-content section.card form[method="post"]');
-  if(entryForm){
-    entryForm.addEventListener('submit',function(e){
-      const required=Array.from(entryForm.querySelectorAll('[required]'));
-      let missing=false;
-      required.forEach(function(el){
-        if(!String(el.value||'').trim()){el.setCustomValidity('Please fill in this field.');missing=true;}
-        else el.setCustomValidity('');
-      });
-      const amount=entryForm.querySelector('input[name="amount"]');
-      if(amount && Number(amount.value)<=0){amount.setCustomValidity('Amount must be greater than zero.');missing=true;} else if(amount){amount.setCustomValidity('');}
-      if(missing){e.preventDefault();entryForm.reportValidity();}
-    });
-    entryForm.querySelectorAll('[required]').forEach(function(el){el.addEventListener('input',function(){el.setCustomValidity('');});el.addEventListener('change',function(){el.setCustomValidity('');});});
-  }
-  document.querySelectorAll('.inline-action input[name="action"][value="delete"]').forEach(function(action){
-    const form=action.closest('form');
-    if(form) form.addEventListener('submit',function(e){if(!window.confirm('Are you sure you want to delete this savings record?')) e.preventDefault();});
-  });
-  const csvButton=document.getElementById('downloadSavingsCsv');
-  if(csvButton){csvButton.addEventListener('click',function(){
-    const table=document.querySelector('.record-table'); if(!table)return;
-    const rows=Array.from(table.querySelectorAll('tr')).map(function(row){
-      return Array.from(row.querySelectorAll('th,td')).filter(function(cell){return !cell.querySelector('form');}).map(function(cell){
-        let value=(cell.innerText||'').replace(/\s+/g,' ').trim();
-        return '"'+value.replace(/"/g,'""')+'"';
-      }).join(',');
-    });
-    const blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='savings_records.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  });}
-})();
-</script>
+  <section class="card">
+    <div class="card-head"><h2>Savings Entry Form</h2></div>
+    <div class="card-body">
+      <form id="savingsForm">
+        <div class="form-grid">
+          <div><label for="savingsDate">Savings Date *</label><input id="savingsDate" type="date" required></div>
+          <div><label for="department">Department / Project *</label><input id="department" list="projectOptions" placeholder="Enter or select project" required><datalist id="projectOptions"><option value="General"><option value="Project 1"><option value="Project 2"></datalist></div>
+          <div><label for="member">Submitted By *</label><select id="member" required><option value="">Select active member</option><option>Member 1</option><option>Member 2</option><option>Member 3</option><option>Member 4</option><option>Other</option></select></div>
+          <div><label for="method">Payment Method *</label><select id="method" required><option value="">Select method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></div>
+        </div>
+        <div class="between" style="margin-bottom:12px"><h3 style="margin:0">Savings Items</h3><span class="hint">Each item appears in one row.</span></div>
+        <div class="items-wrap">
+          <table>
+            <thead><tr><th style="width:23%">Savings Type</th><th style="width:15%">Amount (৳)</th><th style="width:28%">Description</th><th style="width:22%">Money Receipt / Reference No.</th><th>Action</th></tr></thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+        <div class="row"><button type="button" class="outline" id="addItem">＋ Add Savings Item</button></div>
+        <div class="total-box"><b>Total Savings</b><strong id="formTotal">৳ 0.00</strong></div>
+        <div class="remarks"><label for="remarks">Remarks</label><textarea id="remarks" placeholder="Additional notes (optional)"></textarea></div>
+        <div class="form-actions"><button type="button" class="outline" id="saveDraft">Save Draft (JSON)</button><button class="primary" type="submit">Submit Savings</button></div>
+      </form>
+    </div>
+    <div class="demo-note">Demo note: records are kept in this page's current browser session only. Refreshing or closing the page may clear them. Connect a backend/database for permanent storage and real active-member/project lists.</div>
+  </section>
 
-<script>
-(function(){
-  const trigger=document.getElementById('ssaProfileTrigger');
-  const menu=document.getElementById('ssaProfileDropdown');
-  const shell=document.getElementById('ssaProfileMenu');
-  if(!trigger||!menu||!shell)return;
-  function positionMenu(){
-    if(menu.hidden)return;
-    menu.classList.remove('drop-down');
-    const rect=shell.getBoundingClientRect();
-    const menuHeight=menu.offsetHeight||100;
-    const below=window.innerHeight-rect.bottom;
-    const above=rect.top;
-    if(below>=menuHeight+16 || below>=above){menu.classList.add('drop-down');}
-  }
-  function closeMenu(){menu.hidden=true;trigger.setAttribute('aria-expanded','false');menu.classList.remove('drop-down');}
-  trigger.addEventListener('click',function(event){
-    event.stopPropagation();
-    if(!menu.hidden){closeMenu();return;}
-    menu.hidden=false;trigger.setAttribute('aria-expanded','true');
-    requestAnimationFrame(positionMenu);
-  });
-  document.addEventListener('click',function(event){if(!shell.contains(event.target))closeMenu();});
-  document.addEventListener('keydown',function(event){if(event.key==='Escape'){closeMenu();trigger.focus();}});
-  window.addEventListener('resize',positionMenu);
-  window.addEventListener('scroll',positionMenu,true);
-})();
-</script>
+  <div class="toggle-area"><button type="button" class="toggle" id="toggleList">▴ Hide Savings List</button></div>
 
-<script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
-</body></html>
+  <section class="card" id="listCard">
+    <div class="card-head"><h2>Savings List</h2><div class="row"><span class="muted" id="recordCount">0 records</span><button class="outline" type="button" id="reportBtn">Report</button></div></div>
+    <div class="card-body">
+      <div class="stats">
+        <div class="stat"><span>Total Entries</span><strong id="totalEntries">0</strong></div>
+        <div class="stat"><span>Total Savings (filtered)</span><strong id="filteredTotal">৳ 0.00</strong></div>
+      </div>
+      <div class="search-row"><input id="search" placeholder="Search receipt no., description, project or member..."><button class="outline" id="clearFilters" type="button">Clear Filters</button></div>
+      <div class="filters">
+        <div><label for="fromDate">From Date</label><input id="fromDate" type="date"></div>
+        <div><label for="toDate">To Date</label><input id="toDate" type="date"></div>
+        <div><label for="typeFilter">Savings Type</label><select id="typeFilter"><option>All types</option></select></div>
+        <div><label for="projectFilter">Department / Project</label><select id="projectFilter"><option>All projects</option></select></div>
+        <div><label for="memberFilter">Submitted By</label><select id="memberFilter"><option>All members</option><option>Member 1</option><option>Member 2</option><option>Member 3</option><option>Member 4</option><option>Other</option></select></div>
+        <div><label for="methodFilter">Payment Method</label><select id="methodFilter"><option>All methods</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></div>
+      </div>
+      <div class="items-wrap">
+        <table>
+          <thead><tr><th>Receipt No.</th><th>Savings Date</th><th>Department / Project</th><th>Savings Type</th><th>Description</th><th>Submitted By</th><th>Payment Method</th><th style="text-align:right">Amount</th><th>Action</th></tr></thead>
+          <tbody id="listBody"><tr><td colspan="9" class="empty">No savings records yet. Submit a savings entry to see it here.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span class="muted" id="showing">Showing 0 records</span><div class="row"><label for="pageSize" style="margin:0">Rows:</label><select id="pageSize" style="width:auto"><option>10</option><option>25</option><option>50</option></select><button class="outline small" id="prevPage" type="button">Previous</button><span id="pageInfo">1 / 1</span><button class="outline small" id="nextPage" type="button">Next</button></div></div>
+    </div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const savingsTypes = ["Monthly Savings","Daily Savings","Weekly Savings","Fixed Deposit","Emergency Fund","Special Savings","Voluntary Savings","Other"];
+let items = [], records = [], nextItemId = 1, page = 1, editingRecordId = null;
+const money = n => "৳ " + Number(n || 0).toLocaleString("en-BD",{minimumFractionDigits:2,maximumFractionDigits:2});
+const escapeHTML = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today = new Date(); $("savingsDate").value = new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+function addItem(data={}) {
+ const id=nextItemId++;
+ items.push({id,type:data.type||"",amount:data.amount??"",description:data.description||"",receipt:data.receipt||`SAV-${String(id).padStart(5,"0")}`});
+ renderItems();
+}
+function renderItems(){
+ $("itemsBody").innerHTML=items.map((x,i)=>`<tr data-id="${x.id}">
+ <td><select aria-label="Savings type for item ${i+1}" class="item-type" required><option value="">Select type</option>${savingsTypes.map(t=>`<option ${x.type===t?"selected":""}>${escapeHTML(t)}</option>`).join("")}</select><div class="item-number">Item ${i+1}</div></td>
+ <td><input class="item-amount" type="number" min="0.01" step="0.01" value="${escapeHTML(x.amount)}" placeholder="0.00" required aria-label="Amount"></td>
+ <td><input class="item-description" value="${escapeHTML(x.description)}" placeholder="Savings description" aria-label="Description"></td>
+ <td><input class="item-receipt" value="${escapeHTML(x.receipt)}" placeholder="SAV-00001" aria-label="Receipt number"></td>
+ <td><button type="button" class="danger remove-item" aria-label="Remove item">✕</button></td></tr>`).join("");
+ $("itemsBody").querySelectorAll("tr").forEach(tr=>{
+   const id=Number(tr.dataset.id);
+   tr.querySelector(".item-type").addEventListener("change",e=>{getItem(id).type=e.target.value;});
+   tr.querySelector(".item-amount").addEventListener("input",e=>{getItem(id).amount=e.target.value;updateTotal();});
+   tr.querySelector(".item-description").addEventListener("input",e=>getItem(id).description=e.target.value);
+   tr.querySelector(".item-receipt").addEventListener("input",e=>getItem(id).receipt=e.target.value);
+   tr.querySelector(".remove-item").addEventListener("click",()=>{if(items.length===1){alert("At least one savings item is required.");return;}items=items.filter(a=>a.id!==id);renderItems();});
+ });
+ updateTotal();
+}
+function getItem(id){return items.find(x=>x.id===id)}
+function updateTotal(){$("formTotal").textContent=money(items.reduce((s,x)=>s+Math.max(0,Number(x.amount)||0),0))}
+function formData(){return {date:$("savingsDate").value,department:$("department").value.trim(),member:$("member").value,method:$("method").value,items:items.map(({id,...x})=>({...x,amount:Number(x.amount)})),remarks:$("remarks").value.trim()}}
+function resetForm(){ $("savingsForm").reset(); $("savingsDate").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10); $("department").value="";$("member").value="";$("method").value="";$("remarks").value="";items=[];addItem();editingRecordId=null;$("savingsForm").querySelector('button[type="submit"]').textContent="Submit Savings"; }
+function populateFilters(){
+ const projects=[...new Set(records.map(r=>r.department).filter(Boolean))];
+ $("projectFilter").innerHTML='<option>All projects</option>'+projects.map(x=>`<option>${escapeHTML(x)}</option>`).join("");
+ $("typeFilter").innerHTML='<option>All types</option>'+savingsTypes.map(x=>`<option>${escapeHTML(x)}</option>`).join("");
+}
+function filteredRows(){
+ const from=$("fromDate").value,to=$("toDate").value,typ=$("typeFilter").value,proj=$("projectFilter").value,mem=$("memberFilter").value,method=$("methodFilter").value,q=$("search").value.toLowerCase().trim();
+ return records.flatMap(r=>r.items.filter(x=>(!from||r.date>=from)&&(!to||r.date<=to)&&(typ==="All types"||x.type===typ)&&(proj==="All projects"||r.department===proj)&&(mem==="All members"||r.member===mem)&&(method==="All methods"||r.method===method)&&(!q||[x.receipt,x.description,r.department,r.member,x.type,r.date].join(" ").toLowerCase().includes(q))).map(x=>({...x,record:r})));
+}
+function renderList(){
+ populateFilters();
+ const rows=filteredRows(), pageSize=Number($("pageSize").value), pages=Math.max(1,Math.ceil(rows.length/pageSize));
+ page=Math.min(page,pages);
+ $("recordCount").textContent=`${records.length} records`;
+ $("totalEntries").textContent=records.filter(r=>rows.some(x=>x.record.id===r.id)).length;
+ $("filteredTotal").textContent=money(rows.reduce((s,x)=>s+x.amount,0));
+ const start=(page-1)*pageSize, shown=rows.slice(start,start+pageSize);
+ $("listBody").innerHTML=shown.length?shown.map(x=>`<tr>
+ <td>${escapeHTML(x.receipt||"—")}</td><td>${escapeHTML(x.record.date)}</td><td>${escapeHTML(x.record.department)}</td><td><span class="pill">${escapeHTML(x.type)}</span></td><td>${escapeHTML(x.description||"—")}</td><td>${escapeHTML(x.record.member)}</td><td>${escapeHTML(x.record.method)}</td><td style="text-align:right;white-space:nowrap">${money(x.amount)}</td>
+ <td><div class="action-buttons"><button class="outline small edit-record" data-id="${x.record.id}" type="button">Edit</button><button class="danger small delete-record" data-id="${x.record.id}" type="button">✕</button></div></td></tr>`).join(""):`<tr><td colspan="9" class="empty">No savings records match the current filters.</td></tr>`;
+ $("showing").textContent=`Showing ${rows.length?start+1:0}–${Math.min(start+pageSize,rows.length)} of ${rows.length} items`;
+ $("pageInfo").textContent=`${page} / ${pages}`;$("prevPage").disabled=page<=1;$("nextPage").disabled=page>=pages;
+ document.querySelectorAll(".delete-record").forEach(b=>b.addEventListener("click",()=>{const id=Number(b.dataset.id);if(confirm("Delete this entire savings entry and all its items?")){records=records.filter(r=>r.id!==id);renderList();}}));
+ document.querySelectorAll(".edit-record").forEach(b=>b.addEventListener("click",()=>editRecord(Number(b.dataset.id))));
+}
+function editRecord(id){
+ const r=records.find(x=>x.id===id);if(!r)return;
+ editingRecordId=id;$("savingsDate").value=r.date;$("department").value=r.department;$("member").value=r.member;$("method").value=r.method;$("remarks").value=r.remarks||"";
+ items=r.items.map(x=>({...x,id:nextItemId++}));renderItems();$("savingsForm").querySelector('button[type="submit"]').textContent="Update Savings";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+$("addItem").addEventListener("click",()=>addItem());
+$("savingsForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const d=formData();
+ if(!d.date||!d.department||!d.member||!d.method){alert("Please complete all required fields.");return;}
+ if(!d.items.length||d.items.some(x=>!x.type||!Number.isFinite(x.amount)||x.amount<=0)){alert("Select a savings type and enter a positive amount for every item.");return;}
+ const receipts=d.items.map(x=>x.receipt.trim()).filter(Boolean);
+ if(new Set(receipts).size!==receipts.length){alert("Receipt/reference numbers must be unique within this entry.");return;}
+ const duplicate=receipts.some(no=>records.some(r=>r.id!==editingRecordId&&r.items.some(x=>x.receipt===no)));
+ if(duplicate&&!confirm("One or more receipt/reference numbers already exist. Submit anyway?"))return;
+ if(editingRecordId!==null){records=records.map(r=>r.id===editingRecordId?{...r,...d,id:r.id}:r);}else{records.unshift({...d,id:Date.now(),createdAt:new Date().toISOString()});}
+ resetForm();page=1;renderList();alert("Savings entry saved in this page session.");
+});
+$("saveDraft").addEventListener("click",()=>{
+ const d=formData();const blob=new Blob([JSON.stringify({...d,status:"Draft"},null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="savings-draft.json";a.click();URL.revokeObjectURL(url);
+});
+$("toggleList").addEventListener("click",()=>{const hidden=$("listCard").classList.toggle("hide");$("toggleList").textContent=hidden?"▾ Show Savings List":"▴ Hide Savings List";});
+["search","fromDate","toDate","typeFilter","projectFilter","memberFilter","methodFilter","pageSize"].forEach(id=>$(id).addEventListener("input",()=>{page=1;renderList()}));
+$("clearFilters").addEventListener("click",()=>{["search","fromDate","toDate"].forEach(id=>$(id).value="");$("typeFilter").selectedIndex=0;$("projectFilter").selectedIndex=0;$("memberFilter").selectedIndex=0;$("methodFilter").selectedIndex=0;page=1;renderList();});
+$("prevPage").addEventListener("click",()=>{page--;renderList()});$("nextPage").addEventListener("click",()=>{page++;renderList()});
+$("reportBtn").addEventListener("click",()=>{const rows=filteredRows();const report={generatedAt:new Date().toISOString(),filters:{from:$("fromDate").value,to:$("toDate").value,type:$("typeFilter").value,project:$("projectFilter").value,member:$("memberFilter").value,method:$("methodFilter").value},entryCount:new Set(rows.map(x=>x.record.id)).size,itemCount:rows.length,totalSavings:rows.reduce((s,x)=>s+x.amount,0),items:rows.map(x=>({receipt:x.receipt,date:x.record.date,department:x.record.department,type:x.type,description:x.description,member:x.record.member,method:x.record.method,amount:x.amount}))};const blob=new Blob([JSON.stringify(report,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="savings-report.json";a.click();URL.revokeObjectURL(url);});
+addItem();renderList();
+</script>
+</body>
+</html>
