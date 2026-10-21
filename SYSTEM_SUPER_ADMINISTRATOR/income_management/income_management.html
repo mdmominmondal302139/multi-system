@@ -83,9 +83,98 @@ textarea{min-height:76px;resize:vertical}
 .modal-items{width:100%;border-collapse:collapse;margin-top:18px}.modal-items th,.modal-items td{padding:9px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.container{padding:12px}.topbar{align-items:flex-start;flex-direction:column}h1{font-size:22px}.card-head,.card-body{padding:15px}.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.total-row{justify-content:space-between}.total-value{font-size:21px}.form-actions .btn{flex:1}.detail-grid{grid-template-columns:1fr}.search-row{flex-direction:column}}
+
+/* System Super Administrator sidebar — specification-aligned */
+.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;height:100vh;background:#fff;border-right:1px solid #DFE9F3;box-shadow:2px 0 12px rgba(30,70,105,.04);display:flex;flex-direction:column;z-index:10000;color:#244766;font-size:14px;font-weight:400;overflow:hidden}
+.ssa-sidebar *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;font-weight:400}
+.ssa-brand{flex:0 0 auto;padding:17px 18px 14px;border-bottom:1px solid #E9EFF5;background:#fff}
+.ssa-brand-title{font-size:16px;color:#4F789D;line-height:1.3}
+.ssa-brand-subtitle{font-size:12px;color:#587895;margin-top:4px}
+.ssa-brand-scope{font-size:10px;color:#91A5B9;margin-top:4px;letter-spacing:.3px}
+.ssa-nav{padding:8px 10px 12px;overflow-y:auto;overflow-x:hidden;flex:1 1 auto;min-height:0}
+.ssa-nav-group{font-size:10px;color:#9AABBB;text-transform:uppercase;padding:9px 10px 6px;letter-spacing:.6px}
+.ssa-nav a,.ssa-nav summary{display:flex;align-items:center;gap:10px;text-decoration:none;color:#68839C;padding:8px 10px;border-radius:9px;margin:2px 0;font-size:13px;line-height:1.4;cursor:pointer;list-style:none}
+.ssa-nav summary::-webkit-details-marker{display:none}
+.ssa-nav summary:after{content:'⌄';margin-left:auto;color:#9AAFC1;font-size:11px}
+.ssa-nav a:hover,.ssa-nav summary:hover{background:#F0F7FF;color:#4385C1}
+.ssa-nav a.active,.ssa-nav summary.active{background:#EAF4FF;color:#377FBF}
+.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px;color:inherit}
+.ssa-subnav{padding:0 0 4px 27px}
+.ssa-subnav a{font-size:12px;padding:7px 9px;margin:1px 0;color:#7992A9}
+.ssa-profile{position:relative;flex:0 0 auto;margin-top:auto;border-top:1px solid #E9EFF5;padding:10px 12px;background:#FBFDFF}
+.ssa-profile-trigger{display:flex;align-items:center;gap:9px;width:100%;border:1px solid transparent;border-radius:10px;padding:7px;background:transparent;color:#63809A;text-align:left;font:inherit;cursor:pointer}
+.ssa-profile-trigger:hover,.ssa-profile-trigger[aria-expanded="true"]{background:#F0F7FF;border-color:#DEEBF7}
+.ssa-avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:#EAF4FF;display:grid;place-items:center;color:#548FC6;font-size:13px}
+.ssa-profile-copy{display:block;min-width:0;flex:1}
+.ssa-profile-name{display:block;color:#587895;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px}
+.ssa-profile-role{display:block;color:#94A8BA;margin-top:3px;font-size:10px}
+.ssa-profile-chevron{margin-left:auto;color:#94A8BA;font-size:11px;transition:transform .15s}
+.ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)}
+.ssa-profile-dropdown{display:none;position:absolute;left:12px;right:12px;bottom:calc(100% - 3px);margin:0;padding:5px;border:1px solid #DFE9F3;border-radius:11px;background:#fff;box-shadow:0 8px 24px rgba(30,70,105,.1);z-index:10001}
+.ssa-profile-dropdown.is-open{display:block}
+.ssa-profile-dropdown a{display:block;padding:10px;border-radius:8px;text-decoration:none;font-size:12px;color:#5F88AD;background:#F5F9FF;margin:2px 0}
+.ssa-profile-dropdown a.logout-option{background:#FFF0EF;color:#B85D62}
+.ssa-profile-dropdown a:hover{filter:brightness(.98)}
+.container{max-width:none;width:calc(100% - 280px);margin:0 0 0 280px;padding:24px}
+@media(max-width:900px){
+ .ssa-sidebar{width:245px}
+ .container{width:calc(100% - 245px);margin-left:245px}
+}
+@media(max-width:650px){
+ .ssa-sidebar{position:relative;width:100%;height:auto;min-height:0}
+ .ssa-nav{max-height:55vh}
+ .ssa-profile{margin-top:0}
+ .container{width:100%;margin:0;padding:14px}
+}
+
 </style>
 </head>
 <body>
+
+<aside class="ssa-sidebar">
+  <div class="ssa-brand">
+    <div class="ssa-brand-title">MAIN MENU</div>
+    <div class="ssa-brand-subtitle">Multi system</div>
+    <div class="ssa-brand-scope">System Super Administrator</div>
+    <div class="ssa-brand-scope">Global Authority</div>
+  </div>
+  <nav class="ssa-nav" aria-label="System Super Administrator navigation">
+    <div class="ssa-nav-group">Main Menu</div>
+    <a href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
+    <details open><summary class="active"><span class="ssa-ico">↗</span>Income Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/income-management">New Income</a><a href="/system_super_administrator/income-management">Income List</a></div></details>
+    <details ><summary class=""><span class="ssa-ico">↘</span>Expense Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/expense-management">New Expense</a><a href="/system_super_administrator/expense-management">Expense List</a></div></details>
+    <details><summary><span class="ssa-ico">☷</span>Meal Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/meal-management">New Meal</a><a href="/system_super_administrator/meal-management">Meal List</a></div></details>
+    <details><summary><span class="ssa-ico">▣</span>Savings Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/savings-management">New Savings</a><a href="/system_super_administrator/savings-management">Savings List</a></div></details>
+    <details><summary><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav"><a href="/system_super_administrator/information-directory">New Information</a><a href="/system_super_administrator/information-directory">Information List</a></div></details>
+    <details><summary><span class="ssa-ico">♡</span>Blood Donor Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/blood-donor-management">New Donor</a><a href="/system_super_administrator/blood-donor-management">Donor List</a><a href="/system_super_administrator/blood-donor-management">Blood Request</a><a href="/system_super_administrator/blood-donor-management">Reports</a></div></details>
+    <a href="/system_super_administrator/system-overview"><span class="ssa-ico">◫</span>System Overview</a>
+    <details><summary><span class="ssa-ico">▥</span>Branch Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/branch-management">New Branch</a><a href="/system_super_administrator/branch-management">Branch List</a></div></details>
+    <details><summary><span class="ssa-ico">♟</span>Member Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/member-management">New Member</a><a href="/system_super_administrator/member-management">Member List</a></div></details>
+    <a href="/system_super_administrator/department-management"><span class="ssa-ico">▦</span>Department Management</a>
+    <details><summary><span class="ssa-ico">৳</span>Financial Management</summary><div class="ssa-subnav"><a href="/system_super_administrator/financial-management">Member Wise</a><a href="/system_super_administrator/financial-management">Branch Wise</a></div></details>
+    <a href="/system_super_administrator/reports"><span class="ssa-ico">▥</span>Reports</a>
+    <a href="/system_super_administrator/access-management"><span class="ssa-ico">⚿</span>Access Management</a>
+    <a href="/system_super_administrator/member-audit"><span class="ssa-ico">◌</span>Member Audit</a>
+    <a href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
+    <a href="/system_super_administrator/import"><span class="ssa-ico">⇩</span>Import</a>
+    <a href="/system_super_administrator/documentation"><span class="ssa-ico">▱</span>Documentation</a>
+    <a href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
+  </nav>
+  <div class="ssa-profile" id="ssaUnifiedProfile">
+    <button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown">
+      <span class="ssa-avatar">MM</span>
+      <span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span>
+      <span class="ssa-profile-chevron" aria-hidden="true">⌃</span>
+    </button>
+    <div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown">
+      <a href="/system_super_administrator/profile">Profile</a>
+      <a href="/system_super_administrator/settings">Settings</a>
+      <a class="logout-option" href="/logout">Logout</a>
+    </div>
+  </div>
+</aside>
+
+
 <div class="container">
   <header class="topbar">
     <div>
@@ -102,15 +191,15 @@ textarea{min-height:76px;resize:vertical}
       <form id="incomeForm">
         <div class="grid">
           <div class="field"><label for="incomeDate">Income Date *</label><input id="incomeDate" type="date" required /></div>
-          <div class="field"><label for="project">Department / Project *</label><input id="project" list="projectOptions" placeholder="Enter or select project" required /><datalist id="projectOptions"><option value="Administration"><option value="Operations"><option value="Marketing"><option value="Training"><option value="General"></datalist></div>
-          <div class="field"><label for="submittedBy">Submitted By *</label><select id="submittedBy" required><option value="">Select active member</option><option>Member 1</option><option>Member 2</option><option>Member 3</option><option>Member 4</option><option>Other</option></select></div>
-          <div class="field"><label for="paymentMethod">Payment Method *</label><select id="paymentMethod" required><option value="">Select method</option><option>Cash</option><option>Bank Transfer</option><option>Mobile Banking</option><option>Cheque</option><option>Card</option><option>Other</option></select></div>
+          <div class="field"><label for="source">Source *</label><select id="source" required><option value="">Select source</option><option>Quantum Faoudation</option><option>Loan Received</option><option>General</option><option>Home</option><option>Salary</option><option>Business</option><option>Service</option><option>Other</option></select></div>
+          <div class="field"><label for="submittedBy">Submitted By *</label><select id="submittedBy" required><option value="">Loading active members…</option></select></div>
+          <div class="field"><label for="mobileNo">Mobile No.</label><input id="mobileNo" type="tel" readonly placeholder="Select a member to view mobile number" /></div>
         </div>
 
         <h3 class="section-title">Income Items</h3>
         <div class="item-table-wrap">
           <table class="item-table">
-            <thead><tr><th style="width:22%">Income Type</th><th style="width:17%">Amount (৳)</th><th style="width:31%">Description</th><th style="width:23%">Money Receipt No.</th><th style="width:7%">Action</th></tr></thead>
+            <thead><tr><th style="width:20%">Amount (৳)</th><th style="width:36%">Description</th><th style="width:34%">Money Receipt No.</th><th style="width:10%">Action</th></tr></thead>
             <tbody id="itemRows"></tbody>
           </table>
         </div>
@@ -121,12 +210,12 @@ textarea{min-height:76px;resize:vertical}
         <div class="total-row"><span class="total-label">Total Income</span><span class="total-value" id="totalIncome">৳ 0.00</span></div>
         <div class="field" style="margin-top:18px"><label for="remarks">Remarks</label><textarea id="remarks" placeholder="Additional notes (optional)"></textarea></div>
         <div class="form-actions">
-          <button class="btn btn-outline" type="button" id="saveDraftBtn">Save Draft (JSON)</button>
+          <button class="btn btn-outline" type="button" id="saveDraftBtn">Save Draft</button>
           <button class="btn btn-primary" type="submit" id="submitBtn">Submit Income</button>
           <button class="btn btn-outline hidden" type="button" id="cancelEditBtn">Cancel Edit</button>
         </div>
       </form>
-      <p class="note">Demo note: records are kept in this page's browser session only. Refreshing or closing the page may clear them. Connect a backend/database for permanent storage and real active-member/project lists.</p>
+      <p class="note">Records are saved in the software database when you submit. Save Draft downloads a Word document only and does not submit the record.</p>
     </div>
   </section>
 
@@ -148,21 +237,19 @@ textarea{min-height:76px;resize:vertical}
         <div class="summary-card"><div class="summary-label">Total Income (filtered)</div><div class="summary-value" id="listTotalIncome">৳ 0.00</div></div>
       </div>
       <div class="search-row">
-        <input id="searchInput" type="search" placeholder="Search receipt no., description, project or member..." aria-label="Search income records" />
+        <input id="searchInput" type="search" placeholder="Search receipt no., description, source or member..." aria-label="Search income records" />
         <button class="btn btn-outline" id="clearFiltersBtn" type="button">Clear Filters</button>
       </div>
       <div class="filters">
         <div class="field"><label for="dateFrom">From Date</label><input type="date" id="dateFrom" /></div>
         <div class="field"><label for="dateTo">To Date</label><input type="date" id="dateTo" /></div>
-        <div class="field"><label for="filterType">Income Type</label><select id="filterType"><option value="">All types</option></select></div>
-        <div class="field"><label for="filterProject">Department / Project</label><select id="filterProject"><option value="">All projects</option></select></div>
+        <div class="field"><label for="filterSource">Source</label><select id="filterSource"><option value="">All sources</option></select></div>
         <div class="field"><label for="filterMember">Submitted By</label><select id="filterMember"><option value="">All members</option></select></div>
-        <div class="field"><label for="filterMethod">Payment Method</label><select id="filterMethod"><option value="">All methods</option></select></div>
-      </div>
+              </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Receipt No.</th><th>Income Date</th><th>Department / Project</th><th>Income Type</th><th>Description</th><th>Submitted By</th><th>Payment Method</th><th style="text-align:right">Amount</th><th>Action</th></tr></thead>
-          <tbody id="recordsBody"><tr><td colspan="9" class="empty">No income records yet. Submit an income to see it here.</td></tr></tbody>
+          <thead><tr><th>Receipt No.</th><th>Income Date</th><th>Mobile</th><th>Source</th><th style="text-align:right">Amount</th><th>Description</th><th>Submitted By</th><th>Action</th></tr></thead>
+          <tbody id="recordsBody"><tr><td colspan="8" class="empty">No income records yet. Submit an income to see it here.</td></tr></tbody>
         </table>
       </div>
       <div class="table-footer">
@@ -188,6 +275,20 @@ textarea{min-height:76px;resize:vertical}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+(function(){
+  const button=document.getElementById('ssaUnifiedProfileTrigger');
+  const dropdown=document.getElementById('ssaUnifiedProfileDropdown');
+  const wrapper=document.getElementById('ssaUnifiedProfile');
+  if(!button||!dropdown||!wrapper)return;
+  function setOpen(open){button.setAttribute('aria-expanded',String(open));dropdown.classList.toggle('is-open',open);}
+  button.addEventListener('click',function(event){event.preventDefault();setOpen(button.getAttribute('aria-expanded')!=='true');});
+  document.addEventListener('click',function(event){if(!wrapper.contains(event.target))setOpen(false);});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'){setOpen(false);button.focus();}});
+})();
+</script>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -197,11 +298,9 @@ textarea{min-height:76px;resize:vertical}
   const localDate = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
   $('incomeDate').value = localDate;
 
-  const types = ['Donation','Membership Fee','Course Fee','Event Income','Sales','Grant','Service Income','Interest Income','Refund','Other'];
   const methods = ['Cash','Bank Transfer','Mobile Banking','Cheque','Card','Other'];
   let items = [];
   let records = [];
-  let nextReceipt = 1;
   let editingId = null;
   let currentPage = 1;
   let toastTimer;
@@ -210,25 +309,36 @@ textarea{min-height:76px;resize:vertical}
     const el=$('toast'); el.textContent=message; el.style.display='block';
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.style.display='none',3000);
   }
-  function nextReceiptNo(){ return 'INC-' + String(nextReceipt++).padStart(5,'0'); }
+  function nextReceiptNo(includeCurrentItems = true){
+    // Use sequential receipt numbers: INC-00001, INC-00002, INC-00003...
+    // Find the highest existing INC number in saved records and (when requested) current form items.
+    const receipts = [
+      ...records.flatMap(record => (record.items || []).map(item => String(item.receipt || '').trim())),
+      ...(includeCurrentItems ? items.map(item => String(item.receipt || '').trim()) : [])
+    ];
+    let highest = 0;
+    for (const receipt of receipts) {
+      const match = receipt.match(/^INC-(\d+)$/i);
+      if (match) highest = Math.max(highest, Number(match[1]) || 0);
+    }
+    return `INC-${String(highest + 1).padStart(5, '0')}`;
+  }
   function addItem(item = {}){
-    items.push({id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()), type:item.type||'', amount:item.amount ?? '', description:item.description||'', receipt:item.receipt||nextReceiptNo()});
+    items.push({id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()), type:item.type||'', amount:item.amount ?? '', description:item.description ?? 'N/A', receipt:item.receipt||nextReceiptNo()});
     renderItems();
   }
   function renderItems(){
     const body=$('itemRows');
-    if(!items.length){ body.innerHTML='<tr><td colspan="5" class="empty">No items. Click “Add Income Item”.</td></tr>'; updateTotal(); return; }
+    if(!items.length){ body.innerHTML='<tr><td colspan="4" class="empty">No items. Click “Add Income Item”.</td></tr>'; updateTotal(); return; }
     body.innerHTML=items.map((item,index)=>`
       <tr data-id="${escapeHtml(item.id)}">
-        <td><select class="item-type" aria-label="Income type for item ${index+1}" required><option value="">Select type</option>${types.map(t=>`<option ${item.type===t?'selected':''}>${escapeHtml(t)}</option>`).join('')}</select><div class="item-no" style="margin-top:5px">Item ${index+1}</div></td>
         <td class="amount-cell"><input class="item-amount" type="number" min="0" step="0.01" value="${escapeHtml(item.amount)}" placeholder="0.00" aria-label="Amount for item ${index+1}" required /></td>
-        <td><input class="item-description" type="text" value="${escapeHtml(item.description)}" placeholder="Income description" aria-label="Description for item ${index+1}" required /></td>
+        <td><input class="item-description" type="text" value="${escapeHtml(item.description)}" placeholder="N/A" aria-label="Description for item ${index+1}" required /></td>
         <td class="receipt-cell"><input class="item-receipt" type="text" value="${escapeHtml(item.receipt)}" aria-label="Money receipt number for item ${index+1}" required /></td>
         <td><button class="btn btn-danger btn-small remove-item" type="button" aria-label="Remove item ${index+1}" title="Remove item">✕</button></td>
       </tr>`).join('');
     body.querySelectorAll('tr[data-id]').forEach(row=>{
       const id=row.dataset.id;
-      row.querySelector('.item-type').addEventListener('change',e=>{findItem(id).type=e.target.value; refreshFilterOptions();});
       row.querySelector('.item-amount').addEventListener('input',e=>{findItem(id).amount=e.target.value;updateTotal();});
       row.querySelector('.item-description').addEventListener('input',e=>findItem(id).description=e.target.value);
       row.querySelector('.item-receipt').addEventListener('input',e=>findItem(id).receipt=e.target.value.trim());
@@ -239,14 +349,14 @@ textarea{min-height:76px;resize:vertical}
   function findItem(id){return items.find(x=>x.id===id);}
   function updateTotal(){ $('totalIncome').textContent=money(items.reduce((sum,x)=>sum+Number(x.amount||0),0)); }
   function getFormData(){
-    return {date:$('incomeDate').value,project:$('project').value.trim(),submittedBy:$('submittedBy').value,paymentMethod:$('paymentMethod').value,remarks:$('remarks').value.trim(),items:items.map(x=>({...x,amount:Number(x.amount)})),total:items.reduce((s,x)=>s+Number(x.amount||0),0)};
+    const source=$('source').value.trim(); return {date:$('incomeDate').value,source,project:source,submittedBy:$('submittedBy').value,mobileNo:$('mobileNo').value.trim(),remarks:$('remarks').value.trim(),items:items.map(x=>({...x,amount:Number(x.amount)})),total:items.reduce((s,x)=>s+Number(x.amount||0),0)};
   }
   function validateItems(){
     if(!items.length){showToast('Please add at least one income item.');return false;}
     const receipts=new Set();
     for(let i=0;i<items.length;i++){
       const x=items[i];
-      if(!x.type || x.amount==='' || !Number.isFinite(Number(x.amount)) || Number(x.amount)<0 || !x.description.trim() || !x.receipt.trim()){
+      if(x.amount==='' || !Number.isFinite(Number(x.amount)) || Number(x.amount)<0 || !x.description.trim() || !x.receipt.trim()){
         showToast(`Please complete all fields in Income Item ${i+1}.`);return false;
       }
       const r=x.receipt.trim().toLowerCase();
@@ -256,35 +366,97 @@ textarea{min-height:76px;resize:vertical}
     return true;
   }
   function resetForm(){
-    $('incomeForm').reset();$('incomeDate').value=localDate;$('remarks').value='';
+    $('incomeForm').reset();$('incomeDate').value=localDate;$('remarks').value='';$('mobileNo').value='';
+    if(defaultSubmittedBy) $('submittedBy').value=defaultSubmittedBy;
+    updateMobileNo();
     items=[];addItem();editingId=null;$('formTitle').textContent='Income Entry Form';
     $('submitBtn').textContent='Submit Income';$('cancelEditBtn').classList.add('hidden');
   }
   $('addItemBtn').addEventListener('click',()=>addItem());
-  $('incomeForm').addEventListener('submit',e=>{
+  $('incomeForm').addEventListener('submit',async e=>{
     e.preventDefault();
     if(!validateItems())return;
     const data=getFormData();
-    const allReceipts=new Set(records.filter(r=>r.id!==editingId).flatMap(r=>r.items.map(i=>i.receipt.toLowerCase())));
+    const allReceipts=new Set(records.filter(r=>r.id!==editingId).flatMap(r=>(r.items||[]).map(i=>String(i.receipt||'').toLowerCase())));
     for(const item of data.items){if(allReceipts.has(item.receipt.toLowerCase())){showToast(`Receipt number ${item.receipt} already exists in another record.`);return;}}
-    if(editingId){
-      const idx=records.findIndex(r=>r.id===editingId);
-      if(idx>=0)records[idx]={...records[idx],...data,updatedAt:new Date().toISOString()};
-      showToast('Income record updated.');
-    }else{
-      records.unshift({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),...data,createdAt:new Date().toISOString()});
-      showToast('Income submitted successfully.');
+    const submitButton=$('submitBtn');
+    submitButton.disabled=true;
+    try {
+      const endpoint=editingId
+        ? `/system_super_administrator/income-management/api/records/${encodeURIComponent(editingId)}`
+        : `/system_super_administrator/income-management/api/records`;
+      const response=await fetch(endpoint,{
+        method:editingId?'PUT':'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        credentials:'same-origin',
+        body:JSON.stringify(data)
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok)throw new Error(result.error||'Request failed.');
+      showToast(editingId?'Income updated successfully.':'Income saved successfully.');
+      resetForm();
+      currentPage=1;
+      await loadRecordsFromDatabase();
+      $('listCard').classList.remove('hidden');$('bookingToggle').setAttribute('aria-expanded','true');$('bookingToggle').textContent='▴ Booking — Hide Income List';
+      $('listCard').scrollIntoView({behavior:'smooth',block:'start'});
+    } catch(err) {
+      showToast(editingId?'Failed to update income. Please try again.':'Failed to save income. Please try again.');
+    } finally {
+      submitButton.disabled=false;
     }
-    resetForm();currentPage=1;renderRecords();$('listCard').classList.remove('hidden');$('bookingToggle').setAttribute('aria-expanded','true');$('bookingToggle').textContent='▴ Booking — Hide Income List';
-    $('listCard').scrollIntoView({behavior:'smooth',block:'start'});
   });
   $('cancelEditBtn').addEventListener('click',resetForm);
-  $('saveDraftBtn').addEventListener('click',()=>{
-    const data=getFormData();
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='income-draft.json';a.click();URL.revokeObjectURL(a.href);
-    showToast('Draft JSON downloaded to your device.');
-  });
+  // Create a genuine, editable Word .docx file locally in the browser (no server needed).
+  function xmlEscape(value){return String(value ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');}
+  function wordParagraph(text, bold=false){
+    const safe=xmlEscape(text);
+    return `<w:p><w:r>${bold?'<w:rPr><w:b/></w:rPr>':''}<w:t xml:space="preserve">${safe}</w:t></w:r></w:p>`;
+  }
+  function makeStoredZip(files){
+    const encoder=new TextEncoder();
+    const crcTable=makeCrcTable();
+    const crc32=bytes=>{let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0;};
+    const parts=[];const central=[];let offset=0;
+    const put16=(v)=>[v&255,(v>>>8)&255];
+    const put32=(v)=>[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255];
+    for(const [name,content] of Object.entries(files)){
+      const n=encoder.encode(name),d=encoder.encode(content),crc=crc32(d);
+      const local=new Uint8Array([...put32(0x04034b50),...put16(20),...put16(0x0800),...put16(0),...put16(0),...put16(0),...put32(crc),...put32(d.length),...put32(d.length),...put16(n.length),...put16(0),...n,...d]);
+      parts.push(local);
+      const cd=new Uint8Array([...put32(0x02014b50),...put16(20),...put16(20),...put16(0x0800),...put16(0),...put16(0),...put16(0),...put32(crc),...put32(d.length),...put32(d.length),...put16(n.length),...put16(0),...put16(0),...put16(0),...put16(0),...put32(0),...put32(offset),...n]);
+      central.push(cd);offset+=local.length;
+    }
+    const centralSize=central.reduce((sum,x)=>sum+x.length,0);
+    const end=new Uint8Array([...put32(0x06054b50),...put16(0),...put16(0),...put16(central.length),...put16(central.length),...put32(centralSize),...put32(offset),...put16(0)]);
+    return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  }
+  function makeCrcTable(){const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);table[n]=c>>>0;}return table;}
+  function downloadDraftDocx(data){
+    const lines=[];
+    lines.push(wordParagraph('Income Draft',true));
+    lines.push(wordParagraph('Date: '+(data.date||'')));
+    lines.push(wordParagraph('Source: '+(data.source||data.project||'')));
+    lines.push(wordParagraph('Submitted By: '+(data.submittedBy||'')));
+    lines.push(wordParagraph('Mobile No.: '+(data.mobileNo||'')));
+    lines.push(wordParagraph(''));
+    lines.push(wordParagraph('Income Items',true));
+    lines.push(wordParagraph('Amount (৳) | Description | Money Receipt No.',true));
+    (data.items||[]).forEach((item,index)=>{lines.push(wordParagraph((index+1)+'. ৳ '+Number(item.amount||0).toFixed(2)+' | '+(item.description||'N/A')+' | '+(item.receipt||'')));});
+    lines.push(wordParagraph(''));
+    lines.push(wordParagraph('Total Income: ৳ '+Number(data.total||0).toFixed(2),true));
+    lines.push(wordParagraph('Remarks: '+(data.remarks||'')));
+    lines.push(wordParagraph(''));
+    lines.push(wordParagraph('Draft document — not yet submitted to the software database.'));
+    const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+lines.join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
+    const files={
+      '[Content_Types].xml':'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>',
+      '_rels/.rels':'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>',
+      'word/document.xml':documentXml
+    };
+    const blob=makeStoredZip(files);const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='income-draft.docx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    showToast('Draft Word document (.docx) downloaded.');
+  }
+  $('saveDraftBtn').addEventListener('click',()=>{downloadDraftDocx(getFormData());});
   $('bookingToggle').addEventListener('click',()=>{
     const open=$('listCard').classList.toggle('hidden');
     $('bookingToggle').setAttribute('aria-expanded',String(!open));
@@ -298,16 +470,14 @@ textarea{min-height:76px;resize:vertical}
     if(values.includes(old))el.value=old;
   }
   function refreshFilterOptions(){
-    fillSelect('filterType',[...new Set([...types,...records.flatMap(r=>r.items.map(i=>i.type))])],'All types');
-    fillSelect('filterProject',[...new Set(records.map(r=>r.project))],'All projects');
+    fillSelect('filterSource',[...new Set(records.map(r=>r.source||r.project))],'All sources');
     fillSelect('filterMember',[...new Set(records.map(r=>r.submittedBy))],'All members');
-    fillSelect('filterMethod',[...new Set(records.map(r=>r.paymentMethod))],'All methods');
   }
   function filteredRecords(){
     const q=$('searchInput').value.trim().toLowerCase();
     return records.filter(r=>{
-      const hay=[r.id,r.project,r.submittedBy,r.paymentMethod,r.remarks,...r.items.flatMap(i=>[i.receipt,i.type,i.description])].join(' ').toLowerCase();
-      return (!q||hay.includes(q))&&(!$('dateFrom').value||r.date>=$('dateFrom').value)&&(!$('dateTo').value||r.date<=$('dateTo').value)&&(!$('filterType').value||r.items.some(i=>i.type===$('filterType').value))&&(!$('filterProject').value||r.project===$('filterProject').value)&&(!$('filterMember').value||r.submittedBy===$('filterMember').value)&&(!$('filterMethod').value||r.paymentMethod===$('filterMethod').value);
+      const hay=[r.id,r.source||r.project,r.submittedBy,r.mobileNo,r.remarks,...r.items.flatMap(i=>[i.receipt,i.description])].join(' ').toLowerCase();
+      return (!q||hay.includes(q))&&(!$('dateFrom').value||r.date>=$('dateFrom').value)&&(!$('dateTo').value||r.date<=$('dateTo').value)&&(!$('filterSource').value||(r.source||r.project)===$('filterSource').value)&&(!$('filterMember').value||r.submittedBy===$('filterMember').value);
     });
   }
   function renderRecords(){
@@ -322,10 +492,10 @@ textarea{min-height:76px;resize:vertical}
     $('pageNumber').textContent=`${currentPage} / ${totalPages}`;
     $('prevPage').disabled=currentPage<=1;$('nextPage').disabled=currentPage>=totalPages;
     $('prevPage').style.opacity=$('prevPage').disabled?'.45':'1';$('nextPage').style.opacity=$('nextPage').disabled?'.45':'1';
-    if(!page.length){$('recordsBody').innerHTML=`<tr><td colspan="9" class="empty">${records.length?'No records match these filters.':'No income records yet. Submit an income to see it here.'}</td></tr>`;return;}
+    if(!page.length){$('recordsBody').innerHTML=`<tr><td colspan="8" class="empty">${records.length?'No records match these filters.':'No income records yet. Submit an income to see it here.'}</td></tr>`;return;}
     $('recordsBody').innerHTML=page.map(r=>r.items.map((it,idx)=>`
       <tr>
-        <td>${escapeHtml(it.receipt)}</td><td>${escapeHtml(r.date)}</td><td>${escapeHtml(r.project)}</td><td>${escapeHtml(it.type)}</td><td>${escapeHtml(it.description)}</td><td>${escapeHtml(r.submittedBy)}</td><td>${escapeHtml(r.paymentMethod)}</td><td class="amount">${money(it.amount)}</td>
+        <td>${escapeHtml(it.receipt)}</td><td>${escapeHtml(r.date)}</td><td>${escapeHtml(r.mobileNo||'')}</td><td>${escapeHtml(r.source||r.project)}</td><td class="amount">${money(it.amount)}</td><td>${escapeHtml(it.description||'N/A')}</td><td>${escapeHtml(r.submittedBy)}</td>
         ${idx===0?`<td rowspan="${r.items.length}"><div class="actions"><button class="btn btn-outline btn-small view-record" data-id="${escapeHtml(r.id)}" type="button">View</button><button class="btn btn-outline btn-small edit-record" data-id="${escapeHtml(r.id)}" type="button">Edit</button><button class="btn btn-danger btn-small delete-record" data-id="${escapeHtml(r.id)}" type="button">Delete</button></div></td>`:''}
       </tr>`).join('')).join('');
     $('recordsBody').querySelectorAll('.view-record').forEach(b=>b.addEventListener('click',()=>viewRecord(b.dataset.id)));
@@ -338,55 +508,115 @@ textarea{min-height:76px;resize:vertical}
     $('modalBody').innerHTML=`
       <div class="detail-grid">
         <div class="detail"><small>Income Date</small><strong>${escapeHtml(r.date)}</strong></div>
-        <div class="detail"><small>Department / Project</small><strong>${escapeHtml(r.project)}</strong></div>
+        <div class="detail"><small>Source</small><strong>${escapeHtml(r.source||r.project)}</strong></div>
         <div class="detail"><small>Submitted By</small><strong>${escapeHtml(r.submittedBy)}</strong></div>
-        <div class="detail"><small>Payment Method</small><strong>${escapeHtml(r.paymentMethod)}</strong></div>
+        <div class="detail"><small>Mobile</small><strong>${escapeHtml(r.mobileNo||'')}</strong></div>
       </div>
-      <table class="modal-items"><thead><tr><th>Income Type</th><th>Description</th><th>Receipt No.</th><th>Amount</th></tr></thead><tbody>${r.items.map(i=>`<tr><td>${escapeHtml(i.type)}</td><td>${escapeHtml(i.description)}</td><td>${escapeHtml(i.receipt)}</td><td>${money(i.amount)}</td></tr>`).join('')}</tbody></table>
+      <table class="modal-items"><thead><tr><th>Amount (৳)</th><th>Description</th><th>Money Receipt No.</th></tr></thead><tbody>${r.items.map(i=>`<tr><td>${money(i.amount)}</td><td>${escapeHtml(i.description||'N/A')}</td><td>${escapeHtml(i.receipt)}</td></tr>`).join('')}</tbody></table>
       <div class="total-row"><span class="total-label">Total Income</span><span class="total-value">${money(r.total)}</span></div>
       <div style="margin-top:16px"><small style="color:var(--muted)">Remarks</small><p>${escapeHtml(r.remarks||'—')}</p></div>`;
     $('modalBackdrop').classList.remove('hidden');
   }
   function editRecord(id){
     const r=records.find(x=>x.id===id);if(!r)return;
-    editingId=id;$('incomeDate').value=r.date;$('project').value=r.project;$('submittedBy').value=r.submittedBy;$('paymentMethod').value=r.paymentMethod;$('remarks').value=r.remarks||'';
+    editingId=id;$('incomeDate').value=r.date;$('source').value=r.source||r.project||'';$('submittedBy').value=r.submittedBy;$('mobileNo').value=r.mobileNo||getSelectedMemberPhone();$('remarks').value=r.remarks||'';
     items=r.items.map(i=>({...i,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())}));renderItems();
     $('formTitle').textContent='Edit Income Entry';$('submitBtn').textContent='Update Income';$('cancelEditBtn').classList.remove('hidden');
     $('entryCard').scrollIntoView({behavior:'smooth',block:'start'});showToast('Record loaded for editing.');
   }
-  function deleteRecord(id){
+  async function deleteRecord(id){
     const r=records.find(x=>x.id===id);if(!r)return;
-    if(!confirm(`Delete income record for ${r.project} dated ${r.date}? This cannot be undone.`))return;
-    records=records.filter(x=>x.id!==id);renderRecords();showToast('Income record deleted.');
+    if(!confirm('Are you sure you want to delete this income record?'))return;
+    try {
+      const response=await fetch(`/system_super_administrator/income-management/api/records/${encodeURIComponent(id)}`,{method:'DELETE',credentials:'same-origin',headers:{'Accept':'application/json'}});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok)throw new Error(result.error||'Delete request failed.');
+      records=records.filter(x=>x.id!==id);
+      renderRecords();
+      showToast('Income deleted successfully.');
+    } catch(err) {
+      showToast('Failed to delete income. Please try again.');
+    }
   }
-  ['searchInput','dateFrom','dateTo','filterType','filterProject','filterMember','filterMethod'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',()=>{currentPage=1;renderRecords();}));
+  ['searchInput','dateFrom','dateTo','filterSource','filterMember'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',()=>{currentPage=1;renderRecords();}));
   $('pageSize').addEventListener('change',()=>{currentPage=1;renderRecords();});
   $('prevPage').addEventListener('click',()=>{if(currentPage>1){currentPage--;renderRecords();}});
   $('nextPage').addEventListener('click',()=>{currentPage++;renderRecords();});
   $('clearFiltersBtn').addEventListener('click',()=>{
-    ['searchInput','dateFrom','dateTo','filterType','filterProject','filterMember','filterMethod'].forEach(id=>$(id).value='');
+    ['searchInput','dateFrom','dateTo','filterSource','filterMember'].forEach(id=>$(id).value='');
     currentPage=1;renderRecords();
   });
   $('closeModal').addEventListener('click',()=>$('modalBackdrop').classList.add('hidden'));
   $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))$('modalBackdrop').classList.add('hidden');});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')$('modalBackdrop').classList.add('hidden');});
   $('reportBtn').addEventListener('click',()=>{
-    const rows=[['Receipt No.','Income Date','Department / Project','Income Type','Description','Submitted By','Payment Method','Amount (BDT)','Remarks']];
-    filteredRecords().forEach(r=>r.items.forEach(i=>rows.push([i.receipt,r.date,r.project,i.type,i.description,r.submittedBy,r.paymentMethod,Number(i.amount)||0,r.remarks||''])));
+    const rows=[['Receipt No.','Income Date','Mobile','Source','Amount (BDT)','Description','Submitted By']];
+    filteredRecords().forEach(r=>r.items.forEach(i=>rows.push([i.receipt,r.date,r.mobileNo||'',r.source||r.project,Number(i.amount)||0,i.description||'N/A',r.submittedBy])));
     if (typeof XLSX === 'undefined') {
       showToast('Excel export library could not load. Please check your internet connection and try again.');
       return;
     }
     const worksheet=XLSX.utils.aoa_to_sheet(rows);
-    worksheet['!cols']=[{wch:18},{wch:15},{wch:25},{wch:22},{wch:36},{wch:22},{wch:20},{wch:18},{wch:35}];
+    worksheet['!cols']=[{wch:18},{wch:15},{wch:18},{wch:22},{wch:16},{wch:36},{wch:22},{wch:20}];
     const workbook=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook,worksheet,'Income Report');
     XLSX.writeFile(workbook,'Income-Records.xlsx');
     showToast('Excel report downloaded.');
   });
 
+  let defaultSubmittedBy = '';
+  const memberPhones = new Map();
+  function getSelectedMemberPhone(){ return memberPhones.get($('submittedBy').value) || ''; }
+  function updateMobileNo(){ $('mobileNo').value = getSelectedMemberPhone(); }
+  $('submittedBy').addEventListener('change', updateMobileNo);
+  async function loadActiveMembers(){
+    const select = $('submittedBy');
+    try {
+      const response = await fetch('/system_super_administrator/income-management/api/active-members', {credentials:'same-origin',headers:{'Accept':'application/json'}});
+      const result = await response.json().catch(()=>({}));
+      if(!response.ok || !result.ok) throw new Error(result.error || 'Could not load active members.');
+      const members = Array.isArray(result.members) ? result.members : [];
+      select.replaceChildren(new Option('Select active member', ''));
+      members.forEach(member => {
+        const option = new Option(member.label, member.value);
+        select.add(option);
+        memberPhones.set(String(member.value), String(member.mobileNo || member.phone || ''));
+      });
+      defaultSubmittedBy = String(result.currentUser || members.find(m=>m.isCurrent)?.value || '');
+      if(defaultSubmittedBy && !Array.from(select.options).some(o=>o.value===defaultSubmittedBy)) {
+        select.add(new Option(defaultSubmittedBy, defaultSubmittedBy));
+      }
+      if(defaultSubmittedBy) select.value = defaultSubmittedBy;
+      if(!select.value && members.length===1) select.value=members[0].value;
+      updateMobileNo();
+    } catch(err) {
+      select.replaceChildren(new Option('Could not load members — refresh page', ''));
+      $('mobileNo').value='';
+      showToast(`Active member load failed: ${err.message || 'Please refresh.'}`);
+    }
+  }
+
+  async function loadRecordsFromDatabase(){
+    try {
+      const response=await fetch('/system_super_administrator/income-management/api/records',{credentials:'same-origin',headers:{'Accept':'application/json'}});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.ok)throw new Error(result.error||'Could not load saved records.');
+      records=Array.isArray(result.records)?result.records:[];
+      records=records.map(r=>({...r,items:Array.isArray(r.items)?r.items:[],total:Number(r.total)||0}));
+      // Refresh the untouched initial blank item after saved records have loaded.
+      if (!editingId && items.length === 1 && items[0].amount === '' && items[0].description === 'N/A') {
+        items[0].receipt = nextReceiptNo(false);
+        renderItems();
+      }
+      renderRecords();
+    } catch(err) {
+      showToast(`Database load failed: ${err.message||'Please refresh or log in again.'}`);
+    }
+  }
+
   addItem();
-  renderRecords();
+  loadActiveMembers();
+  loadRecordsFromDatabase();
 })();
 </script>
 </body>
