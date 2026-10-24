@@ -3,331 +3,1025 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meal Management System</title>
+<title>Meal Management System | মিল ম্যানেজমেন্ট সিস্টেম</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
+        },
+        colors: {
+          brand: {
+            50: '#f0f7ff',
+            100: '#e0effe',
+            500: '#2563eb',
+            600: '#1d4ed8',
+            700: '#1e40af',
+            800: '#1e3a8a',
+            900: '#0f172a',
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-:root{--ink:#100C08;--muted:#625d58;--line:#e8e6e4;--soft:#f8f7f6;--green:#166534;--red:#b91c1c}
-*{box-sizing:border-box}
-body{margin:0;background:#fff;color:var(--ink);font-family:Arial,"Noto Sans Bengali",sans-serif}
-.wrap{max-width:1250px;margin:24px auto;padding:0 16px}
-.hero,.panel,.member-card,.list-panel{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden}
-.hero{padding:24px 26px;box-shadow:0 4px 16px #100c0808}
-.hero h1{font-size:27px;font-weight:500;margin:0 0 7px}.hero p{color:var(--muted);margin:0}
-.panel,.member-card,.list-panel{margin-top:18px}
-.section-head{padding:16px 19px;border-bottom:1px solid var(--line);font-size:18px;background:#fff}
-.form-body{padding:19px}
-.member-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:18px}
-label{display:block;font-size:13px;margin-bottom:7px}
-input,select,textarea{width:100%;border:1px solid #d7d2cd;border-radius:8px;padding:11px 12px;font:inherit;color:var(--ink);background:#fff;min-width:0}
-input:focus,select:focus,textarea:focus{outline:2px solid #100c0820;border-color:#100c08}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
-.tab-btn{display:flex;align-items:center;gap:10px;text-align:left;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);cursor:pointer;font:inherit}
-.tab-btn.active{background:#f3f1ef;border-color:#aaa39c}
-.tab-btn .ico{font-size:23px}.tab-btn strong{display:block;font-weight:500}.tab-btn small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
-.form-panel{display:none}.form-panel.active{display:block}
-.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 14px}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
-button{font:inherit;cursor:pointer}
-.btn{border:1px solid var(--line);border-radius:8px;padding:10px 14px;background:#fff;color:var(--ink)}
-.btn-primary{background:#100C08;color:#fff;border-color:#100C08}
-.btn-edit{background:#166534;color:#fff;border-color:#166534}
-.btn-delete{background:#b91c1c;color:#fff;border-color:#b91c1c}
-.btn:hover{filter:brightness(.95)}
-.notice{display:none;margin-top:13px;padding:11px 13px;border-radius:8px;background:#eef8f0;color:#166534;font-size:14px}
-.meal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:16px}
-.meal-card{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.meal-top{display:flex;align-items:center;gap:10px;padding:13px 14px;background:#faf9f8;border-bottom:1px solid var(--line)}
-.meal-top .emoji{font-size:23px}.meal-title{flex:1}.meal-title strong{font-weight:500}.meal-title small{display:block;color:var(--muted);margin-top:3px}
-.meal-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:13px}
-.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 13px 13px}
-.sum-box{border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff}
-.sum-box small{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.sum-box strong{font-size:16px;font-weight:500}
-.grand-box{padding:14px;border:1px solid var(--line);border-radius:10px;background:#faf9f8}
-.grand-box small{display:block;color:var(--muted);margin-bottom:6px}.grand-box strong{font-size:22px;font-weight:500}
-.filter-area{padding:17px;border-top:1px solid var(--line)}
-.filter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.filter-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
-.records-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 17px;border-top:1px solid var(--line)}
-.records-head h3{margin:0 0 5px;font-size:18px;font-weight:500}.muted{color:var(--muted);font-size:13px}
-.view-switch{display:flex;gap:7px}.view-switch button{border:1px solid var(--line);border-radius:7px;padding:8px 10px;background:#fff}.view-switch button.active{background:#f3f1ef}
-.table-wrap{overflow-x:auto;padding:0 15px 16px}
-table{border-collapse:collapse;width:100%;min-width:850px;font-size:13px}
-th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #efedeb;white-space:nowrap}
-th{background:#faf9f8;font-weight:500;color:#504a45}
-.empty{text-align:center;padding:24px;color:#777}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:16px}
-.stat{border:1px solid var(--line);border-radius:10px;padding:13px}.stat small{display:block;color:var(--muted);margin-bottom:8px}.stat strong{font-size:20px;font-weight:500}
-.table-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:16px 17px 0}
-.table-tab{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:8px}.table-tab.active{background:#100C08;color:#fff;border-color:#100C08}
-.table-section{display:none}.table-section.active{display:block}
-footer{font-size:12px;color:var(--muted);line-height:1.6;margin:15px 2px 24px}
-@media(max-width:850px){.member-grid,.filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.wrap{margin:12px auto;padding:0 10px}.hero{padding:19px}.hero h1{font-size:22px}.member-grid,.grid2,.grid3,.grid4,.meal-grid,.meal-fields,.summary,.filter-grid{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}.form-body{padding:13px}.section-head{font-size:16px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  body {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-family: 'Inter', 'Hind Siliguri', sans-serif;
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Soft Glassmorphism */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Custom Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1;
+    transition: .3s;
+    border-radius: 22px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #2563eb;
+  }
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    body {
+      background: white;
+    }
+    .wrap {
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
 </style>
 </head>
-<body>
-<div class="wrap">
-<header class="hero">
-  <h1>🍽️ Meal Management System</h1>
-  <p>সদস্যের খাবার, জমা টাকা ও চালের হিসাব — আলাদা ফর্ম এবং এক জায়গায় সব রেকর্ড</p>
-</header>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
 
-<section class="member-card">
-  <div class="section-head">১. Member Information — সদস্যের তথ্য</div>
-  <div class="member-grid">
-    <div><label for="memberName">Member Name / সদস্যের নাম</label><input id="memberName" list="memberOptions" placeholder="সদস্যের নাম লিখুন বা নির্বাচন করুন"><datalist id="memberOptions"></datalist></div>
-    <div><label for="mobile">Mobile / মোবাইল নম্বর</label><input id="mobile" type="tel" placeholder="01XXXXXXXXX"></div>
-    <div><label for="branch">Branch Name / শাখা</label><input id="branch" list="branchOptions" placeholder="শাখার নাম"><datalist id="branchOptions"><option value="Sadullahpur Pre-Branch"></option></datalist></div>
-    <div><label for="entryDate">Entry Date / তারিখ</label><input id="entryDate" type="date"></div>
-  </div>
-</section>
+<!-- Main Wrapper -->
+<div class="wrap max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-8 space-y-6">
 
-<nav class="tabs" aria-label="Entry forms">
-  <button class="tab-btn active" type="button" data-tab="meal"><span class="ico">🍽️</span><span><strong>Regular Meal Entry</strong><small>Breakfast · Lunch · Dinner · Extra</small></span></button>
-  <button class="tab-btn" type="button" data-tab="deposit"><span class="ico">৳</span><span><strong>Meal Amount Deposit</strong><small>সদস্যের জমা টাকা</small></span></button>
-  <button class="tab-btn" type="button" data-tab="rice"><span class="ico">🌾</span><span><strong>Rice Unit Entry</strong><small>সদস্যের দেওয়া চাল</small></span></button>
-  <button class="tab-btn" type="button" data-tab="records"><span class="ico">▦</span><span><strong>Meal List</strong><small>সব এন্ট্রি টেবিল</small></span></button>
-</nav>
-
-<section id="panel-meal" class="panel form-panel active">
-  <div class="section-head">২. Regular Meal Entry — নিয়মিত খাবারের হিসাব</div>
-  <div class="form-body">
-    <div class="grid2">
-      <div><label for="mealDate">Meal Date / খাবারের তারিখ</label><input id="mealDate" type="date"></div>
-      <div><label for="mealNote">Note / মন্তব্য (ঐচ্ছিক)</label><input id="mealNote" placeholder="প্রয়োজনে মন্তব্য লিখুন"></div>
+  <!-- Header / Hero Section -->
+  <header class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-white via-slate-50 to-brand-50/30">
+    <div class="space-y-1">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white text-xl shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-utensils"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Meal Management System</h1>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium">মিল ম্যানেজমেন্ট সিস্টেম — সদস্যের খাবার, জমা টাকা ও চালের ডিজিটাল হিসাব</p>
+        </div>
+      </div>
     </div>
-    <div class="meal-grid" id="mealCards"></div>
-    <div class="grand-box" style="margin-top:14px"><small>Daily Grand Total / মোট খাবারের চার্জ</small><strong id="mealGrand">৳0.00</strong></div>
-    <div class="actions"><button class="btn btn-primary" id="saveMeal" type="button">Save Meal Entry</button><button class="btn" id="resetMeal" type="button">Clear Form</button></div>
-    <div class="notice" id="notice-meal"></div>
-  </div>
-</section>
-
-<section id="panel-deposit" class="panel form-panel">
-  <div class="section-head">৩. Meal Amount Deposit Entry — সদস্যের জমা টাকার হিসাব</div>
-  <div class="form-body">
-    <p class="hint">সদস্য খাবারের জন্য যে টাকা জমা দিয়েছেন, তা এখানে আলাদাভাবে রেকর্ড করুন। এটি Meal Charge-এর সঙ্গে যোগ হবে না।</p>
-    <div class="grid3">
-      <div><label for="depositDate">Deposit Date / জমার তারিখ</label><input id="depositDate" type="date"></div>
-      <div><label for="depositAmount">Amount Received (৳) / জমা টাকা</label><input id="depositAmount" type="number" min="0.01" step="0.01" placeholder="যেমন: 1000"></div>
-      <div><label for="depositReceipt">Money Receipt No. / রসিদ নম্বর</label><input id="depositReceipt" placeholder="ঐচ্ছিক রসিদ নম্বর"></div>
-      <div><label for="depositNote">Note / মন্তব্য</label><input id="depositNote" placeholder="যেমন: মাসিক জমা"></div>
+    
+    <!-- Header Quick Info Badges -->
+    <div class="flex flex-wrap items-center gap-3 no-print">
+      <div class="px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        System Active
+      </div>
+      <button id="btnPrint" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-slate-400 text-slate-700 text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+        <i class="fa-solid fa-print text-slate-500"></i> Print Summary
+      </button>
+      <button id="btnExport" class="px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-md shadow-brand-500/20">
+        <i class="fa-solid fa-file-csv"></i> Export Data
+      </button>
     </div>
-    <div class="actions"><button class="btn btn-primary" id="saveDeposit" type="button">Save Deposit</button><button class="btn" id="resetDeposit" type="button">Clear Form</button></div>
-    <div class="notice" id="notice-deposit"></div>
-  </div>
-</section>
+  </header>
 
-<section id="panel-rice" class="panel form-panel">
-  <div class="section-head">৪. Rice Unit Entry — সদস্যের দেওয়া চালের হিসাব</div>
-  <div class="form-body">
-    <p class="hint">সদস্যের দেওয়া চালের পরিমাণ ও একক আলাদা করে সংরক্ষণ করুন।</p>
-    <div class="grid3">
-      <div><label for="riceDate">Rice Entry Date / চাল দেওয়ার তারিখ</label><input id="riceDate" type="date"></div>
-      <div><label for="riceQty">Rice Quantity / চালের পরিমাণ</label><input id="riceQty" type="number" min="0.001" step="0.001" placeholder="পরিমাণ"></div>
-      <div><label for="riceUnit">Unit / একক</label><select id="riceUnit"><option value="Kg">Kilogram (Kg)</option><option value="Gm">Gram (Gm)</option><option value="Unit">Unit</option></select></div>
-      <div><label for="riceReceipt">Rice Receipt No. / চালের রসিদ নম্বর</label><input id="riceReceipt" placeholder="ঐচ্ছিক রসিদ নম্বর"></div>
-      <div><label for="riceNote">Note / মন্তব্য</label><input id="riceNote" placeholder="প্রয়োজনে মন্তব্য"></div>
+  <!-- Section 1: Member Details -->
+  <section class="glass-card rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div class="flex items-center gap-2 pb-4 mb-5 border-b border-slate-100">
+      <i class="fa-solid fa-user-gear text-brand-600 text-lg"></i>
+      <h2 class="text-base font-semibold text-slate-800">১. Member Information — সদস্যের তথ্য</h2>
     </div>
-    <div class="actions"><button class="btn btn-primary" id="saveRice" type="button">Save Rice Entry</button><button class="btn" id="resetRice" type="button">Clear Form</button></div>
-    <div class="notice" id="notice-rice"></div>
-  </div>
-</section>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+        <label for="memberName" class="block text-xs font-medium text-slate-600 mb-1">Member Name / সদস্যের নাম <span class="text-rose-500">*</span></label>
+        <div class="relative">
+          <input id="memberName" list="memberOptions" placeholder="নাম লিখুন বা নির্বাচন করুন" class="w-full pl-9 pr-3 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm transition outline-none">
+          <i class="fa-solid fa-user absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+        </div>
+        <datalist id="memberOptions"></datalist>
+      </div>
 
-<section id="panel-records" class="panel form-panel">
-  <div class="section-head">৫. Meal List — All Entry Records</div>
-  <div class="stats-grid">
-    <div class="stat"><small>Daily Meal Entries</small><strong id="statMealCount">0</strong></div>
-    <div class="stat"><small>Total Meal Charges</small><strong id="statMealCharges">৳0.00</strong></div>
-    <div class="stat"><small>Total Deposits</small><strong id="statDeposits">৳0.00</strong></div>
-    <div class="stat"><small>Total Rice Quantity</small><strong id="statRice">0</strong></div>
-  </div>
-  <div class="filter-area">
-    <div class="filter-grid">
-      <div><label for="filterSearch">Search Member / Receipt / Mobile</label><input id="filterSearch" placeholder="খুঁজুন..."></div>
-      <div><label for="filterBranch">Branch</label><select id="filterBranch"><option value="">All Branches</option></select></div>
-      <div><label for="filterDate">Date Range</label><select id="filterDate"><option value="">All Dates</option><option value="today">Today</option><option value="month">This Month</option></select></div>
-      <div><label for="filterType">Record Type</label><select id="filterType"><option value="">All Types</option><option value="meal">Daily Meal</option><option value="deposit">Deposit</option><option value="rice">Rice</option></select></div>
+      <div>
+        <label for="mobile" class="block text-xs font-medium text-slate-600 mb-1">Mobile / মোবাইল নম্বর</label>
+        <div class="relative">
+          <input id="mobile" type="tel" placeholder="01XXXXXXXXX" class="w-full pl-9 pr-3 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm transition outline-none">
+          <i class="fa-solid fa-phone absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+        </div>
+      </div>
+
+      <div>
+        <label for="branch" class="block text-xs font-medium text-slate-600 mb-1">Branch Name / শাখা</label>
+        <div class="relative">
+          <input id="branch" list="branchOptions" placeholder="শাখার নাম" class="w-full pl-9 pr-3 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm transition outline-none">
+          <i class="fa-solid fa-building absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+        </div>
+        <datalist id="branchOptions"><option value="Sadullahpur Pre-Branch"></option></datalist>
+      </div>
+
+      <div>
+        <label for="entryDate" class="block text-xs font-medium text-slate-600 mb-1">Entry Date / এন্ট্রি তারিখ</label>
+        <div class="relative">
+          <input id="entryDate" type="date" class="w-full pl-9 pr-3 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm transition outline-none">
+          <i class="fa-solid fa-calendar-days absolute left-3 top-3.5 text-slate-400 text-xs"></i>
+        </div>
+      </div>
     </div>
-    <div class="filter-actions"><button class="btn btn-primary" id="applyFilters" type="button">Apply Filters</button><button class="btn" id="resetFilters" type="button">Reset Filters</button></div>
-  </div>
-  <div class="table-tabs">
-    <button class="table-tab active" data-record-tab="mealRecords" type="button">Daily Meal Records</button>
-    <button class="table-tab" data-record-tab="depositRecords" type="button">Deposit Records</button>
-    <button class="table-tab" data-record-tab="riceRecords" type="button">Rice Records</button>
-  </div>
-  <section class="table-section active" id="table-mealRecords">
-    <div class="records-head"><div><h3>Daily Meal Records</h3><span class="muted" id="mealRecordCount">0 records</span></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Receipt No.</th><th>Date</th><th>Member</th><th>Mobile</th><th>Branch</th><th>Meal Types</th><th>Quantity</th><th>Meal Charge</th><th>Rice Charge</th><th>Grand Total</th><th>Note</th><th>Action</th></tr></thead><tbody id="mealRecordsBody"></tbody></table></div>
   </section>
-  <section class="table-section" id="table-depositRecords">
-    <div class="records-head"><div><h3>Deposit Records</h3><span class="muted" id="depositRecordCount">0 records</span></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Receipt No.</th><th>Date</th><th>Member</th><th>Mobile</th><th>Branch</th><th>Amount Received</th><th>Note</th><th>Action</th></tr></thead><tbody id="depositRecordsBody"></tbody></table></div>
-  </section>
-  <section class="table-section" id="table-riceRecords">
-    <div class="records-head"><div><h3>Rice Records</h3><span class="muted" id="riceRecordCount">0 records</span></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Receipt No.</th><th>Date</th><th>Member</th><th>Mobile</th><th>Branch</th><th>Rice Quantity</th><th>Unit</th><th>Note</th><th>Action</th></tr></thead><tbody id="riceRecordsBody"></tbody></table></div>
-  </section>
-</section>
 
-<footer>নোট: এই HTML ডেমোতে রেকর্ড বর্তমান ব্রাউজারের Local Storage-এ সংরক্ষিত হয়। একাধিক ব্যবহারকারী/ডিভাইসে কেন্দ্রীয়ভাবে সংরক্ষণ করতে backend ও database সংযোগ প্রয়োজন।</footer>
+  <!-- Navigation Tabs -->
+  <nav class="grid grid-cols-2 lg:grid-cols-4 gap-3 no-print" aria-label="Entry forms">
+    <button class="tab-btn active p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-3.5 cursor-pointer shadow-sm group" data-tab="meal">
+      <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center text-lg group-[.active]:bg-brand-600 group-[.active]:text-white transition">
+        <i class="fa-solid fa-bowl-rice"></i>
+      </div>
+      <div>
+        <strong class="block font-semibold text-sm text-slate-800 group-[.active]:text-brand-600">Regular Meal</strong>
+        <small class="block text-slate-500 text-xs mt-0.5">নিয়মিত খাবারের হিসাব</small>
+      </div>
+    </button>
+
+    <button class="tab-btn p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-3.5 cursor-pointer shadow-sm group" data-tab="deposit">
+      <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg group-[.active]:bg-brand-600 group-[.active]:text-white transition">
+        <i class="fa-solid fa-money-bill-wave"></i>
+      </div>
+      <div>
+        <strong class="block font-semibold text-sm text-slate-800 group-[.active]:text-brand-600">Meal Deposit</strong>
+        <small class="block text-slate-500 text-xs mt-0.5">সদস্যের জমা টাকা</small>
+      </div>
+    </button>
+
+    <button class="tab-btn p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-3.5 cursor-pointer shadow-sm group" data-tab="rice">
+      <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-lg group-[.active]:bg-brand-600 group-[.active]:text-white transition">
+        <i class="fa-solid fa-wheat-awn"></i>
+      </div>
+      <div>
+        <strong class="block font-semibold text-sm text-slate-800 group-[.active]:text-brand-600">Rice Unit Entry</strong>
+        <small class="block text-slate-500 text-xs mt-0.5">সদস্যের দেওয়া চাল</small>
+      </div>
+    </button>
+
+    <button class="tab-btn p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-left transition flex items-center gap-3.5 cursor-pointer shadow-sm group" data-tab="records">
+      <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg group-[.active]:bg-brand-600 group-[.active]:text-white transition">
+        <i class="fa-solid fa-table-list"></i>
+      </div>
+      <div>
+        <strong class="block font-semibold text-sm text-slate-800 group-[.active]:text-brand-600">Meal List & Stats</strong>
+        <small class="block text-slate-500 text-xs mt-0.5">সব এন্ট্রি ও সামারি</small>
+      </div>
+    </button>
+  </nav>
+
+  <!-- TAB 1: Regular Meal Entry -->
+  <section id="panel-meal" class="form-panel glass-card rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-utensils text-brand-600"></i>
+        <h2 class="text-base font-semibold text-slate-800">২. Regular Meal Entry — নিয়মিত খাবারের হিসাব</h2>
+      </div>
+      <span class="text-xs bg-slate-100 text-slate-600 font-medium px-2.5 py-1 rounded-full">Daily Calculation</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="mealDate" class="block text-xs font-medium text-slate-600 mb-1">Meal Date / খাবারের তারিখ</label>
+        <input id="mealDate" type="date" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="mealNote" class="block text-xs font-medium text-slate-600 mb-1">Note / মন্তব্য (ঐচ্ছিক)</label>
+        <input id="mealNote" placeholder="প্রয়োজনে বিশেষ তথ্য বা নোট লিখুন" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+    </div>
+
+    <!-- Meal Cards Dynamic Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="mealCards"></div>
+
+    <!-- Grand Total Box -->
+    <div class="p-4 rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 text-white flex justify-between items-center shadow-lg">
+      <div>
+        <span class="text-xs text-slate-300 font-medium block">Daily Grand Total / মোট খাবারের চার্জ</span>
+        <span class="text-xs text-slate-400">Meal Charge + Rice Charge</span>
+      </div>
+      <span id="mealGrand" class="text-2xl sm:text-3xl font-bold tracking-tight text-emerald-400">৳0.00</span>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <button id="saveMeal" type="button" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition shadow-md shadow-brand-500/20 flex items-center gap-2">
+        <i class="fa-solid fa-floppy-disk"></i> Save Meal Entry
+      </button>
+      <button id="resetMeal" type="button" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition">
+        Clear Form
+      </button>
+    </div>
+    <div id="notice-meal" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium"></div>
+  </section>
+
+  <!-- TAB 2: Meal Amount Deposit Entry -->
+  <section id="panel-deposit" class="form-panel hidden glass-card rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-wallet text-emerald-600"></i>
+        <h2 class="text-base font-semibold text-slate-800">৩. Meal Amount Deposit Entry — সদস্যের জমা টাকার হিসাব</h2>
+      </div>
+      <span class="text-xs bg-emerald-100 text-emerald-700 font-medium px-2.5 py-1 rounded-full">Balance Add</span>
+    </div>
+
+    <p class="text-xs text-slate-500 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+      <i class="fa-solid fa-circle-info text-brand-500 mr-1"></i>
+      সদস্য খাবারের খরচের জন্য যে টাকা জমা দিয়েছেন, তা এখানে আলাদাভাবে সংরক্ষণ করুন। এই টাকা সরাসরি সদস্যের মূল Balance-এ যোগ হবে।
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div>
+        <label for="depositDate" class="block text-xs font-medium text-slate-600 mb-1">Deposit Date / জমার তারিখ</label>
+        <input id="depositDate" type="date" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="depositAmount" class="block text-xs font-medium text-slate-600 mb-1">Amount Received (৳) / জমা টাকা <span class="text-rose-500">*</span></label>
+        <input id="depositAmount" type="number" min="0.01" step="0.01" placeholder="যেমন: 1000" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="depositReceipt" class="block text-xs font-medium text-slate-600 mb-1">Receipt No. / রসিদ নম্বর</label>
+        <input id="depositReceipt" placeholder="অটো অথবা ম্যানুয়াল নম্বর" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="depositNote" class="block text-xs font-medium text-slate-600 mb-1">Note / মন্তব্য</label>
+        <input id="depositNote" placeholder="যেমন: নগদ / বিকাশ জমা" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <button id="saveDeposit" type="button" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition shadow-md shadow-emerald-500/20 flex items-center gap-2">
+        <i class="fa-solid fa-floppy-disk"></i> Save Deposit
+      </button>
+      <button id="resetDeposit" type="button" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition">
+        Clear Form
+      </button>
+    </div>
+    <div id="notice-deposit" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium"></div>
+  </section>
+
+  <!-- TAB 3: Rice Unit Entry -->
+  <section id="panel-rice" class="form-panel hidden glass-card rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-wheat-awn text-amber-600"></i>
+        <h2 class="text-base font-semibold text-slate-800">৪. Rice Unit Entry — সদস্যের দেওয়া চালের হিসাব</h2>
+      </div>
+      <span class="text-xs bg-amber-100 text-amber-800 font-medium px-2.5 py-1 rounded-full">Stock Entry</span>
+    </div>
+
+    <p class="text-xs text-slate-500 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+      <i class="fa-solid fa-circle-info text-brand-500 mr-1"></i>
+      সদস্যের কাছ থেকে জমা নেওয়া মেস/হোস্টেলের চালের পরিমাণ আলাদা এককে (কেজি/গ্রাম) সংরক্ষণ করুন।
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div>
+        <label for="riceDate" class="block text-xs font-medium text-slate-600 mb-1">Rice Entry Date / চালের তারিখ</label>
+        <input id="riceDate" type="date" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="riceQty" class="block text-xs font-medium text-slate-600 mb-1">Rice Quantity / পরিমাণ <span class="text-rose-500">*</span></label>
+        <input id="riceQty" type="number" min="0.001" step="0.001" placeholder="যেমন: 10" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="riceUnit" class="block text-xs font-medium text-slate-600 mb-1">Unit / একক</label>
+        <select id="riceUnit" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+          <option value="Kg">Kilogram (Kg)</option>
+          <option value="Gm">Gram (Gm)</option>
+          <option value="Unit">Unit</option>
+        </select>
+      </div>
+      <div>
+        <label for="riceReceipt" class="block text-xs font-medium text-slate-600 mb-1">Receipt No. / রসিদ</label>
+        <input id="riceReceipt" placeholder="ঐচ্ছিক রসিদ নম্বর" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+      <div>
+        <label for="riceNote" class="block text-xs font-medium text-slate-600 mb-1">Note / মন্তব্য</label>
+        <input id="riceNote" placeholder="যেমন: মিনিকেট চাল" class="w-full px-3.5 py-2.5 bg-slate-50/50 focus:bg-white border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl text-sm outline-none">
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 pt-2">
+      <button id="saveRice" type="button" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition shadow-md shadow-amber-500/20 flex items-center gap-2">
+        <i class="fa-solid fa-floppy-disk"></i> Save Rice Entry
+      </button>
+      <button id="resetRice" type="button" class="px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold transition">
+        Clear Form
+      </button>
+    </div>
+    <div id="notice-rice" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium"></div>
+  </section>
+
+  <!-- TAB 4: Records Table & Analytics Dashboard -->
+  <section id="panel-records" class="form-panel hidden glass-card rounded-2xl p-6 shadow-sm border border-slate-200 space-y-6">
+    
+    <!-- Top Stats Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <span>Daily Meals</span>
+          <i class="fa-solid fa-utensils text-brand-500"></i>
+        </div>
+        <strong id="statMealCount" class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">0</strong>
+        <span class="text-[10px] text-slate-400 mt-1">Total meal logs</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <span>Meal Charges</span>
+          <i class="fa-solid fa-receipt text-rose-500"></i>
+        </div>
+        <strong id="statMealCharges" class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">৳0.00</strong>
+        <span class="text-[10px] text-slate-400 mt-1">Meals + Rice cost</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <span>Total Deposits</span>
+          <i class="fa-solid fa-wallet text-emerald-500"></i>
+        </div>
+        <strong id="statDeposits" class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">৳0.00</strong>
+        <span class="text-[10px] text-slate-400 mt-1">Received money</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <span>Est. Net Balance</span>
+          <i class="fa-solid fa-scale-balanced text-indigo-500"></i>
+        </div>
+        <strong id="statNetBalance" class="text-xl sm:text-2xl font-bold text-emerald-600 mt-2">৳0.00</strong>
+        <span class="text-[10px] text-slate-400 mt-1">Deposit - Charges</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between col-span-2 lg:col-span-1">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium">
+          <span>Rice Stock</span>
+          <i class="fa-solid fa-wheat-awn text-amber-500"></i>
+        </div>
+        <strong id="statRice" class="text-xl sm:text-2xl font-bold text-slate-900 mt-2">0 Kg</strong>
+        <span class="text-[10px] text-slate-400 mt-1">Total deposited</span>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3 no-print">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div>
+          <label for="filterSearch" class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Search</label>
+          <input id="filterSearch" placeholder="খুঁজুন (নাম / রসিদ / মোবাইল)..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label for="filterBranch" class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Branch</label>
+          <select id="filterBranch" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs outline-none focus:border-brand-500">
+            <option value="">All Branches</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterDate" class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Date Filter</label>
+          <select id="filterDate" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs outline-none focus:border-brand-500">
+            <option value="">All Dates</option>
+            <option value="today">Today</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterType" class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Record Type</label>
+          <select id="filterType" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs outline-none focus:border-brand-500">
+            <option value="">All Types</option>
+            <option value="meal">Daily Meal</option>
+            <option value="deposit">Deposit</option>
+            <option value="rice">Rice</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button id="resetFilters" type="button" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-600 text-xs font-medium hover:bg-slate-100 transition">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- Table Sub-Tabs -->
+    <div class="flex border-b border-slate-200 space-x-2 no-print overflow-x-auto">
+      <button class="table-tab active px-4 py-2.5 text-xs font-semibold border-b-2 border-brand-600 text-brand-600 whitespace-nowrap" data-record-tab="mealRecords">
+        Daily Meal Records
+      </button>
+      <button class="table-tab px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap" data-record-tab="depositRecords">
+        Deposit Records
+      </button>
+      <button class="table-tab px-4 py-2.5 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 whitespace-nowrap" data-record-tab="riceRecords">
+        Rice Records
+      </button>
+    </div>
+
+    <!-- Table 1: Meals -->
+    <section class="table-section space-y-3" id="table-mealRecords">
+      <div class="flex justify-between items-center text-xs text-slate-500 px-1">
+        <span class="font-semibold text-slate-700">Daily Meal History</span>
+        <span id="mealRecordCount">0 records</span>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="p-3">Receipt No.</th>
+              <th class="p-3">Date</th>
+              <th class="p-3">Member</th>
+              <th class="p-3">Mobile</th>
+              <th class="p-3">Branch</th>
+              <th class="p-3">Meals</th>
+              <th class="p-3 text-center">Qty</th>
+              <th class="p-3 text-right">Meal Charge</th>
+              <th class="p-3 text-right">Rice Charge</th>
+              <th class="p-3 text-right">Grand Total</th>
+              <th class="p-3">Note</th>
+              <th class="p-3 text-center no-print">Action</th>
+            </tr>
+          </thead>
+          <tbody id="mealRecordsBody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Table 2: Deposits -->
+    <section class="table-section hidden space-y-3" id="table-depositRecords">
+      <div class="flex justify-between items-center text-xs text-slate-500 px-1">
+        <span class="font-semibold text-slate-700">Payment Deposits History</span>
+        <span id="depositRecordCount">0 records</span>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="p-3">Receipt No.</th>
+              <th class="p-3">Date</th>
+              <th class="p-3">Member</th>
+              <th class="p-3">Mobile</th>
+              <th class="p-3">Branch</th>
+              <th class="p-3 text-right">Amount Received</th>
+              <th class="p-3">Note</th>
+              <th class="p-3 text-center no-print">Action</th>
+            </tr>
+          </thead>
+          <tbody id="depositRecordsBody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Table 3: Rice -->
+    <section class="table-section hidden space-y-3" id="table-riceRecords">
+      <div class="flex justify-between items-center text-xs text-slate-500 px-1">
+        <span class="font-semibold text-slate-700">Rice Unit Submissions</span>
+        <span id="riceRecordCount">0 records</span>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="p-3">Receipt No.</th>
+              <th class="p-3">Date</th>
+              <th class="p-3">Member</th>
+              <th class="p-3">Mobile</th>
+              <th class="p-3">Branch</th>
+              <th class="p-3 text-center">Rice Quantity</th>
+              <th class="p-3 text-center">Unit</th>
+              <th class="p-3">Note</th>
+              <th class="p-3 text-center no-print">Action</th>
+            </tr>
+          </thead>
+          <tbody id="riceRecordsBody" class="divide-y divide-slate-100 bg-white"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center text-xs text-slate-500 py-4 border-t border-slate-200/60 no-print">
+    <p>© Meal Management System — সমস্ত ডেটা বর্তমান ব্রাউজারের Local Storage-এ সুরক্ষিত আছে।</p>
+  </footer>
+
 </div>
+
+<!-- Modal Dialog (Alert / Confirm replacement) -->
+<div id="customModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-slate-100">
+    <div class="flex items-center gap-3">
+      <div id="modalIcon" class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div>
+        <h3 id="modalTitle" class="font-bold text-slate-800 text-sm">কনফার্মেশন</h3>
+        <p id="modalMsg" class="text-xs text-slate-500 mt-0.5">আপনি কি এই ফাইলটি মুছে ফেলতে চান?</p>
+      </div>
+    </div>
+    <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+      <button id="modalBtnCancel" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">বাতিল</button>
+      <button id="modalBtnConfirm" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition shadow-md shadow-rose-500/20">হ্যাঁ, নিশ্চিৎ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Core Logic Script -->
 <script>
 const $=id=>document.getElementById(id);
 const money=n=>'৳'+(Number(n)||0).toLocaleString('en-BD',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const dateNow=new Date(), today=new Date(dateNow.getTime()-dateNow.getTimezoneOffset()*60000).toISOString().slice(0,10);
+
+const dateNow=new Date();
+const today=new Date(dateNow.getTime()-dateNow.getTimezoneOffset()*60000).toISOString().slice(0,10);
+
 ['entryDate','mealDate','depositDate','riceDate'].forEach(id=>$(id).value=today);
+
+// Meal Configurations
 const mealTypes=[
- {id:'breakfast',name:'Breakfast',bn:'সকালের খাবার',icon:'🌅'},
- {id:'lunch',name:'Lunch',bn:'দুপুরের খাবার',icon:'🍛'},
- {id:'dinner',name:'Dinner',bn:'রাতের খাবার',icon:'🌙'},
- {id:'extra',name:'Extra',bn:'অতিরিক্ত খাবার',icon:'🥗'}
+ {id:'breakfast', name:'Breakfast', bn:'সকালের খাবার', icon:'fa-sun', color:'text-amber-500', bg:'bg-amber-50'},
+ {id:'lunch', name:'Lunch', bn:'দুপুরের খাবার', icon:'fa-bowl-rice', color:'text-orange-500', bg:'bg-orange-50'},
+ {id:'dinner', name:'Dinner', bn:'রাতের খাবার', icon:'fa-moon', color:'text-indigo-500', bg:'bg-indigo-50'},
+ {id:'extra', name:'Extra', bn:'অতিরিক্ত খাবার', icon:'fa-utensils', color:'text-emerald-500', bg:'bg-emerald-50'}
 ];
-$('mealCards').innerHTML=mealTypes.map(m=>`<article class="meal-card" data-meal="${m.id}">
-<div class="meal-top"><span class="emoji">${m.icon}</span><span class="meal-title"><strong>${m.name}</strong><small>${m.bn}</small></span><select data-field="${m.id}-status" aria-label="${m.name} status"><option value="ON">ON</option><option value="OFF">OFF</option></select></div>
-<div class="meal-fields">
-<div><label>Meal Charge (৳)</label><input type="number" min="0" step=".01" value="0" data-field="${m.id}-charge"></div>
-<div><label>Rice Charge (৳)</label><input type="number" min="0" step=".01" value="0" data-field="${m.id}-rice"></div>
-<div><label>Quantity</label><input type="number" min="0" step=".5" value="1" data-field="${m.id}-qty"></div>
-</div><div class="summary"><div class="sum-box"><small>Meal Total</small><strong data-total="${m.id}-meal">৳0.00</strong></div><div class="sum-box"><small>Rice Total</small><strong data-total="${m.id}-rice">৳0.00</strong></div><div class="sum-box"><small>Combined Total</small><strong data-total="${m.id}-all">৳0.00</strong></div></div></article>`).join('');
-function valField(k){return Number(document.querySelector(`[data-field="${k}"]`)?.value)||0}
+
+// Render Meal Cards Dynamically
+$('mealCards').innerHTML=mealTypes.map(m=>`
+  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3 hover:border-slate-300 transition shadow-sm" data-meal="${m.id}">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg ${m.bg} ${m.color} flex items-center justify-center text-sm">
+          <i class="fa-solid ${m.icon}"></i>
+        </div>
+        <div>
+          <strong class="text-xs font-semibold text-slate-800 block">${m.name}</strong>
+          <small class="text-[10px] text-slate-400 block">${m.bn}</small>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] font-medium text-slate-500">Status:</span>
+        <label class="switch">
+          <input type="checkbox" checked data-field="${m.id}-status">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2.5">
+      <div>
+        <label class="block text-[11px] text-slate-500 mb-1">Meal Charge (৳)</label>
+        <input type="number" min="0" step=".01" value="0" data-field="${m.id}-charge" class="w-full px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs outline-none focus:border-brand-500">
+      </div>
+      <div>
+        <label class="block text-[11px] text-slate-500 mb-1">Rice Charge (৳)</label>
+        <input type="number" min="0" step=".01" value="0" data-field="${m.id}-rice" class="w-full px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs outline-none focus:border-brand-500">
+      </div>
+      <div>
+        <label class="block text-[11px] text-slate-500 mb-1">Quantity</label>
+        <input type="number" min="0" step=".5" value="1" data-field="${m.id}-qty" class="w-full px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs outline-none focus:border-brand-500">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+      <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+        <span class="block text-[10px] text-slate-400">Meal Total</span>
+        <strong data-total="${m.id}-meal" class="text-xs font-semibold text-slate-700">৳0.00</strong>
+      </div>
+      <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+        <span class="block text-[10px] text-slate-400">Rice Total</span>
+        <strong data-total="${m.id}-rice" class="text-xs font-semibold text-slate-700">৳0.00</strong>
+      </div>
+      <div class="p-2 rounded-lg bg-slate-100 border border-slate-200">
+        <span class="block text-[10px] text-slate-500 font-medium">Combined</span>
+        <strong data-total="${m.id}-all" class="text-xs font-bold text-brand-600">৳0.00</strong>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+function isMealON(id) {
+  return document.querySelector(`[data-field="${id}-status"]`)?.checked ?? false;
+}
+function valField(k){ return Number(document.querySelector(`[data-field="${k}"]`)?.value)||0 }
+
 function updateMealTotals(){
  let grand=0;
  mealTypes.forEach(m=>{
-  const on=document.querySelector(`[data-field="${m.id}-status"]`).value==='ON';
-  const qty=on?valField(m.id+'-qty'):0, meal=qty*valField(m.id+'-charge'), rice=qty*valField(m.id+'-rice');
+  const on=isMealON(m.id);
+  const qty=on?valField(m.id+'-qty'):0;
+  const meal=qty*valField(m.id+'-charge');
+  const rice=qty*valField(m.id+'-rice');
+  
   $(`[data-total="${m.id}-meal"]`).textContent=money(meal);
   $(`[data-total="${m.id}-rice"]`).textContent=money(rice);
-  $(`[data-total="${m.id}-all"]`).textContent=money(meal+rice);grand+=meal+rice;
+  $(`[data-total="${m.id}-all"]`).textContent=money(meal+rice);
+  grand+=meal+rice;
  });
  $('mealGrand').textContent=money(grand);
 }
-$('mealCards').addEventListener('input',updateMealTotals);$('mealCards').addEventListener('change',updateMealTotals);
+
+$('mealCards').addEventListener('input',updateMealTotals);
+$('mealCards').addEventListener('change',updateMealTotals);
+
+// LocalStorage Utils
+const keys={meal:'mealManagementMealRecords',deposit:'mealManagementDepositRecords',rice:'mealManagementRiceRecords'};
 function getRows(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return []}}
 function putRows(key,rows){localStorage.setItem(key,JSON.stringify(rows))}
-const keys={meal:'mealManagementMealRecords',deposit:'mealManagementDepositRecords',rice:'mealManagementRiceRecords'};
-function memberInfo(){return {member:$('memberName').value.trim()||'Member not specified',mobile:$('mobile').value.trim(),branch:$('branch').value.trim()||'Branch not specified'}}
-function notice(id,msg){$(id).textContent=msg;$(id).style.display='block'}
-function receipt(prefix){return prefix+'-'+Date.now().toString().slice(-8)+'-'+Math.floor(Math.random()*90+10)}
-function resetMeal(){
- mealTypes.forEach(m=>{document.querySelector(`[data-field="${m.id}-status"]`).value='ON';document.querySelector(`[data-field="${m.id}-charge"]`).value='0';document.querySelector(`[data-field="${m.id}-rice"]`).value='0';document.querySelector(`[data-field="${m.id}-qty"]`).value='1'});
- $('mealNote').value='';$('mealDate').value=today;$('notice-meal').style.display='none';updateMealTotals();
+
+function memberInfo(){
+  return {
+    member:$('memberName').value.trim()||'Member not specified',
+    mobile:$('mobile').value.trim(),
+    branch:$('branch').value.trim()||'Branch not specified'
+  }
 }
+
+function notice(id,msg){
+  const el=$(id);
+  el.textContent=msg;
+  el.classList.remove('hidden');
+  setTimeout(()=>{ el.classList.add('hidden') }, 5000);
+}
+
+function receipt(prefix){ return prefix+'-'+Date.now().toString().slice(-6)+'-'+Math.floor(Math.random()*90+10) }
+
+function resetMeal(){
+ mealTypes.forEach(m=>{
+  document.querySelector(`[data-field="${m.id}-status"]`).checked=true;
+  document.querySelector(`[data-field="${m.id}-charge"]`).value='0';
+  document.querySelector(`[data-field="${m.id}-rice"]`).value='0';
+  document.querySelector(`[data-field="${m.id}-qty"]`).value='1';
+ });
+ $('mealNote').value='';
+ $('mealDate').value=today;
+ updateMealTotals();
+}
+
+// SAVE MEAL ENTRY
 $('saveMeal').addEventListener('click',()=>{
- const chosen=mealTypes.filter(m=>document.querySelector(`[data-field="${m.id}-status"]`).value==='ON'&&valField(m.id+'-qty')>0);
- if(!$('mealDate').value||!chosen.length){notice('notice-meal','তারিখ নির্বাচন করুন এবং অন্তত একটি Meal Type ON রেখে Quantity দিন।');return}
- const info=memberInfo(),qty=chosen.reduce((s,m)=>s+valField(m.id+'-qty'),0);
+ const chosen=mealTypes.filter(m=>isMealON(m.id)&&valField(m.id+'-qty')>0);
+ if(!$('mealDate').value||!chosen.length){
+  notice('notice-meal','তারিখ নির্বাচন করুন এবং অন্তত একটি Meal Type ON রেখে Quantity দিন।');
+  return;
+ }
+ const info=memberInfo();
+ const qty=chosen.reduce((s,m)=>s+valField(m.id+'-qty'),0);
  const mealCharge=chosen.reduce((s,m)=>s+valField(m.id+'-charge')*valField(m.id+'-qty'),0);
  const riceCharge=chosen.reduce((s,m)=>s+valField(m.id+'-rice')*valField(m.id+'-qty'),0);
- const rows=getRows(keys.meal);const rec=receipt('MR');
- rows.unshift({...info,receipt:rec,date:$('mealDate').value,types:chosen.map(m=>m.name),qty,mealCharge,riceCharge,grand:mealCharge+riceCharge,note:$('mealNote').value.trim(),createdAt:new Date().toISOString()});
- putRows(keys.meal,rows);renderAll();notice('notice-meal',`Meal Entry ${rec} সংরক্ষিত হয়েছে। Grand Total: ${money(mealCharge+riceCharge)}`);
+ const rows=getRows(keys.meal);
+ const rec=receipt('MR');
+
+ rows.unshift({
+  ...info,
+  receipt:rec,
+  date:$('mealDate').value,
+  types:chosen.map(m=>m.name),
+  qty,
+  mealCharge,
+  riceCharge,
+  grand:mealCharge+riceCharge,
+  note:$('mealNote').value.trim(),
+  createdAt:new Date().toISOString()
+ });
+
+ putRows(keys.meal,rows);
+ renderAll();
+ notice('notice-meal',`Meal Entry ${rec} সফলভাবে সংরক্ষণ করা হয়েছে! Total: ${money(mealCharge+riceCharge)}`);
 });
 $('resetMeal').addEventListener('click',resetMeal);
+
+// SAVE DEPOSIT
 $('saveDeposit').addEventListener('click',()=>{
  const amount=Number($('depositAmount').value),date=$('depositDate').value;
- if(!date||!Number.isFinite(amount)||amount<=0){notice('notice-deposit','তারিখ এবং শূন্যের বেশি জমা টাকার পরিমাণ দিন।');return}
+ if(!date||!Number.isFinite(amount)||amount<=0){
+  notice('notice-deposit','তারিখ এবং সঠিক জমার পরিমাণ প্রদান করুন।');
+  return;
+ }
  const info=memberInfo(),rows=getRows(keys.deposit),rec=$('depositReceipt').value.trim()||receipt('DR');
  rows.unshift({...info,receipt:rec,date,amount,note:$('depositNote').value.trim(),createdAt:new Date().toISOString()});
- putRows(keys.deposit,rows);renderAll();notice('notice-deposit',`Deposit ${rec} সংরক্ষিত হয়েছে।`);
+ putRows(keys.deposit,rows);
+ renderAll();
+ notice('notice-deposit',`Deposit ${rec} সফলভাবে সংরক্ষণ করা হয়েছে!`);
  $('depositAmount').value='';$('depositReceipt').value='';$('depositNote').value='';
 });
-$('resetDeposit').addEventListener('click',()=>{$('depositDate').value=today;$('depositAmount').value='';$('depositReceipt').value='';$('depositNote').value='';$('notice-deposit').style.display='none'});
+$('resetDeposit').addEventListener('click',()=>{$('depositDate').value=today;$('depositAmount').value='';$('depositReceipt').value='';$('depositNote').value=''});
+
+// SAVE RICE
 $('saveRice').addEventListener('click',()=>{
  const qty=Number($('riceQty').value),date=$('riceDate').value;
- if(!date||!Number.isFinite(qty)||qty<=0){notice('notice-rice','তারিখ এবং শূন্যের বেশি চালের পরিমাণ দিন।');return}
+ if(!date||!Number.isFinite(qty)||qty<=0){
+  notice('notice-rice','তারিখ এবং সঠিক চালের পরিমাণ প্রদান করুন।');
+  return;
+ }
  const info=memberInfo(),rows=getRows(keys.rice),rec=$('riceReceipt').value.trim()||receipt('RR');
  rows.unshift({...info,receipt:rec,date,qty,unit:$('riceUnit').value,note:$('riceNote').value.trim(),createdAt:new Date().toISOString()});
- putRows(keys.rice,rows);renderAll();notice('notice-rice',`Rice Entry ${rec} সংরক্ষিত হয়েছে।`);
+ putRows(keys.rice,rows);
+ renderAll();
+ notice('notice-rice',`Rice Entry ${rec} সফলভাবে সংরক্ষণ করা হয়েছে!`);
  $('riceQty').value='';$('riceReceipt').value='';$('riceNote').value='';
 });
-$('resetRice').addEventListener('click',()=>{$('riceDate').value=today;$('riceQty').value='';$('riceUnit').value='Kg';$('riceReceipt').value='';$('riceNote').value='';$('notice-rice').style.display='none'});
-document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
- document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
- document.querySelectorAll('.form-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+b.dataset.tab));
- if(b.dataset.tab==='records')renderAll();
+$('resetRice').addEventListener('click',()=>{$('riceDate').value=today;$('riceQty').value='';$('riceUnit').value='Kg';$('riceReceipt').value='';$('riceNote').value=''});
+
+// TAB NAVIGATION LOGIC
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');
+ document.querySelectorAll('.form-panel').forEach(p=>p.classList.add('hidden'));
+ $('panel-'+b.dataset.tab).classList.remove('hidden');
+ if(b.dataset.tab==='records') renderAll();
 }));
-document.querySelectorAll('[data-record-tab]').forEach(b=>b.addEventListener('click',()=>{
- document.querySelectorAll('[data-record-tab]').forEach(x=>x.classList.toggle('active',x===b));
- document.querySelectorAll('.table-section').forEach(p=>p.classList.toggle('active',p.id==='table-'+b.dataset.recordTab));
+
+document.querySelectorAll('.table-tab').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.table-tab').forEach(x=>{
+   x.classList.remove('active','border-brand-600','text-brand-600');
+   x.classList.add('border-transparent','text-slate-500');
+ });
+ b.classList.add('active','border-brand-600','text-brand-600');
+ b.classList.remove('border-transparent','text-slate-500');
+ 
+ document.querySelectorAll('.table-section').forEach(p=>p.classList.add('hidden'));
+ $('table-'+b.dataset.recordTab).classList.remove('hidden');
 }));
-function activeFilters(){return {search:$('filterSearch').value.trim().toLowerCase(),branch:$('filterBranch').value,date:$('filterDate').value,type:$('filterType').value}}
+
+// FILTERS & SEARCH
+function activeFilters(){
+  return {
+    search:$('filterSearch').value.trim().toLowerCase(),
+    branch:$('filterBranch').value,
+    date:$('filterDate').value,
+    type:$('filterType').value
+  };
+}
+
 function matches(r,kind,f){
  const hay=[r.receipt,r.member,r.mobile,r.branch,(r.types||[]).join(' '),r.note].join(' ').toLowerCase();
  if(f.search&&!hay.includes(f.search))return false;
  if(f.branch&&r.branch!==f.branch)return false;
  if(f.type&&f.type!==kind)return false;
  if(f.date==='today'&&r.date!==today)return false;
- if(f.date==='month'){const d=new Date((r.date||'')+'T12:00:00');if(d.getMonth()!==dateNow.getMonth()||d.getFullYear()!==dateNow.getFullYear())return false}
+ if(f.date==='month'){
+   const d=new Date((r.date||'')+'T12:00:00');
+   if(d.getMonth()!==dateNow.getMonth()||d.getFullYear()!==dateNow.getFullYear())return false;
+ }
  return true;
 }
-function actionButtons(kind,rec){return `<button class="btn btn-edit" type="button" onclick="editRecord('${kind}','${esc(rec)}')">Edit</button> <button class="btn btn-delete" type="button" onclick="deleteRecord('${kind}','${esc(rec)}')">Delete</button>`}
+
+function actionButtons(kind,rec){
+  return `
+    <div class="flex items-center justify-center gap-1.5">
+      <button class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] transition" onclick="editRecord('${kind}','${esc(rec)}')">
+        <i class="fa-solid fa-pen-to-square"></i> Edit
+      </button>
+      <button class="px-2 py-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-medium text-[11px] transition" onclick="deleteRecord('${kind}','${esc(rec)}')">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  `;
+}
+
 function renderTable(kind,bodyId,countId,headers,renderRow){
  const rows=getRows(keys[kind]).filter(r=>matches(r,kind,activeFilters()));
  $(countId).textContent=`${rows.length} record${rows.length===1?'':'s'}`;
- $(bodyId).innerHTML=rows.length?rows.map(renderRow).join(''):`<tr><td colspan="${headers}" class="empty">এখনো কোনো রেকর্ড নেই।</td></tr>`;
+ $(bodyId).innerHTML=rows.length?rows.map(renderRow).join(''):`<tr><td colspan="${headers}" class="p-6 text-center text-slate-400">কোনো রেকর্ড পাওয়া যায়নি।</td></tr>`;
 }
+
 function renderAll(){
  const meals=getRows(keys.meal),deposits=getRows(keys.deposit),rices=getRows(keys.rice);
+ const totalMealCharges=meals.reduce((s,r)=>s+(Number(r.grand)||0),0);
+ const totalDeposits=deposits.reduce((s,r)=>s+(Number(r.amount)||0),0);
+ const totalRiceQty=rices.reduce((s,r)=>s+(Number(r.qty)||0),0);
+
  $('statMealCount').textContent=meals.length;
- $('statMealCharges').textContent=money(meals.reduce((s,r)=>s+(Number(r.mealCharge)||0),0));
- $('statDeposits').textContent=money(deposits.reduce((s,r)=>s+(Number(r.amount)||0),0));
- $('statRice').textContent=rices.reduce((s,r)=>s+(Number(r.qty)||0),0).toLocaleString('en-BD');
+ $('statMealCharges').textContent=money(totalMealCharges);
+ $('statDeposits').textContent=money(totalDeposits);
+ $('statNetBalance').textContent=money(totalDeposits - totalMealCharges);
+ $('statRice').textContent=totalRiceQty.toLocaleString('en-BD') + ' Unit';
+
  const branches=[...new Set([...meals,...deposits,...rices].map(r=>r.branch).filter(Boolean))];
  const selected=$('filterBranch').value;
  $('filterBranch').innerHTML='<option value="">All Branches</option>'+branches.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');
  if(branches.includes(selected))$('filterBranch').value=selected;
- renderTable('meal','mealRecordsBody','mealRecordCount',12,r=>`<tr><td>${esc(r.receipt)}</td><td>${esc(r.date)}</td><td>${esc(r.member)}</td><td>${esc(r.mobile||'—')}</td><td>${esc(r.branch)}</td><td>${esc((r.types||[]).join(', '))}</td><td>${esc(r.qty)}</td><td>${money(r.mealCharge)}</td><td>${money(r.riceCharge)}</td><td>${money(r.grand)}</td><td>${esc(r.note||'—')}</td><td>${actionButtons('meal',r.receipt)}</td></tr>`);
- renderTable('deposit','depositRecordsBody','depositRecordCount',8,r=>`<tr><td>${esc(r.receipt)}</td><td>${esc(r.date)}</td><td>${esc(r.member)}</td><td>${esc(r.mobile||'—')}</td><td>${esc(r.branch)}</td><td>${money(r.amount)}</td><td>${esc(r.note||'—')}</td><td>${actionButtons('deposit',r.receipt)}</td></tr>`);
- renderTable('rice','riceRecordsBody','riceRecordCount',9,r=>`<tr><td>${esc(r.receipt)}</td><td>${esc(r.date)}</td><td>${esc(r.member)}</td><td>${esc(r.mobile||'—')}</td><td>${esc(r.branch)}</td><td>${esc(r.qty)}</td><td>${esc(r.unit)}</td><td>${esc(r.note||'—')}</td><td>${actionButtons('rice',r.receipt)}</td></tr>`);
+
+ renderTable('meal','mealRecordsBody','mealRecordCount',12,r=>`
+  <tr class="hover:bg-slate-50/80 transition">
+    <td class="p-3 font-mono text-slate-600">${esc(r.receipt)}</td>
+    <td class="p-3 font-medium">${esc(r.date)}</td>
+    <td class="p-3 font-semibold text-slate-800">${esc(r.member)}</td>
+    <td class="p-3 text-slate-500">${esc(r.mobile||'—')}</td>
+    <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[11px]">${esc(r.branch)}</span></td>
+    <td class="p-3 text-slate-600">${esc((r.types||[]).join(', '))}</td>
+    <td class="p-3 text-center font-medium">${esc(r.qty)}</td>
+    <td class="p-3 text-right font-medium">${money(r.mealCharge)}</td>
+    <td class="p-3 text-right font-medium">${money(r.riceCharge)}</td>
+    <td class="p-3 text-right font-bold text-brand-600">${money(r.grand)}</td>
+    <td class="p-3 text-slate-400 italic">${esc(r.note||'—')}</td>
+    <td class="p-3 text-center no-print">${actionButtons('meal',r.receipt)}</td>
+  </tr>
+ `);
+
+ renderTable('deposit','depositRecordsBody','depositRecordCount',8,r=>`
+  <tr class="hover:bg-slate-50/80 transition">
+    <td class="p-3 font-mono text-slate-600">${esc(r.receipt)}</td>
+    <td class="p-3 font-medium">${esc(r.date)}</td>
+    <td class="p-3 font-semibold text-slate-800">${esc(r.member)}</td>
+    <td class="p-3 text-slate-500">${esc(r.mobile||'—')}</td>
+    <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[11px]">${esc(r.branch)}</span></td>
+    <td class="p-3 text-right font-bold text-emerald-600">${money(r.amount)}</td>
+    <td class="p-3 text-slate-400 italic">${esc(r.note||'—')}</td>
+    <td class="p-3 text-center no-print">${actionButtons('deposit',r.receipt)}</td>
+  </tr>
+ `);
+
+ renderTable('rice','riceRecordsBody','riceRecordCount',9,r=>`
+  <tr class="hover:bg-slate-50/80 transition">
+    <td class="p-3 font-mono text-slate-600">${esc(r.receipt)}</td>
+    <td class="p-3 font-medium">${esc(r.date)}</td>
+    <td class="p-3 font-semibold text-slate-800">${esc(r.member)}</td>
+    <td class="p-3 text-slate-500">${esc(r.mobile||'—')}</td>
+    <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[11px]">${esc(r.branch)}</span></td>
+    <td class="p-3 text-center font-bold text-amber-700">${esc(r.qty)}</td>
+    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-[10px] font-semibold">${esc(r.unit)}</span></td>
+    <td class="p-3 text-slate-400 italic">${esc(r.note||'—')}</td>
+    <td class="p-3 text-center no-print">${actionButtons('rice',r.receipt)}</td>
+  </tr>
+ `);
 }
+
+// Custom Confirm Modal Dialog
+function showModal(msg, onConfirm){
+  $('modalMsg').textContent = msg;
+  $('customModal').classList.remove('hidden');
+  
+  const handleConfirm = () => {
+    $('customModal').classList.add('hidden');
+    cleanup();
+    onConfirm();
+  };
+  const handleCancel = () => {
+    $('customModal').classList.add('hidden');
+    cleanup();
+  };
+  function cleanup(){
+    $('modalBtnConfirm').removeEventListener('click', handleConfirm);
+    $('modalBtnCancel').removeEventListener('click', handleCancel);
+  }
+  
+  $('modalBtnConfirm').addEventListener('click', handleConfirm);
+  $('modalBtnCancel').addEventListener('click', handleCancel);
+}
+
 function deleteRecord(kind,rec){
- if(!confirm(`রসিদ ${rec} মুছে ফেলবেন?`))return;
- putRows(keys[kind],getRows(keys[kind]).filter(r=>r.receipt!==rec));renderAll();
+ showModal(`রসিদ ${rec} মুছে ফেলার বিষয়টি নিশ্চিত করুন।`, ()=>{
+  putRows(keys[kind],getRows(keys[kind]).filter(r=>r.receipt!==rec));
+  renderAll();
+ });
 }
+
 function editRecord(kind,rec){
  const rows=getRows(keys[kind]),r=rows.find(x=>x.receipt===rec);if(!r)return;
- if(kind==='meal'){
-  $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('mealDate').value=r.date;
-  $('mealNote').value=r.note||'';
-  mealTypes.forEach(m=>{
-   const on=(r.types||[]).includes(m.name);
-   document.querySelector(`[data-field="${m.id}-status"]`).value=on?'ON':'OFF';
-   const oldQty=on?(Number(r.qty)||1)/(r.types.length||1):1;
-   document.querySelector(`[data-field="${m.id}-qty"]`).value=oldQty;
-   document.querySelector(`[data-field="${m.id}-charge"]`).value=on?(Number(r.mealCharge)||0)/(Number(r.qty)||1):0;
-   document.querySelector(`[data-field="${m.id}-rice"]`).value=on?(Number(r.riceCharge)||0)/(Number(r.qty)||1):0;
-  });
-  updateMealTotals();$('panel-meal').scrollIntoView({behavior:'smooth'});document.querySelector('[data-tab="meal"]').click();
-  if(confirm('এই রেকর্ডটি Edit করার জন্য লোড হয়েছে। পুরোনো রেকর্ডটি সরিয়ে নতুন করে Save করবেন?')){putRows(keys.meal,rows.filter(x=>x.receipt!==rec));renderAll()}
- }else if(kind==='deposit'){
-  $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('depositDate').value=r.date;$('depositAmount').value=r.amount;$('depositReceipt').value=r.receipt;$('depositNote').value=r.note||'';
-  $('panel-deposit').scrollIntoView({behavior:'smooth'});document.querySelector('[data-tab="deposit"]').click();
-  if(confirm('Save Deposit চাপলে একই রসিদ নম্বর দিয়ে সংরক্ষণ করতে পুরোনো রেকর্ডটি সরাবেন?')){putRows(keys.deposit,rows.filter(x=>x.receipt!==rec));renderAll()}
- }else{
-  $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('riceDate').value=r.date;$('riceQty').value=r.qty;$('riceUnit').value=r.unit;$('riceReceipt').value=r.receipt;$('riceNote').value=r.note||'';
-  $('panel-rice').scrollIntoView({behavior:'smooth'});document.querySelector('[data-tab="rice"]').click();
-  if(confirm('Save Rice Entry চাপলে একই রসিদ নম্বর দিয়ে সংরক্ষণ করতে পুরোনো রেকর্ডটি সরাবেন?')){putRows(keys.rice,rows.filter(x=>x.receipt!==rec));renderAll()}
- }
+ 
+ showModal(`রেকর্ডটি সম্পাদনা (Edit) করতে ইচ্ছুক? পুরোনো তথ্যটি রিমুভ করে ফর্মে লোড করা হবে।`, ()=>{
+   if(kind==='meal'){
+    $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('mealDate').value=r.date;
+    $('mealNote').value=r.note||'';
+    mealTypes.forEach(m=>{
+     const on=(r.types||[]).includes(m.name);
+     document.querySelector(`[data-field="${m.id}-status"]`).checked=on;
+     const oldQty=on?(Number(r.qty)||1)/(r.types.length||1):1;
+     document.querySelector(`[data-field="${m.id}-qty"]`).value=oldQty;
+     document.querySelector(`[data-field="${m.id}-charge"]`).value=on?(Number(r.mealCharge)||0)/(Number(r.qty)||1):0;
+     document.querySelector(`[data-field="${m.id}-rice"]`).value=on?(Number(r.riceCharge)||0)/(Number(r.qty)||1):0;
+    });
+    updateMealTotals();
+    document.querySelector('[data-tab="meal"]').click();
+    putRows(keys.meal,rows.filter(x=>x.receipt!==rec));
+   }else if(kind==='deposit'){
+    $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('depositDate').value=r.date;$('depositAmount').value=r.amount;$('depositReceipt').value=r.receipt;$('depositNote').value=r.note||'';
+    document.querySelector('[data-tab="deposit"]').click();
+    putRows(keys.deposit,rows.filter(x=>x.receipt!==rec));
+   }else{
+    $('memberName').value=r.member;$('mobile').value=r.mobile||'';$('branch').value=r.branch||'';$('riceDate').value=r.date;$('riceQty').value=r.qty;$('riceUnit').value=r.unit;$('riceReceipt').value=r.receipt;$('riceNote').value=r.note||'';
+    document.querySelector('[data-tab="rice"]').click();
+    putRows(keys.rice,rows.filter(x=>x.receipt!==rec));
+   }
+   renderAll();
+ });
 }
-window.deleteRecord=deleteRecord;window.editRecord=editRecord;
-$('applyFilters').addEventListener('click',renderAll);
+
+window.deleteRecord=deleteRecord;
+window.editRecord=editRecord;
+
 $('resetFilters').addEventListener('click',()=>{$('filterSearch').value='';$('filterBranch').value='';$('filterDate').value='';$('filterType').value='';renderAll()});
 ['filterSearch','filterBranch','filterDate','filterType'].forEach(id=>$(id).addEventListener(id==='filterSearch'?'input':'change',renderAll));
+
 function updateMemberOptions(){
  const names=[...new Set([...getRows(keys.meal),...getRows(keys.deposit),...getRows(keys.rice)].map(r=>r.member).filter(n=>n&&n!=='Member not specified'))];
  $('memberOptions').innerHTML=names.map(n=>`<option value="${esc(n)}"></option>`).join('');
 }
+
 $('memberName').addEventListener('change',()=>{
  const name=$('memberName').value.trim();
  const all=[...getRows(keys.meal),...getRows(keys.deposit),...getRows(keys.rice)];
  const found=all.find(r=>r.member===name);
  if(found){$('mobile').value=found.mobile||'';$('branch').value=found.branch||''}
 });
-updateMealTotals();updateMemberOptions();renderAll();
+
+// CSV EXPORT FEATURE
+$('btnExport').addEventListener('click', ()=>{
+ const meals = getRows(keys.meal);
+ if(!meals.length) {
+   alert('Export করার মত কোনো ডেটা নেই!');
+   return;
+ }
+ let csvContent = "data:text/csv;charset=utf-8,Receipt,Date,Member,Mobile,Branch,MealCharge,RiceCharge,GrandTotal,Note\n";
+ meals.forEach(r => {
+   csvContent += `"${r.receipt}","${r.date}","${r.member}","${r.mobile||''}","${r.branch||''}","${r.mealCharge}","${r.riceCharge}","${r.grand}","${r.note||''}"\n`;
+ });
+ const encodedUri = encodeURI(csvContent);
+ const link = document.createElement("a");
+ link.setAttribute("href", encodedUri);
+ link.setAttribute("download", `meal_report_${today}.csv`);
+ document.body.appendChild(link);
+ link.click();
+ document.body.removeChild(link);
+});
+
+// PRINT SUMMARY
+$('btnPrint').addEventListener('click', ()=>{
+ window.print();
+});
+
+// Initial Setup
+updateMealTotals();
+updateMemberOptions();
+renderAll();
 </script>
 </body>
 </html>
