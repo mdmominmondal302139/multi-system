@@ -1,719 +1,772 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BRANCH OFFICER</title>
-
-<style>
-:root {
-  --bo-blue: #2563eb;
-  --bo-blue-light: #eaf2ff;
-  --bo-ink: #172033;
-  --bo-muted: #64748b;
-  --bo-border: #e2e8f0;
-  --bo-bg: #f5f8fc;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  min-height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bo-bg);
-  color: var(--bo-ink);
-}
-
-.sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: 280px;
-  background: #fff;
-  border-right: 1px solid var(--bo-border);
-  padding: 20px 14px;
-  overflow-y: auto;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-}
-
-.bo-brand {
-  padding: 7px 10px 18px;
-  border-bottom: 1px solid var(--bo-border);
-  margin-bottom: 14px;
-  order: 0;
-}
-
-.bo-brand-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1d4ed8;
-}
-
-.bo-brand-sub {
-  font-size: 12px;
-  color: var(--bo-muted);
-  margin-top: 5px;
-}
-
-.bo-account-wrap {
-  position: relative;
-  flex-shrink: 0;
-  margin: auto 0 0;
-  order: 99;
-  padding-top: 14px;
-  border-top: 1px solid var(--bo-border);
-}
-
-.bo-account {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: left;
-  padding: 11px;
-  border: 1px solid var(--bo-border);
-  border-radius: 11px;
-  background: #fff;
-  cursor: pointer;
-  color: var(--bo-ink);
-}
-
-.bo-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--bo-blue-light);
-  color: var(--bo-blue);
-  display: grid;
-  place-items: center;
-  font-size: 14px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.bo-account > span:nth-of-type(2) {
-  display: block;
-  flex: 1;
-  min-width: 0;
-}
-
-.bo-account-name {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.bo-account-role {
-  display: block;
-  font-size: 12px;
-  line-height: 1.3;
-  color: var(--bo-muted);
-  margin-top: 3px;
-  white-space: nowrap;
-}
-
-.bo-account-menu {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 7px);
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid var(--bo-border);
-  border-radius: 10px;
-  box-shadow: 0 10px 30px #0f172a18;
-  padding: 6px;
-  z-index: 30;
-}
-
-.bo-account-menu.open {
-  display: block;
-}
-
-.bo-account-menu a {
-  display: block;
-  padding: 10px 12px;
-  color: var(--bo-ink);
-  text-decoration: none;
-  border-radius: 7px;
-  font-size: 14px;
-}
-
-.bo-account-menu a:hover {
-  background: var(--bo-blue-light);
-  color: var(--bo-blue);
-}
-
-.bo-nav-label {
-  font-size: 11px;
-  letter-spacing: .08em;
-  color: #94a3b8;
-  padding: 10px 11px 5px;
-  order: 1;
-}
-
-.sidebar > a {
-  order: 2;
-  display: flex;
-  align-items: center;
-  min-height: 42px;
-  padding: 10px 12px;
-  margin: 3px 0;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #334155;
-  font-size: 14px;
-  font-weight: 500;
-  gap: 10px;
-}
-
-.sidebar > a:hover,
-.sidebar > a.active {
-  background: var(--bo-blue-light);
-  color: var(--bo-blue);
-}
-
-.bo-shell-main {
-  margin-left: 280px;
-  min-height: 100vh;
-  padding: 26px;
-}
-
-.bo-working-frame {
-  display: block;
-  width: 100%;
-  height: calc(100vh - 52px);
-  min-height: 650px;
-  border: 1px solid var(--bo-border);
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(15,23,42,.04);
-}
-
-.bo-main {
-  min-height: 100vh;
-}
-
-.bo-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 22px;
-}
-
-.bo-top h1 {
-  font-size: 25px;
-  margin: 0 0 7px;
-}
-
-.bo-muted {
-  font-size: 13px;
-  color: var(--bo-muted);
-}
-
-.bo-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.bo-stat,
-.bo-card {
-  background: #fff;
-  border: 1px solid var(--bo-border);
-  border-radius: 12px;
-  padding: 18px;
-  min-width: 0;
-}
-
-.bo-stat span {
-  font-size: 13px;
-  color: var(--bo-muted);
-}
-
-.bo-stat strong {
-  display: block;
-  font-size: 23px;
-  margin-top: 9px;
-  overflow-wrap: anywhere;
-}
-
-.bo-card h2,
-.bo-card h3 {
-  margin: 0 0 14px;
-}
-
-.bo-card p {
-  font-size: 14px;
-}
-
-.bo-empty {
-  color: var(--bo-muted);
-  font-size: 13px;
-  padding: 8px 0;
-}
-
-@media (max-width: 1000px) {
-  .bo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 700px) {
-  .sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-    max-height: none;
-  }
-
-  .bo-shell-main {
-    margin-left: 0;
-    padding: 12px;
-  }
-
-  .bo-working-frame {
-    height: calc(100vh - 24px);
-    min-height: 580px;
-  }
-
-  .bo-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .bo-top {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Officer Dashboard - Apex Trust Bank</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1E293B',
+                            900: '#0F172A',
+                        },
+                        emerald: {
+                            500: '#10B981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
 </head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-<body>
+    <!-- ================= 1. TOP STICKY NAVIGATION HEADER ================= -->
+    <header class="sticky top-0 z-40 bg-navy-900 text-white shadow-lg border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Left: Logo & Branch Name -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-500 text-navy-900 p-2 rounded-lg font-bold text-xl flex items-center justify-center h-10 w-10">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-base tracking-wide flex items-center gap-2">
+                            <span>Apex Trust Bank</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-normal">Active Branch</span>
+                        </div>
+                        <div class="text-xs text-slate-400 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-slate-400"></i> Gulshan Branch (Code: 014)
+                        </div>
+                    </div>
+                </div>
 
-{% if not embedded %}
-<aside class="sidebar">
+                <!-- Center Menu Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <a href="#" class="nav-tab text-emerald-400 bg-navy-800 px-3 py-2 rounded-md text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </a>
+                    <a href="#" class="nav-tab text-slate-300 hover:text-white hover:bg-navy-800 px-3 py-2 rounded-md text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-users"></i> Clients
+                    </a>
+                    <a href="#" class="nav-tab text-slate-300 hover:text-white hover:bg-navy-800 px-3 py-2 rounded-md text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice"></i> Applications
+                    </a>
+                    <a href="#" class="nav-tab text-slate-300 hover:text-white hover:bg-navy-800 px-3 py-2 rounded-md text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> Collections
+                    </a>
+                    <a href="#" class="nav-tab text-slate-300 hover:text-white hover:bg-navy-800 px-3 py-2 rounded-md text-xs font-semibold transition flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line"></i> Reports
+                    </a>
+                </nav>
 
-  <div class="bo-brand">
-    <div class="bo-brand-title">Branch Officer</div>
-    <div class="bo-brand-sub">Branch operations</div>
-  </div>
+                <!-- Right: Global Search, Notifications & Profile -->
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <!-- Global Search -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" placeholder="Search client, NID, Acc..." class="bg-navy-800 text-xs text-slate-200 placeholder-slate-400 rounded-lg pl-8 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-44 lg:w-56 border border-slate-700">
+                        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                        <span class="absolute right-2 top-2 bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded border border-slate-600 font-mono">Ctrl+K</span>
+                    </div>
 
-  <div class="bo-nav-label">WORKSPACE</div>
+                    <!-- Notification Bell -->
+                    <div class="relative">
+                        <button class="p-2 text-slate-300 hover:text-white rounded-lg hover:bg-navy-800 relative focus:outline-none">
+                            <i class="fa-regular fa-bell text-lg"></i>
+                            <span class="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center animate-pulse">3</span>
+                        </button>
+                    </div>
 
-  <a href="/branch_officer/home/?embedded=1"
-     class="active" target="bo_working_frame">⌂　Home</a>
+                    <!-- User Profile Dropdown -->
+                    <div class="flex items-center space-x-2 pl-2 border-l border-slate-700">
+                        <div class="relative">
+                            <img class="h-9 w-9 rounded-full object-cover border-2 border-emerald-500" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="Officer Profile">
+                            <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-navy-900"></span>
+                        </div>
+                        <div class="hidden lg:block text-left">
+                            <div class="text-xs font-semibold text-slate-100">Tanvir Ahmed</div>
+                            <div class="text-[10px] text-slate-400">Senior Field Officer</div>
+                        </div>
+                    </div>
 
-  <a href="/branch_officer/income/"
-     target="bo_working_frame">↗　Income</a>
-
-  <a href="/branch_officer/expense/"
-     target="bo_working_frame">↘　Expense</a>
-
-  <a href="/branch_officer/meal/"
-     target="bo_working_frame">☷　Meal</a>
-
-  <a href="/branch_officer/savings/"
-     target="bo_working_frame">▣　Savings</a>
-
-  <a href="/branch_officer/work/"
-     target="bo_working_frame">✓　Work</a>
-
-  <a href="/branch_officer/records/"
-     target="bo_working_frame">▤　Records</a>
-
-  <a href="/branch_officer/branch_members/"
-     target="bo_working_frame">♙　Branch Members</a>
-
-  <a href="/branch_officer/meal_management/"
-     target="bo_working_frame">☰　Meal Management</a>
-
-  <a href="/branch_officer/member_transfer"
-     target="bo_working_frame">⇄　Member Transfer</a>
-
-  <div class="bo-account-wrap">
-
-    <button type="button"
-      class="bo-account"
-      id="boAccountToggle"
-      aria-expanded="false"
-      aria-controls="boAccountMenu">
-
-      <span class="bo-avatar">
-        {{ (username|string)[:1]|upper }}
-      </span>
-
-      <span>
-        <span class="bo-account-name">{{ username }}</span>
-        <span class="bo-account-role">
-          {{ role_name|default('Branch Officer') }}
-        </span>
-      </span>
-
-      <span style="margin-left:auto;color:#64748b">⌃</span>
-    </button>
-
-    <div class="bo-account-menu" id="boAccountMenu">
-      <a href="/branch_officer/home/profile">♙　Profile</a>
-
-      <!-- Common Logout route for all roles -->
-      <a href="/logout">↪　Logout</a>
-    </div>
-
-  </div>
-</aside>
-{% endif %}
-
-
-{% if embedded %}
-
-<main class="bo-main">
-
-  <div class="bo-top">
-    <div>
-      <h1>Branch Officer Home</h1>
-      <div class="bo-muted">
-        Welcome, {{ username }} · Branch: {{ branch_id }}
-      </div>
-    </div>
-    <div class="bo-muted" id="clock"></div>
-  </div>
-
-  <div class="bo-grid">
-
-    <div class="bo-stat">
-      <span>Today's Income</span>
-      <strong>{{ data.income }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Today's Expense</span>
-      <strong>{{ data.expense }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Today's Meal</span>
-      <strong>{{ data.meal }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Today's Savings</span>
-      <strong>{{ data.savings }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Pending Work</span>
-      <strong>{{ data.pending_work }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Completed Work</span>
-      <strong>{{ data.completed_work }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>My Branch</span>
-      <strong>{{ branch_id }}</strong>
-    </div>
-
-    <div class="bo-stat">
-      <span>Today</span>
-      <strong>{{ data.get('date','') }}</strong>
-    </div>
-
-  </div>
-
-  <div class="bo-card">
-    <h2>My Profile & Branch Information</h2>
-    <p><b>Username:</b> {{ username }}</p>
-    <p><b>Branch:</b> {{ branch_id }}</p>
-    <p class="bo-muted">
-      Home is a summary/control dashboard.
-      No transaction is edited or deleted here.
-    </p>
-  </div>
-
-  <div class="bo-grid">
-
-    <div class="bo-card">
-      <h3>Recent Income</h3>
-      {% for x in data.recent_income %}
-        <div>
-          {{ x.get('date','') }} —
-          {{ x.get('amount','') }} —
-          {{ x.get('source','') }}
+                </div>
+            </div>
         </div>
-      {% else %}
-        <div class="bo-empty">No recent income.</div>
-      {% endfor %}
-    </div>
+    </header>
 
-    <div class="bo-card">
-      <h3>Recent Expense</h3>
-      {% for x in data.recent_expense %}
-        <div>
-          {{ x.get('date','') }} —
-          {{ x.get('amount','') }} —
-          {{ x.get('purpose','') }}
+    <!-- ================= MAIN CONTAINER ================= -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- ================= 2. QUICK ACTIONS & KPI CARDS ================= -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Welcome Back, Tanvir Ahmed 👋</h1>
+                <p class="text-xs sm:text-sm text-slate-500">Branch Operations & Field Activity Summary</p>
+            </div>
+            <!-- Quick Action Buttons -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <button onclick="openModal('collectionModal')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Record Collection</span>
+                </button>
+                <button onclick="openModal('applicationModal')" class="bg-navy-900 hover:bg-navy-800 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>New Application</span>
+                </button>
+            </div>
         </div>
-      {% else %}
-        <div class="bo-empty">No recent expense.</div>
-      {% endfor %}
-    </div>
 
-    <div class="bo-card">
-      <h3>Recent Meal</h3>
-      {% for x in data.recent_meal %}
-        <div>
-          {{ x.get('date','') }} —
-          {{ x.get('member_name','') }} —
-          {{ x.get('total_meal','') }}
+        <!-- 4 KPI Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- KPI 1: Today's Collection Progress -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Today's Target</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-1">$1,600</h3>
+                    </div>
+                    <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg">
+                        <i class="fa-solid fa-vault text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-medium">
+                        <span class="text-slate-600">Collected: $1,200</span>
+                        <span class="text-emerald-600 font-bold">75%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 2: Pending Applications -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending Approvals</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-1">08 Files</h3>
+                    </div>
+                    <div class="p-2.5 bg-amber-50 text-amber-600 rounded-lg">
+                        <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50/80 px-2.5 py-1 rounded-md w-fit">
+                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                    <span>4 Verification Checks Needed</span>
+                </div>
+            </div>
+
+            <!-- KPI 3: Overdue Rate / PAR -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Overdue / PAR Rate</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-1">3.2%</h3>
+                    </div>
+                    <div class="p-2.5 bg-rose-50 text-rose-600 rounded-lg">
+                        <i class="fa-solid fa-chart-line-down text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">Default Accounts: <strong>12</strong></span>
+                    <span class="bg-rose-100 text-rose-700 font-semibold text-[10px] px-2 py-0.5 rounded-full">Low Risk</span>
+                </div>
+            </div>
+
+            <!-- KPI 4: Scheduled Visits Today -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Scheduled Visits</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-1">06 Visits</h3>
+                    </div>
+                    <div class="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
+                        <i class="fa-solid fa-person-walking-luggage text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">Completed: <strong id="completedVisitCount">2</strong>/6</span>
+                    <span class="bg-blue-100 text-blue-700 font-semibold text-[10px] px-2 py-0.5 rounded-full">On Schedule</span>
+                </div>
+            </div>
+
         </div>
-      {% else %}
-        <div class="bo-empty">No recent meal.</div>
-      {% endfor %}
-    </div>
 
-    <div class="bo-card">
-      <h3>Recent Savings</h3>
-      {% for x in data.recent_savings %}
-        <div>
-          {{ x.get('date','') }} —
-          {{ x.get('transaction_type','') }} —
-          {{ x.get('amount','') }}
+        <!-- ================= 3. MAIN WORKSPACE GRID (70% / 30%) ================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN (70% Width) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Tabbed Data Table Container -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    
+                    <!-- Table Header & Tab Bar -->
+                    <div class="p-4 border-b border-slate-200 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between bg-slate-50/50">
+                        
+                        <!-- Navigation Tabs -->
+                        <div class="flex border-b sm:border-0 border-slate-200 space-x-1 overflow-x-auto pb-2 sm:pb-0">
+                            <button onclick="switchTab('collectionsTab')" id="tab-collectionsTab" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg bg-white text-navy-900 shadow-sm border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-coins text-emerald-600"></i>
+                                Today's Due Collections
+                            </button>
+                            <button onclick="switchTab('applicationsTab')" id="tab-applicationsTab" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition flex items-center gap-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-folder-open text-amber-500"></i>
+                                Pending Applications
+                            </button>
+                            <button onclick="switchTab('overdueTab')" id="tab-overdueTab" class="tab-btn px-3 py-2 text-xs font-semibold rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition flex items-center gap-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+                                Overdue Accounts
+                            </button>
+                        </div>
+
+                        <!-- Table Search Filter -->
+                        <div class="relative w-full sm:w-48">
+                            <input type="text" id="tableSearchInput" onkeyup="filterTable()" placeholder="Filter current list..." class="w-full bg-white text-xs rounded-lg pl-8 pr-3 py-1.5 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <i class="fa-solid fa-filter absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT 1: Today's Due Collections -->
+                    <div id="collectionsTab" class="tab-content block overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100/70 text-slate-500 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="py-3 px-4">Client Details</th>
+                                    <th class="py-3 px-4">Loan Type</th>
+                                    <th class="py-3 px-4">Amount Due</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs text-slate-700" id="collectionsTableBody">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">Robert Vance</div>
+                                        <div class="text-[10px] text-slate-400">ACC: #SME-8841</div>
+                                    </td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200">SME Business</span></td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$500</td>
+                                    <td class="py-3 px-4"><span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Pending</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button onclick="quickCollect('Robert Vance', 500)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-[11px] font-medium transition shadow-sm">Collect</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">Sarah Jenkins</div>
+                                        <div class="text-[10px] text-slate-400">ACC: #MF-1029</div>
+                                    </td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200">Microfinance</span></td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$150</td>
+                                    <td class="py-3 px-4"><span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Collected</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button disabled class="bg-slate-100 text-slate-400 cursor-not-allowed px-2.5 py-1 rounded text-[11px] font-medium">Paid <i class="fa-solid fa-check text-emerald-600 ml-1"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">Michael Miller</div>
+                                        <div class="text-[10px] text-slate-400">ACC: #AG-3302</div>
+                                    </td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200">Agri Credit</span></td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$1,200</td>
+                                    <td class="py-3 px-4"><span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Pending</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button onclick="quickCollect('Michael Miller', 1200)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-[11px] font-medium transition shadow-sm">Collect</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">David Cooper</div>
+                                        <div class="text-[10px] text-slate-400">ACC: #MF-4490</div>
+                                    </td>
+                                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200">Microfinance</span></td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$200</td>
+                                    <td class="py-3 px-4"><span class="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Overdue (1 Day)</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button onclick="quickCollect('David Cooper', 200)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded text-[11px] font-medium transition shadow-sm">Collect</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- TAB CONTENT 2: Pending Applications -->
+                    <div id="applicationsTab" class="tab-content hidden overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100/70 text-slate-500 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="py-3 px-4">Applicant</th>
+                                    <th class="py-3 px-4">Loan Requested</th>
+                                    <th class="py-3 px-4">Verification Stage</th>
+                                    <th class="py-3 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">Laura Watson</div>
+                                        <div class="text-[10px] text-slate-400">NID: 1982736412</div>
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$2,500</td>
+                                    <td class="py-3 px-4"><span class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Field Visit Done</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button class="bg-navy-900 hover:bg-navy-800 text-white px-2.5 py-1 rounded text-[11px] font-medium transition">Review</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">James Anderson</div>
+                                        <div class="text-[10px] text-slate-400">NID: 8827361920</div>
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$5,000</td>
+                                    <td class="py-3 px-4"><span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full text-[10px] font-medium">Guarantor Check</span></td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button class="bg-navy-900 hover:bg-navy-800 text-white px-2.5 py-1 rounded text-[11px] font-medium transition">Review</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- TAB CONTENT 3: Overdue Accounts -->
+                    <div id="overdueTab" class="tab-content hidden overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100/70 text-slate-500 text-[11px] uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="py-3 px-4">Borrower Name</th>
+                                    <th class="py-3 px-4">Overdue Days</th>
+                                    <th class="py-3 px-4">Default Amount</th>
+                                    <th class="py-3 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="py-3 px-4 font-medium">
+                                        <div class="text-slate-900 font-semibold">Arthur Pendelton</div>
+                                        <div class="text-[10px] text-slate-400">ACC: #SME-1102</div>
+                                    </td>
+                                    <td class="py-3 px-4 font-bold text-rose-600">18 Days Overdue</td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">$1,500</td>
+                                    <td class="py-3 px-4 text-right space-x-1">
+                                        <a href="tel:55501928" class="inline-block bg-slate-100 text-slate-700 hover:bg-slate-200 p-1.5 rounded transition"><i class="fa-solid fa-phone text-xs"></i></a>
+                                        <button class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded text-[11px] font-medium transition">Send Notice</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Footer -->
+                    <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+                        <span>Showing 1-4 of 12 records</span>
+                        <div class="flex items-center space-x-1">
+                            <button class="px-2 py-1 bg-white border border-slate-200 rounded text-slate-400 cursor-not-allowed">Prev</button>
+                            <button class="px-2.5 py-1 bg-emerald-600 text-white font-semibold rounded">1</button>
+                            <button class="px-2.5 py-1 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded">2</button>
+                            <button class="px-2 py-1 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded">Next</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN (30% Width) -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- Field Visit Schedule & Tasks -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-day text-emerald-600"></i>
+                            Daily Field Visit Schedule
+                        </h2>
+                        <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Today</span>
+                    </div>
+
+                    <div class="space-y-3 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-200">
+                        
+                        <!-- Visit Item 1 -->
+                        <div class="relative flex items-start pl-7 group">
+                            <div class="absolute left-1.5 top-1.5 -translate-x-1/2 bg-emerald-500 ring-4 ring-white h-3 w-3 rounded-full"></div>
+                            <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg w-full transition hover:border-emerald-300">
+                                <div class="flex justify-between items-start">
+                                    <div class="font-semibold text-xs text-slate-800">Robert Vance (SME Visit)</div>
+                                    <span class="text-[10px] text-slate-400 font-mono">10:30 AM</span>
+                                </div>
+                                <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
+                                    <i class="fa-solid fa-map-pin text-rose-500 text-[10px]"></i> Sector 4, Commercial Market
+                                </div>
+                                <div class="mt-2 flex justify-between items-center pt-2 border-t border-slate-200/60">
+                                    <label class="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                                        <input type="checkbox" onchange="toggleVisit(this)" class="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5">
+                                        <span>Mark Complete</span>
+                                    </label>
+                                    <a href="tel:55501928" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
+                                        <i class="fa-solid fa-phone"></i> Call
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visit Item 2 -->
+                        <div class="relative flex items-start pl-7 group">
+                            <div class="absolute left-1.5 top-1.5 -translate-x-1/2 bg-amber-400 ring-4 ring-white h-3 w-3 rounded-full"></div>
+                            <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-lg w-full transition hover:border-amber-300">
+                                <div class="flex justify-between items-start">
+                                    <div class="font-semibold text-xs text-slate-800">Laura Watson (New Loan)</div>
+                                    <span class="text-[10px] text-slate-400 font-mono">02:30 PM</span>
+                                </div>
+                                <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1">
+                                    <i class="fa-solid fa-house text-slate-400 text-[10px]"></i> Residence Verification
+                                </div>
+                                <div class="mt-2 flex justify-between items-center pt-2 border-t border-slate-200/60">
+                                    <label class="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
+                                        <input type="checkbox" onchange="toggleVisit(this)" class="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5">
+                                        <span>Mark Complete</span>
+                                    </label>
+                                    <a href="tel:55501929" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
+                                        <i class="fa-solid fa-phone"></i> Call
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed & Alerts -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-3">
+                    <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 flex items-center justify-between">
+                        <span><i class="fa-solid fa-bell text-amber-500 mr-1"></i> System Alerts & Feed</span>
+                        <span class="text-[10px] text-emerald-600 font-normal">Real-time</span>
+                    </h2>
+                    
+                    <div class="space-y-2 text-xs">
+                        <div class="p-2 bg-blue-50/60 border border-blue-100 rounded-lg flex items-start gap-2">
+                            <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-medium text-slate-800">Loan Application Approved</div>
+                                <div class="text-[10px] text-slate-500">App #SME-902 approved for disbursement by Manager.</div>
+                            </div>
+                        </div>
+                        <div class="p-2 bg-rose-50/60 border border-rose-100 rounded-lg flex items-start gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-medium text-slate-800">Overdue Risk Warning</div>
+                                <div class="text-[10px] text-slate-500">Arthur Pendelton exceeded 15 days threshold.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-      {% else %}
-        <div class="bo-empty">No recent savings.</div>
-      {% endfor %}
+
+        <!-- ================= 4. VISUAL ANALYTICS & CHARTS ================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Weekly Collection Trend Chart -->
+            <div class="lg:col-span-8 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-800">Weekly Collection Trend</h2>
+                        <p class="text-[11px] text-slate-400">Target vs Actual Daily Collections (in USD)</p>
+                    </div>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200">Current Week</span>
+                </div>
+                <div class="h-56 relative">
+                    <canvas id="weeklyCollectionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Portfolio Quality Chart -->
+            <div class="lg:col-span-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="mb-4">
+                    <h2 class="text-sm font-bold text-slate-800">Portfolio Quality Breakdown</h2>
+                    <p class="text-[11px] text-slate-400">Loan Status Classification Ratio</p>
+                </div>
+                <div class="h-56 flex items-center justify-center relative">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-3 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            © 2026 Apex Trust Banking Corporation. All Rights Reserved. (Branch Officer Portal v2.4)
+        </div>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Modal 1: Record Collection -->
+    <div id="collectionModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Record New Collection
+                </h3>
+                <button onclick="closeModal('collectionModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="collectionForm" onsubmit="handleRecordCollection(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Borrower Name / Account No</label>
+                    <input type="text" id="modalClientName" required placeholder="e.g., Robert Vance or #SME-8841" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Collected Amount ($ USD)</label>
+                    <input type="number" id="modalAmount" required placeholder="500" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Payment Method</label>
+                    <select class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option>Cash Deposit</option>
+                        <option>Mobile Transfer</option>
+                        <option>Direct Wire Transfer</option>
+                    </select>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('collectionModal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">Confirm Collection</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-  </div>
-
-  <div class="bo-card">
-    <h2>Recent Work</h2>
-
-    {% for x in data.recent_work %}
-      <p>
-        <b>{{ x.get('work_id','') }}</b> —
-        {{ x.get('task_title','') }} —
-        {{ x.get('status','') }}
-      </p>
-    {% else %}
-      <div class="bo-empty">No recent work.</div>
-    {% endfor %}
-  </div>
-
-</main>
-
-{% elif profile_view %}
-
-<main class="bo-shell-main">
-
-  <div class="bo-card" style="max-width:900px;margin:0 auto">
-
-    <div class="bo-top">
-      <div>
-        <h1>My Profile</h1>
-        <div class="bo-muted">Branch Officer account information</div>
-      </div>
-      <span class="bo-muted">BRANCH OFFICER</span>
+    <!-- Modal 2: New Application -->
+    <div id="applicationModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature text-navy-900"></i> New Loan Application
+                </h3>
+                <button onclick="closeModal('applicationModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handleNewApplication(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Applicant Full Name</label>
+                    <input type="text" required placeholder="Enter full legal name" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">National ID (NID)</label>
+                    <input type="text" required placeholder="Enter NID / Identification number" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Loan Category</label>
+                        <select class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option>Microfinance</option>
+                            <option>SME Loan</option>
+                            <option>Agri Credit</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Requested Amount ($)</label>
+                        <input type="number" required placeholder="2500" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('applicationModal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-navy-900 text-white rounded-lg hover:bg-navy-800 font-medium">Submit Application</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="bo-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
-
-      <div class="bo-stat">
-        <span>Full Name</span>
-        <strong style="font-size:18px">{{ username }}</strong>
-      </div>
-
-      <div class="bo-stat">
-        <span>Role</span>
-        <strong style="font-size:18px">
-          {{ role_name|default('Branch Officer') }}
-        </strong>
-      </div>
-
-      <div class="bo-stat">
-        <span>Branch ID</span>
-        <strong style="font-size:18px">{{ branch_id }}</strong>
-      </div>
-
-      <div class="bo-stat">
-        <span>Account Status</span>
-        <strong style="font-size:18px">Active</strong>
-      </div>
-
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-navy-900 text-white px-4 py-3 rounded-lg shadow-xl hidden flex items-center space-x-2 z-50 text-xs border border-slate-700">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toastMsg">Operation completed successfully.</span>
     </div>
 
-    <a href="/branch_officer/home/"
-       style="display:inline-block;margin-top:10px;padding:11px 18px;border-radius:8px;background:#2563eb;color:white;text-decoration:none">
-      Back to Home
-    </a>
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
 
-  </div>
-</main>
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-navy-900', 'shadow-sm', 'border', 'border-slate-200');
+                btn.classList.add('text-slate-600');
+            });
 
-{% else %}
+            const activeTab = document.getElementById(tabId);
+            activeTab.classList.remove('hidden');
+            activeTab.classList.add('block');
 
-<main class="bo-shell-main">
-
-  <div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 12px">
-    <div>
-      <h1 style="margin:0;font-size:24px">Branch Officer Working Area</h1>
-      <div class="bo-muted">
-        Select a section from the left sidebar.
-      </div>
-    </div>
-  </div>
-
-  <iframe
-    class="bo-working-frame"
-    id="boWorkingFrame"
-    name="bo_working_frame"
-    src="{{ url_for('branch_officer_home.home', embedded=1) }}"
-    title="Branch Officer Working Area">
-  </iframe>
-
-</main>
-
-{% endif %}
-
-
-<script>
-(() => {
-  const b = document.getElementById('boAccountToggle');
-  const m = document.getElementById('boAccountMenu');
-
-  if (!b || !m) return;
-
-  const close = () => {
-    m.classList.remove('open');
-    b.setAttribute('aria-expanded', 'false');
-  };
-
-  b.addEventListener('click', e => {
-    e.stopPropagation();
-
-    const open = !m.classList.contains('open');
-    m.classList.toggle('open', open);
-    b.setAttribute('aria-expanded', String(open));
-  });
-
-  document.addEventListener('click', e => {
-    if (!m.contains(e.target) && !b.contains(e.target)) {
-      close();
-    }
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') close();
-  });
-})();
-
-
-// Keep the outer sidebar visible and remove inner duplicate sidebars.
-(() => {
-  const frame = document.getElementById('boWorkingFrame');
-  if (!frame) return;
-
-  const normalize = () => {
-    try {
-      const doc = frame.contentDocument;
-      if (!doc || !doc.body) return;
-
-      let style = doc.getElementById('bo-frame-normalize-style');
-
-      if (!style) {
-        style = doc.createElement('style');
-        style.id = 'bo-frame-normalize-style';
-        doc.head.appendChild(style);
-      }
-
-      style.textContent = `
-        html,body {
-          margin:0!important;
-          padding:0!important;
-          width:100%!important;
-          min-width:0!important;
-          overflow-x:hidden!important;
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.add('bg-white', 'text-navy-900', 'shadow-sm', 'border', 'border-slate-200');
+            activeBtn.classList.remove('text-slate-600');
         }
 
-        .sidebar,.bo-sidebar,.member-sidebar,.app-sidebar,
-        .ssa-sidebar,.branch-sidebar,.left-sidebar,.side-bar,
-        [class*="sidebar"],[id*="sidebar"],
-        .navigation,.side-nav,.sidenav,.app-navigation,
-        aside,nav {
-          display:none!important;
+        // Live Filter Function
+        function filterTable() {
+            const input = document.getElementById('tableSearchInput').value.toLowerCase();
+            const activeContent = document.querySelector('.tab-content:not(.hidden)');
+            const rows = activeContent.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
         }
 
-        main,.main,.content,.main-content,.page-content,
-        .app-content,.workspace,.container,.wrapper,
-        [class*="content"],[class*="workspace"] {
-          margin-left:0!important;
-          margin-right:0!important;
-          width:100%!important;
-          max-width:none!important;
-          min-width:0!important;
-          box-sizing:border-box!important;
+        // Modal Controls
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
         }
-      `;
-
-      doc.querySelectorAll('body *').forEach(el => {
-        if (el === doc.body || el === doc.documentElement) return;
-
-        const s = doc.defaultView.getComputedStyle(el);
-        const r = el.getBoundingClientRect();
-
-        if (
-          (s.position === 'fixed' || s.position === 'sticky') &&
-          r.left < 30 &&
-          r.width >= 170 &&
-          r.width <= 360 &&
-          r.height > 250
-        ) {
-          el.style.setProperty('display', 'none', 'important');
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
         }
-      });
 
-      doc.querySelectorAll('a[href]').forEach(a => {
-        const href = a.getAttribute('href') || '';
-
-        if (href.startsWith('/branch_officer/')) {
-          if (
-            href === '/branch_officer/home/' ||
-            href === '/branch_officer/home'
-          ) {
-            a.setAttribute(
-              'href',
-              '/branch_officer/home/?embedded=1'
-            );
-          }
-
-          a.setAttribute('target', 'bo_working_frame');
+        // Quick Collection Pre-fill
+        function quickCollect(name, amount) {
+            document.getElementById('modalClientName').value = name;
+            document.getElementById('modalAmount').value = amount;
+            openModal('collectionModal');
         }
-      });
 
-    } catch (err) {
-      console.warn(
-        'Could not normalize working frame layout:',
-        err
-      );
-    }
-  };
+        // Record Collection Submission
+        function handleRecordCollection(e) {
+            e.preventDefault();
+            closeModal('collectionModal');
+            showToast('Collection successfully recorded for ' + document.getElementById('modalClientName').value);
+        }
 
-  frame.addEventListener('load', normalize);
-  normalize();
-})();
-</script>
+        // New Application Submission
+        function handleNewApplication(e) {
+            e.preventDefault();
+            closeModal('applicationModal');
+            showToast('New loan application successfully submitted!');
+        }
 
+        // Toast Popup Trigger
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Field Visit Completion Handler
+        function toggleVisit(checkbox) {
+            const taskContainer = checkbox.closest('.group');
+            if (checkbox.checked) {
+                taskContainer.classList.add('opacity-50');
+            } else {
+                taskContainer.classList.remove('opacity-50');
+            }
+        }
+
+        // Chart Initialization on Window Load
+        window.onload = function() {
+            
+            // 1. Weekly Collection Bar Chart
+            const ctxWeekly = document.getElementById('weeklyCollectionChart').getContext('2d');
+            new Chart(ctxWeekly, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    datasets: [
+                        {
+                            label: 'Collected ($)',
+                            data: [1200, 1450, 1300, 1600, 1200, 1500],
+                            backgroundColor: '#10B981',
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'Target ($)',
+                            data: [1500, 1500, 1500, 1600, 1600, 1600],
+                            backgroundColor: '#E2E8F0',
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } }
+                    },
+                    scales: {
+                        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // 2. Portfolio Breakdown Doughnut Chart
+            const ctxPortfolio = document.getElementById('portfolioChart').getContext('2d');
+            new Chart(ctxPortfolio, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Standard (Performing)', 'Watchlist', 'Substandard (Default)'],
+                    datasets: [{
+                        data: [88, 8.8, 3.2],
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+        };
+    </script>
 </body>
 </html>
