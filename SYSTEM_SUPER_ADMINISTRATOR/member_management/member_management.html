@@ -1,779 +1,1430 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Member Management</title>
-<link rel="stylesheet" href="/static/app.css">
-<style>
-:root{color-scheme:light;--bg:#f5f8fc;--surface:#fff;--line:#e1e8f0;--text:#25364b;--muted:#718096;--blue:#2783df;--blue-soft:#eaf4ff;--green:#178b58;--green-soft:#e8f8ef;--red:#d94444;--red-soft:#fff0f0;--amber:#9a6700;--amber-soft:#fff7df}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:400;line-height:1.5}
-.ssa-shell{min-height:100vh}.ssa-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:1000}.ssa-brand{padding:20px 18px 16px;border-bottom:1px solid #edf1f6}.ssa-brand-title{font-size:15px;font-weight:600;color:#24486d;line-height:1.35}.ssa-brand-scope{font-size:11px;color:var(--muted);margin-top:5px}.ssa-nav{padding:12px 10px;overflow-y:auto;flex:1}.ssa-nav-group{font-size:11px;color:#8997a8;padding:10px 9px 6px}.ssa-nav a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#40546b;padding:9px 10px;border-radius:8px;margin:2px 0;font-weight:400;white-space:nowrap}.ssa-nav a:hover{background:#f0f7ff;color:#176bb7}.ssa-nav a.active{background:var(--blue-soft);color:#176bb7}.ssa-ico{width:18px;min-width:18px;text-align:center;font-size:15px}
-/* Bright Light Administrator Profile Dropdown */
-.ssa-profile {
-  position: relative;
-  flex-shrink: 0;
-  border-top: 1px solid #e4ecf7;
-  padding: 12px;
-  background: #ffffff;
-}
-
-.ssa-profile-toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #e3edfa;
-  border-radius: 11px;
-  background: #f4f8ff;
-  color: #25364b;
-  text-align: left;
-  cursor: pointer;
-  font: inherit;
-  transition: background .2s, border-color .2s, box-shadow .2s;
-}
-
-.ssa-profile-toggle:hover,
-.ssa-profile.is-open .ssa-profile-toggle {
-  background: #eaf3ff;
-  border-color: #c7defb;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, .07);
-}
-
-.ssa-avatar {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  background: #dceaff;
-  color: #2166c2;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: .4px;
-}
-
-.ssa-profile-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.ssa-profile-info strong {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 600;
-  color: #25364b;
-  line-height: 1.4;
-}
-
-.ssa-profile-info small {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 10px;
-  font-weight: 400;
-  color: #718096;
-  line-height: 1.4;
-}
-
-.ssa-profile-chevron {
-  width: 16px;
-  min-width: 16px;
-  color: #718096;
-  font-size: 13px;
-  text-align: center;
-  transition: transform .2s;
-}
-
-.ssa-profile.is-open .ssa-profile-chevron {
-  transform: rotate(180deg);
-}
-
-.ssa-profile-dropdown {
-  display: none;
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: calc(100% + 8px);
-  margin-top: 0;
-  padding: 5px;
-  border: 1px solid #e5edf7;
-  border-radius: 11px;
-  background: #ffffff;
-  box-shadow: 0 8px 24px rgba(37, 65, 100, .09);
-}
-
-.ssa-profile.is-open .ssa-profile-dropdown {
-  display: block;
-  animation: ssaDropdownIn .16s ease-out;
-}
-
-.ssa-profile-dropdown a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 11px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background .15s;
-}
-
-.ssa-profile-dropdown .ssa-profile-action {
-  color: #2869bd;
-}
-
-.ssa-profile-dropdown .ssa-profile-action:hover {
-  background: #edf5ff;
-}
-
-.ssa-profile-dropdown .ssa-logout {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 3px 0 0;
-  padding: 10px 11px;
-  background: #fff3f3;
-  color: #d43d48;
-  text-align: left;
-  border-radius: 8px;
-}
-
-.ssa-profile-dropdown .ssa-logout:hover {
-  background: #ffe5e5;
-}
-
-.ssa-profile-dropdown .ssa-menu-icon {
-  width: 18px;
-  min-width: 18px;
-  text-align: center;
-  font-size: 15px;
-}
-
-@keyframes ssaDropdownIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.ssa-profile-toggle:focus-visible,
-.ssa-profile-dropdown a:focus-visible {
-  outline: 2px solid #75aef4;
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ssa-profile-toggle,
-  .ssa-profile-chevron {
-    transition: none;
-  }
-
-  .ssa-profile.is-open .ssa-profile-dropdown {
-    animation: none;
-  }
-}
-.ssa-content{margin-left:260px;width:calc(100% - 260px);min-height:100vh;overflow-x:hidden}.page{padding:28px 30px 48px;max-width:1600px;margin:0 auto}.page header{display:flex;align-items:center;gap:18px;margin-bottom:22px;flex-wrap:wrap}.page header h1{margin:0;font-size:27px;font-weight:500;color:#23466b}.subtitle{color:var(--muted);margin-top:4px}.ssa-page-identity{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;padding:8px 13px;border:1px solid var(--line);border-radius:10px;background:#fff}.ssa-page-identity strong{font-size:13px;color:#24486d;font-weight:500}.ssa-page-identity span{font-size:11px;color:var(--muted)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:21px;margin-bottom:20px;box-shadow:0 3px 12px rgba(35,70,107,.035)}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}.card h2{margin:0;font-size:18px;font-weight:500;color:#294c70}.hint{font-size:12px;color:var(--muted)}
-.filters{display:grid;grid-template-columns:repeat(5,minmax(140px,1fr));gap:12px;align-items:end}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:13px;color:#4b6077;font-weight:400}.field input,.field select{width:100%;min-width:0;border:1px solid #d4deea;border-radius:8px;padding:10px 11px;background:#fff;color:var(--text);font:inherit}.field input:focus,.field select:focus{outline:0;border-color:#79b6f0;box-shadow:0 0 0 3px #eaf4ff}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:8px;padding:9px 13px;font:inherit;font-weight:400;text-decoration:none;cursor:pointer;white-space:nowrap}.btn-blue{background:#eaf4ff;color:#176bb7;border-color:#d6eaff}.btn-green{background:var(--green-soft);color:#137548;border-color:#d1f0dd}.btn-red{background:var(--red-soft);color:#bd3333;border-color:#ffdede}.btn-neutral{background:#f3f6fa;color:#52657a;border-color:#e2e8f0}.btn:focus-visible{outline:2px solid #75b8f2;outline-offset:2px}.filter-actions{display:flex;gap:8px;flex-wrap:wrap}
-.alert{padding:11px 14px;border-radius:9px;margin-bottom:16px}.ok{background:var(--green-soft);color:#176b40;border:1px solid #d1f0dd}.err{background:var(--red-soft);color:#a12828;border:1px solid #ffdede}.empty-state{padding:34px 16px;text-align:center;color:var(--muted);background:#fbfdff;border:1px dashed #d8e3ef;border-radius:10px}.empty-state strong{display:block;color:#45627e;font-weight:500;margin-bottom:4px}
-.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.member-table{width:100%;min-width:1060px;border-collapse:collapse;background:#fff}.member-table th{background:#f4f8fc;color:#52657a;font-size:12px;text-align:left;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:500}.member-table td{padding:12px;border-bottom:1px solid #edf1f6;color:#40546b;font-size:13px;vertical-align:middle;font-weight:400}.member-table tbody tr:hover td{background:#fbfdff}.role-pill,.status-pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#edf4fb;color:#45627e;font-size:11px;font-weight:400;white-space:nowrap}.status-active{background:var(--green-soft);color:#137548}.status-inactive{background:#f0f2f5;color:#697789}.status-suspended{background:var(--amber-soft);color:var(--amber)}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions form{display:inline-flex;margin:0}.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:13px}.edit-actions{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;margin-top:18px;min-height:0}.edit-actions>.btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:auto!important;min-width:110px!important;height:42px!important;min-height:42px!important;max-height:42px!important;flex:0 0 auto!important;align-self:auto!important;position:static!important;transform:none!important;line-height:1.2!important;padding:10px 16px!important;margin:0!important}.required-note{color:var(--muted);font-size:12px;margin-top:8px}
-@media(max-width:1200px){.filters{grid-template-columns:repeat(3,minmax(140px,1fr))}.edit-grid{grid-template-columns:repeat(2,minmax(150px,1fr))}}
-@media(max-width:800px){.ssa-sidebar{width:220px}.ssa-content{margin-left:220px;width:calc(100% - 220px)}.page{padding:20px 16px}.filters{grid-template-columns:repeat(2,minmax(120px,1fr))}.edit-grid{grid-template-columns:1fr}.page header h1{font-size:23px}}
-@media(max-width:560px){.ssa-sidebar{position:relative;width:100%;height:auto;max-height:50vh}.ssa-content{margin-left:0;width:100%}.ssa-profile{display:none}.filters{grid-template-columns:1fr}.ssa-page-identity{margin-left:0}.page header{align-items:flex-start}}
-
-/* Member Edit sample design */
-.member-edit-card{padding:0;overflow:hidden;border-color:#dfe8f2}
-.member-edit-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px;background:linear-gradient(115deg,#f0f7ff,#ffffff 72%);border-bottom:1px solid #e6edf5;flex-wrap:wrap}
-.member-edit-title{display:flex;align-items:center;gap:13px}
-.member-edit-avatar{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#dcecff;color:#2469a8;font-size:21px}
-.member-edit-hero h2{margin:0;font-size:21px;font-weight:500;color:#244b73}
-.member-edit-hero p{margin:4px 0 0;color:#74859a;font-size:13px}
-.member-edit-admin{border:1px solid #dce8f5;background:#fff;border-radius:999px;padding:7px 12px;color:#45627e;font-size:12px;white-space:nowrap}
-.member-edit-body{padding:24px}
-.member-section{border:1px solid #e4ebf3;border-radius:12px;padding:18px;margin-bottom:18px;background:#fff}
-.member-view-card .profile-value{display:flex;align-items:center;min-height:43px;padding:11px 13px;border:1px solid #dce6ef;border-radius:9px;background:#f8fbfe;color:#344b63;font-size:13px;font-weight:400;overflow-wrap:anywhere;box-sizing:border-box}.member-view-card .profile-value-multiline{min-height:76px;align-items:flex-start;white-space:pre-wrap}.member-view-card .member-edit-note{max-width:70%}@media(max-width:700px){.member-view-card .member-edit-note{max-width:100%}}
-.member-section-title{display:flex;align-items:center;gap:9px;color:#2c5279;font-size:15px;font-weight:500;margin:0 0 17px}
-.member-section-title span{width:28px;height:28px;border-radius:8px;background:#edf5ff;color:#397bb8;display:grid;place-items:center;font-size:14px}
-.member-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px}
-.member-edit-card .field label{font-size:12px;color:#62758b;margin-bottom:1px}
-.member-edit-card .field input,.member-edit-card .field select,.member-edit-card .field textarea{border:1px solid #d8e2ed;border-radius:9px;padding:11px 12px;background:#fbfdff;min-height:43px}
-.member-edit-card .field textarea{min-height:82px;resize:vertical;font:inherit}
-.member-edit-card .field input:focus,.member-edit-card .field select:focus,.member-edit-card .field textarea:focus{background:#fff;border-color:#80b8ef;box-shadow:0 0 0 3px #eaf4ff;outline:0}
-.member-edit-card .member-id-input.is-locked{background:#f1f5f9;cursor:not-allowed}.member-id-help{display:block;margin-top:5px;color:#718096;font-size:11px}.member-id-input{background:#f1f6fb!important;color:#71839a!important}
-.member-status-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.member-status-choice{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid #dce6ef;border-radius:9px;background:#fff;color:#536980;font:inherit}
-.member-status-choice.active{background:#eaf8f0;border-color:#c7ead6;color:#187348}
-.member-status-choice.locked{background:#fff5e8;border-color:#f1dfc3;color:#96600d}
-.member-edit-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid #e7edf4;background:#fbfdff;padding:18px 24px}
-.member-edit-note{font-size:12px;color:#7b8ca0;max-width:520px}
-.member-edit-buttons{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.member-edit-buttons .btn{height:42px;min-width:120px}
-.member-edit-buttons .btn-update{background:#2379c9;color:#fff;border-color:#2379c9}
-.member-edit-buttons .btn-update:hover{background:#1769b5}
-@media(max-width:700px){.member-edit-body{padding:15px}.member-edit-hero{padding:18px}.member-form-grid{grid-template-columns:1fr}.member-section{padding:14px}.member-edit-footer{padding:16px}.member-edit-buttons{width:100%}.member-edit-buttons .btn{flex:1}}
-
-
-/* Layout safety fix: keep Member View/Edit sections full-width inside the page card */
-.member-edit-card{width:100%;max-width:100%;box-sizing:border-box}
-.member-edit-card .member-edit-body{display:block;width:100%;max-width:100%;box-sizing:border-box}
-.member-edit-card .member-section{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
-.member-edit-card .member-form-grid{display:grid;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));box-sizing:border-box}
-.member-edit-card .field{width:100%;min-width:0;box-sizing:border-box}
-.member-edit-card .profile-value{width:100%;min-width:0;box-sizing:border-box}
-.member-edit-card .member-edit-footer{width:100%;box-sizing:border-box}
-@media(max-width:900px){.member-edit-card .member-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.member-edit-card .member-form-grid{grid-template-columns:minmax(0,1fr)}}
-
-
-/* Final full-width layout override */
-html body .ssa-content .page .member-edit-card{
-  display:block !important;
-  width:100% !important;
-  max-width:none !important;
-  min-width:0 !important;
-  grid-template-columns:minmax(0,1fr) !important;
-}
-html body .ssa-content .page .member-edit-card > .member-edit-hero,
-html body .ssa-content .page .member-edit-card > .member-edit-body,
-html body .ssa-content .page .member-edit-card > .member-edit-footer{
-  display:flex;
-  width:100% !important;
-  max-width:none !important;
-  min-width:0 !important;
-  box-sizing:border-box !important;
-}
-html body .ssa-content .page .member-edit-card > .member-edit-body{
-  display:block !important;
-  padding:24px !important;
-}
-html body .ssa-content .page .member-edit-card .member-section{
-  display:block !important;
-  width:100% !important;
-  max-width:none !important;
-  min-width:0 !important;
-  margin:0 0 18px !important;
-  box-sizing:border-box !important;
-}
-html body .ssa-content .page .member-edit-card .member-form-grid{
-  display:grid !important;
-  width:100% !important;
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:16px 18px !important;
-}
-html body .ssa-content .page .member-edit-card .field,
-html body .ssa-content .page .member-edit-card .field input,
-html body .ssa-content .page .member-edit-card .field select,
-html body .ssa-content .page .member-edit-card .field textarea{
-  min-width:0 !important;
-  max-width:100% !important;
-  box-sizing:border-box !important;
-}
-html body .ssa-content .page .member-edit-card .member-edit-note{max-width:520px !important}
-@media(max-width:700px){
- html body .ssa-content .page .member-edit-card .member-form-grid{grid-template-columns:minmax(0,1fr) !important}
- html body .ssa-content .page .member-edit-card > .member-edit-body{padding:15px !important}
-}
-
-
-.member-account-actions{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:20px;padding:16px;border:1px solid #e4ebf3;border-radius:10px;background:#fbfdff}
-.member-account-actions-copy{display:flex;flex-direction:column;gap:3px;min-width:220px}.member-account-actions-copy strong{font-size:13px;color:#344b63;font-weight:600}.member-account-actions-copy span{font-size:12px;color:#718096;max-width:540px}
-.member-account-actions-buttons{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.btn-deactivate{background:#fff5e8;color:#9a5b00;border-color:#f2d8ad}
-.member-confirm-backdrop{position:fixed;inset:0;background:rgba(15,30,48,.48);display:none;align-items:center;justify-content:center;padding:20px;z-index:99999}
-.member-confirm-backdrop.is-open{display:flex}.member-confirm-dialog{width:min(100%,440px);background:#fff;border:1px solid #e1e8f0;border-radius:16px;padding:24px;box-shadow:0 24px 70px rgba(15,30,48,.24)}
-.member-confirm-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#fff0f0;color:#bd3333;font-size:22px;margin-bottom:13px}.member-confirm-dialog h3{margin:0 0 7px;color:#25364b;font-size:19px;font-weight:600}.member-confirm-dialog p{margin:0;color:#64748b;line-height:1.6}.member-confirm-buttons{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
-@media(max-width:700px){.member-account-actions{align-items:stretch}.member-account-actions-buttons{width:100%}.member-account-actions-buttons .btn{flex:1}.member-confirm-buttons .btn{flex:1}}
-
-
-
-/* Definitive fix: global app.css styles forms as grids; the edit form must be a single full-width block. */
-html body .ssa-content .page > .member-edit-card > form,
-html body .ssa-content .page .member-edit-card > form {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-column: 1 / -1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-}
-html body .ssa-content .page .member-edit-card > form > .member-edit-body,
-html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
-  display: flex !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  grid-column: 1 / -1 !important;
-  box-sizing: border-box !important;
-}
-html body .ssa-content .page .member-edit-card > form > .member-edit-body {
-  display: block !important;
-}
-html body .ssa-content .page .member-edit-card > form > .member-edit-footer {
-  justify-content: space-between !important;
-}
-
-
-/* New Member form: bright, page-scoped styling */
-.new-member-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.btn-new-member{background:linear-gradient(135deg,#1675df,#3699ff);color:#fff;border:1px solid #1675df;box-shadow:0 5px 14px rgba(22,117,223,.18);font-weight:700;padding:11px 17px}
-.btn-new-member:hover{filter:brightness(.97);box-shadow:0 7px 18px rgba(22,117,223,.23)}
-.create-member-card{padding:0;overflow:hidden;border-color:#cfe3fb;box-shadow:0 8px 28px rgba(36,105,180,.08)}
-.create-member-hero{padding:23px 25px;background:linear-gradient(115deg,#eaf4ff 0%,#f8fbff 55%,#fff 100%);border-bottom:1px solid #dceafa;display:flex;align-items:center;gap:14px}
-.create-member-icon{width:49px;height:49px;border-radius:15px;background:#d7eaff;color:#1769c2;display:grid;place-items:center;font-size:24px}
-.create-member-hero h2{font-size:22px;color:#155ca8;font-weight:700;margin:0}
-.create-member-hero p{margin:4px 0 0;color:#647d98;font-size:13px}
-.create-member-card{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box}
-.create-member-card > form{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;grid-template-columns:minmax(0,1fr)!important;grid-column:1/-1!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
-.create-member-card .create-member-body{display:block!important;width:100%!important;max-width:none!important;min-width:0!important;padding:24px!important;box-sizing:border-box!important}
-.create-member-section{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box;padding:19px;border:1px solid #e0eafa;border-radius:13px;margin:0 0 18px;background:linear-gradient(180deg,#fff,#fcfdff)}
-.create-member-section h3{margin:0 0 17px;display:flex;align-items:center;gap:10px;color:#1769b7;font-size:15px;font-weight:700}
-.create-member-section h3 span{width:30px;height:30px;display:grid;place-items:center;background:#eaf4ff;border-radius:9px;color:#1769b7}
-.create-member-grid{display:grid!important;width:100%!important;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:15px 18px;box-sizing:border-box}
-.create-member-grid .field{display:flex;flex-direction:column;width:100%;min-width:0;max-width:100%;box-sizing:border-box}
-.create-member-grid .field label{color:#344f6d;font-weight:600}
-.create-member-grid .field input,.create-member-grid .field select,.create-member-grid .field textarea{display:block;min-height:44px;border:1px solid #cbdcf0;border-radius:9px;background:#fff;color:#25364b;font:inherit;padding:11px 12px;width:100%!important;max-width:100%;min-width:0;box-sizing:border-box}
-.create-member-grid .field textarea{min-height:82px;resize:vertical}
-.create-member-grid .field input:focus,.create-member-grid .field select:focus,.create-member-grid .field textarea:focus{outline:none;border-color:#4598ed;box-shadow:0 0 0 3px #e8f3ff}
-.create-member-span-2{grid-column:1/-1}
-.create-member-card > form > .create-member-footer{display:flex!important;width:100%!important;max-width:none!important;min-width:0;grid-column:1/-1!important;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 24px;background:#f8fbff;border-top:1px solid #e1ecf8;box-sizing:border-box}
-.create-member-footer small{color:#6b7f96}
-.create-member-submit{background:#1674d2;color:#fff;border-color:#1674d2;font-weight:700;padding:11px 19px}
-.create-member-submit:hover{background:#105fae}
-.create-member-cancel{background:#fff;color:#52657a;border-color:#d6e1ee}
-@media(max-width:650px){.create-member-card .create-member-body{padding:13px!important}.create-member-section{padding:13px}.create-member-grid{grid-template-columns:minmax(0,1fr)!important}.create-member-span-2{grid-column:auto}.create-member-card > form > .create-member-footer{padding:15px}.create-member-hero{padding:17px}}
-
-</style>
-<style id="ssa-unified-sidebar-style">
-/* Shared System Super Administrator sidebar: based on Home HTML dimensions and colours. */
-.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;background:#fff!important;border-right:1px solid #dce5ef!important;box-shadow:2px 0 12px rgba(16,44,80,.05)!important;display:flex!important;flex-direction:column!important;z-index:10000!important;color:#102c50!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;overflow:hidden!important}
-.ssa-sidebar *{box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important}
-.ssa-sidebar .ssa-brand{display:block!important;flex:0 0 auto!important;padding:16px 18px 13px!important;border-bottom:1px solid #e7edf4!important;background:#fff!important}
-.ssa-sidebar .ssa-brand-title{font-size:16px!important;font-weight:700!important;color:#12355e!important;line-height:1.25!important;letter-spacing:0!important}
-.ssa-sidebar .ssa-brand-subtitle{font-size:12px!important;font-weight:400!important;color:#314b68!important;margin-top:4px!important;line-height:1.3!important}
-.ssa-sidebar .ssa-brand-scope{font-size:10px!important;font-weight:400!important;color:#6f8299!important;margin-top:4px!important;letter-spacing:.4px!important;text-transform:none!important}
-.ssa-sidebar .ssa-nav{padding:8px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;min-height:0!important;display:block!important}
-.ssa-sidebar .ssa-nav-group{font-size:10px!important;font-weight:700!important;color:#8b9aab!important;text-transform:uppercase!important;padding:9px 10px 6px!important;letter-spacing:.7px!important}
-.ssa-sidebar .ssa-nav a,.ssa-sidebar .ssa-nav summary{display:flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important;color:#314b68!important;padding:8px 10px!important;border-radius:8px!important;margin:2px 0!important;font-size:13px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
-.ssa-sidebar .ssa-nav summary::-webkit-details-marker{display:none!important}
-.ssa-sidebar .ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}
-.ssa-sidebar .ssa-nav a:hover,.ssa-sidebar .ssa-nav summary:hover{background:#eef6ff!important;color:#0d65bd!important}
-.ssa-sidebar .ssa-nav a.active,.ssa-sidebar .ssa-nav summary.active{background:#e9f3ff!important;color:#0b67c0!important;font-weight:700!important}
-.ssa-sidebar .ssa-ico{width:18px!important;min-width:18px!important;text-align:center!important;font-size:15px!important;font-weight:400!important;color:inherit!important}
-.ssa-sidebar .ssa-subnav{padding:0 0 4px 27px!important}
-.ssa-sidebar .ssa-subnav a{font-size:12px!important;padding:7px 9px!important;margin:1px 0!important;color:#58728c!important}
-.ssa-sidebar .ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;border-top:1px solid #e7edf4!important;padding:10px 12px!important;background:#fbfdff!important}
-.ssa-sidebar .ssa-profile-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;border:1px solid transparent!important;border-radius:10px!important;padding:7px!important;background:transparent!important;color:#45627e!important;text-align:left!important;font:inherit!important;font-weight:400!important;cursor:pointer!important}
-.ssa-sidebar .ssa-profile-trigger:hover,.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"]{background:#eef6ff!important;border-color:#d7e8fb!important}
-.ssa-sidebar .ssa-avatar{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;background:#e9f3ff!important;display:grid!important;place-items:center!important;color:#4a8bc8!important;font-size:13px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-copy{display:block!important;min-width:0!important;flex:1!important}
-.ssa-sidebar .ssa-profile-name{display:block!important;color:#45627e!important;font-size:12px!important;font-weight:400!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:175px!important}
-.ssa-sidebar .ssa-profile-role{display:block!important;color:#8298b0!important;margin-top:3px!important;font-size:10px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-chevron{margin-left:auto!important;color:#8298b0!important;font-size:11px!important;transition:transform .15s ease!important}
-.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)!important}
-.ssa-sidebar .ssa-profile-dropdown{display:none!important;position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% - 3px)!important;margin:0!important;padding:5px!important;border:1px solid #e1eaf4!important;border-radius:10px!important;background:#fff!important;box-shadow:0 8px 24px rgba(16,44,80,.12)!important;z-index:10001!important}
-.ssa-sidebar .ssa-profile-dropdown.is-open{display:block!important}
-.ssa-sidebar .ssa-profile-dropdown a{display:block!important;padding:10px!important;border-radius:7px!important;text-decoration:none!important;font-size:12px!important;font-weight:400!important;color:#4b7fae!important;background:#f5f9ff!important;margin:2px 0!important}
-.ssa-sidebar .ssa-profile-dropdown a.logout-option{background:#fff3f3!important;color:#df5c66!important}
-.ssa-sidebar .ssa-profile-dropdown a:hover{filter:brightness(.97)!important}
-@media(max-width:650px){.ssa-sidebar{position:relative!important;width:100%!important;height:auto!important;min-height:0!important}.ssa-sidebar .ssa-nav{max-height:60vh}.ssa-sidebar .ssa-profile{margin-top:0!important}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Management System - Bangladesh</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #idCardPrintArea, #idCardPrintArea * {
+                visibility: visible;
+            }
+            #idCardPrintArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-<body>
-<div class="ssa-shell">
-<aside class="ssa-sidebar">
-<div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
-<nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
-<a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/income-management" title="New Income">New Income</a>
-<a href="/system_super_administrator/income-management" title="Income List">Income List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/expense-management" title="New Expense">New Expense</a>
-<a href="/system_super_administrator/expense-management" title="Expense List">Expense List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/meal-management" title="New Meal">New Meal</a>
-<a href="/system_super_administrator/meal-management" title="Meal List">Meal List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/savings-management" title="New Savings">New Savings</a>
-<a href="/system_super_administrator/savings-management" title="Savings List">Savings List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/information-directory" title="New Information">New Information</a>
-<a href="/system_super_administrator/information-directory" title="Information List">Information List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/blood-donor-management" title="New Donor">New Donor</a>
-<a href="/system_super_administrator/blood-donor-management" title="Donor List">Donor List</a>
-<a href="/system_super_administrator/blood-donor-management" title="Blood Request">Blood Request</a>
-<a href="/system_super_administrator/blood-donor-management" title="Reports">Reports</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/branch-management" title="New Branch">New Branch</a>
-<a href="/system_super_administrator/branch-management" title="Branch List">Branch List</a>
-</div></details>
-<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/member-management" title="New Member">New Member</a>
-<a href="/system_super_administrator/member-management" title="Member List">Member List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/financial-management" title="Member Wise">Member Wise</a>
-<a href="/system_super_administrator/financial-management" title="Branch Wise">Branch Wise</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/reports" title="Generate">Generate</a>
-<a href="/system_super_administrator/reports" title="Download XLSX">Download XLSX</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/access-management" title="Member">Member</a>
-<a href="/system_super_administrator/access-management" title="Branch">Branch</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/documentation" title="Writeable / Noteable">Writeable / Noteable</a>
-</div></details>
-<a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
-<div class="ssa-nav-group">Account</div>
-<a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-</nav>
-<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div></aside>
-<div class="ssa-content">
-<main class="page">
-  <header>
-    <div><h1>Member Management</h1><div class="subtitle">View and manage accounts by branch and role.</div></div>
-    <div class="ssa-page-identity"><strong>{{ session.get('username','blue') }}</strong><span>System Super Administrator</span></div>
-  </header>
-  {% if message %}<div class="alert ok">{{ message }}</div>{% endif %}
-  {% if error %}<div class="alert err">{{ error }}</div>{% endif %}
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <section class="card new-member-toolbar">
-    <div><h2 style="margin:0 0 4px;color:#24517d">Member Registration</h2><div class="hint">Create a member account and assign an active branch.</div></div>
-    <a class="btn btn-new-member" href="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">＋ New Member</a>
-  </section>
+    <!-- Header Navigation -->
+    <header class="bg-brand-800 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo & Branding -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('dashboard')">
+                    <div class="bg-white text-brand-800 p-2 rounded-lg font-bold text-xl shadow">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold leading-none">Member Central</h1>
+                        <p class="text-xs text-brand-100 mt-0.5">Bangladesh Member Management System</p>
+                    </div>
+                </div>
 
-  {% if create_open %}
-  <section class="card create-member-card" id="new-member-form">
-    <div class="create-member-hero"><div class="create-member-icon">♟</div><div><h2>Create New Member</h2><p>Member Management / Register Member</p></div></div>
-    <form method="post" enctype="multipart/form-data" action="{{ url_for('system_super_administrator_member_management_bp.page', create=1, branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">
-      <input type="hidden" name="action" value="create_member">
-      <div class="create-member-body">
-        <section class="create-member-section">
-          <h3><span>01</span> Personal Information</h3>
-          <div class="create-member-grid">
-            <div class="field"><label for="new_full_name">Full Name *</label><input id="new_full_name" name="full_name" placeholder="Enter full name" required value="{{ request.form.get('full_name','') if request.method == 'POST' else '' }}"></div>
-            <div class="field"><label for="new_member_id">Member ID</label><input id="new_member_id" name="member_id" placeholder="Leave blank for auto-generated ID" value="{{ request.form.get('member_id','') if request.method == 'POST' else '' }}"><small class="hint">Blank = automatic serial (001, 002...). Admin may enter a unique ID.</small></div>
-            <div class="field"><label for="new_username">Username *</label><input id="new_username" name="username" placeholder="Choose username" required autocomplete="username" value="{{ request.form.get('username','') if request.method == 'POST' else '' }}"></div>
-            <div class="field"><label for="new_gender">Gender</label><select id="new_gender" name="gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
-            <div class="field"><label for="new_dob">Date of Birth</label><input id="new_dob" name="date_of_birth" type="date"></div>
-            <div class="field"><label for="new_blood_group">Blood Group</label><select id="new_blood_group" name="blood_group"><option value="">Select blood group</option>{% for blood in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}<option value="{{ blood }}">{{ blood }}</option>{% endfor %}</select></div>
-          </div>
-        </section>
-        <section class="create-member-section">
-          <h3><span>02</span> Contact Information</h3>
-          <div class="create-member-grid">
-            <div class="field"><label for="new_phone">Phone Number *</label><input id="new_phone" name="phone" type="tel" placeholder="01XXXXXXXXX" pattern="01[0-9]{9}" required value="{{ request.form.get('phone','') if request.method == 'POST' else '' }}"></div>
-            <div class="field"><label for="new_email">Email Address</label><input id="new_email" name="email" type="email" placeholder="member@example.com" value="{{ request.form.get('email','') if request.method == 'POST' else '' }}"></div>
-            <div class="field create-member-span-2"><label for="new_present_address">Present Address</label><textarea id="new_present_address" name="present_address" placeholder="Village, Post Office, Upazila, District"></textarea></div>
-            <div class="field create-member-span-2"><label for="new_permanent_address">Permanent Address</label><textarea id="new_permanent_address" name="permanent_address" placeholder="Enter permanent address"></textarea></div>
-          </div>
-        </section>
-        <section class="create-member-section">
-          <h3><span>03</span> Organization Information</h3>
-          <div class="create-member-grid">
-            <div class="field"><label for="new_branch">Branch Name *</label><select id="new_branch" name="branch_name" required><option value="">Select active branch</option>{% for b in active_branches %}<option value="{{ b }}">{{ b }}</option>{% endfor %}</select>{% if not active_branches %}<small class="hint">No active branch was found in the database. Activate/create a branch first.</small>{% endif %}</div>
-            <div class="field"><label for="new_department">Department</label><select id="new_department" name="department"><option value="">Select department / role</option>{% for r in department_roles %}<option value="{{ r }}">{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
-            <div class="field"><label for="new_joining_date">Joining Date *</label><input id="new_joining_date" name="joining_date" type="date" required value="{{ request.form.get('joining_date','') if request.method == 'POST' else '' }}"></div>
-            <div class="field"><label for="new_status">Member Status</label><select id="new_status" name="status"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
-          </div>
-        </section>
-        <section class="create-member-section">
-          <h3><span>04</span> Account &amp; Security</h3>
-          <div class="create-member-grid">
-            <div class="field"><label for="new_password">Password *</label><input id="new_password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></div>
-            <div class="field"><label for="new_confirm_password">Confirm Password *</label><input id="new_confirm_password" name="confirm_password" type="password" minlength="8" autocomplete="new-password" placeholder="Re-enter password" required></div>
-            <div class="field create-member-span-2"><label for="new_profile_photo">Profile Photo</label><input id="new_profile_photo" name="profile_photo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png"><small class="hint">JPG, PNG · Optional</small></div>
-          </div>
-        </section>
-      </div>
-      <div class="create-member-footer"><small>* Required fields. Account role is fixed to MEMBER; the selected role is saved as Department.</small><div class="filter-actions"><a class="btn create-member-cancel" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Cancel</a><button class="btn create-member-submit" type="submit">＋ Create Member</button></div></div>
-    </form>
-  </section>
-  {% endif %}
-
-  <section class="card">
-    <div class="card-heading"><h2>Account List Filters</h2><span class="hint">Choose a branch to display accounts.</span></div>
-    <form method="get" class="filters">
-      <div class="field"><label for="branch">Branch <span aria-hidden="true">*</span></label><select id="branch" name="branch" required><option value="">Select branch</option>{% for b in branches %}<option value="{{ b }}" {% if filters.branch == b %}selected{% endif %}>{{ b }}</option>{% endfor %}</select></div>
-      <div class="field"><label for="search">Search</label><input id="search" name="search" value="{{ filters.search }}" placeholder="Name, username, email, phone"></div>
-      <div class="field"><label for="role">Role</label><select id="role" name="role"><option value="">All roles</option>{% for r in roles %}<option value="{{ r }}" {% if filters.role|upper == r %}selected{% endif %}>{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
-      <div class="field"><label for="status">Status</label><select id="status" name="status"><option value="">All statuses</option>{% for s in statuses %}<option value="{{ s }}" {% if filters.status|lower == s|lower %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
-      <div class="filter-actions"><button class="btn btn-blue" type="submit">Apply filters</button><a class="btn btn-neutral" href="/system_super_administrator/member-management">Reset</a></div>
-    </form>
-    <div class="required-note">For privacy and accurate branch-level results, accounts are shown only after a branch is selected.</div>
-  </section>
-
-  {% if view_record %}
-  <section class="card member-edit-card member-view-card">
-    <div class="member-edit-hero">
-      <div class="member-edit-title"><div class="member-edit-avatar">♟</div><div><h2>Member Profile</h2><p>View Member Information · Read-only profile</p></div></div>
-      <span class="member-edit-admin">Admin</span>
-    </div>
-    <div class="member-edit-body">
-      <section class="member-section">
-        <h3 class="member-section-title"><span>♙</span>Personal Information</h3>
-        <div class="member-form-grid">
-          <div class="field"><label>Member Name</label><div class="profile-value">{{ view_record.get('full_name', view_record.get('name','—')) or '—' }}</div></div>
-          <div class="field"><label>Mobile Number</label><div class="profile-value">{{ view_record.get('phone', view_record.get('mobile','—')) or '—' }}</div></div>
-          <div class="field"><label>Email Address</label><div class="profile-value">{{ view_record.get('email','—') or '—' }}</div></div>
-          <div class="field"><label>Member ID</label><div class="profile-value">{{ view_record.get('member_id', view_record.get('username','—')) or '—' }}</div></div>
-          <div class="field"><label>Username</label><div class="profile-value">{{ view_record.get('username','—') or '—' }}</div></div>
-          <div class="field"><label>Blood Group</label><div class="profile-value">{{ view_record.get('blood_group','—') or '—' }}</div></div>
-        </div>
-      </section>
-      <section class="member-section">
-        <h3 class="member-section-title"><span>⌖</span>Address Information</h3>
-        <div class="member-form-grid">
-          <div class="field"><label>Present Address</label><div class="profile-value profile-value-multiline">{{ view_record.get('present_address','—') or '—' }}</div></div>
-          <div class="field"><label>Permanent Address</label><div class="profile-value profile-value-multiline">{{ view_record.get('permanent_address','—') or '—' }}</div></div>
-          <div class="field"><label>Branch</label><div class="profile-value">{{ view_record.get('branch_name', view_record.get('branch', view_record.get('branchName','—'))) or '—' }}</div></div>
-          <div class="field"><label>Department</label><div class="profile-value">{{ view_record.get('department', view_record.get('department_name','—')) or '—' }}</div></div>
-        </div>
-      </section>
-      <section class="member-section">
-        <h3 class="member-section-title"><span>⚙</span>Account Information</h3>
-        <div class="member-form-grid">
-          <div class="field"><label>Role</label><div class="profile-value">{{ (view_record.get('role','Unknown')|string).replace('_',' ').title() }}</div></div>
-          <div class="field"><label>Account Status</label><div class="profile-value">{{ view_record.get('status','Active') or '—' }}</div></div>
-          <div class="field"><label>Approval Status</label><div class="profile-value">{{ view_record.get('approval_status','—') or '—' }}</div></div>
-          <div class="field"><label>Account Lock</label><div class="profile-value">{% if view_record.get('locked', view_record.get('is_locked', False)) %}🔒 Locked{% else %}🔓 Unlocked{% endif %}</div></div>
-        </div>
-      </section>
-    </div>
-    <div class="member-edit-footer">
-      <div class="member-edit-note">Read-only view. No information can be changed from this screen.</div>
-      <div class="member-edit-buttons"><a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Back to Member List</a><a class="btn btn-blue" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=view_record.get('_id','')) }}">Edit Member</a></div>
-    </div>
-  </section>
-  {% endif %}
-
-  {% if edit_record %}
-  <section class="card member-edit-card">
-    <div class="member-edit-hero">
-      <div class="member-edit-title"><div class="member-edit-avatar">♟</div><div><h2>Member Edit</h2><p>Member Profile · View &amp; Edit Member Information</p></div></div>
-      <span class="member-edit-admin">Admin</span>
-    </div>
-    <form method="post" action="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=edit_record.get('_id','')) }}">
-      <input type="hidden" name="action" value="update">
-      <input type="hidden" name="record_id" value="{{ edit_record.get('_id','') }}">
-      <div class="member-edit-body">
-        <section class="member-section">
-          <h3 class="member-section-title"><span>♙</span>Personal Information</h3>
-          <div class="member-form-grid">
-            <div class="field"><label for="sample_member_name">Member Name</label><input id="sample_member_name" name="full_name" value="{{ edit_record.get('full_name', edit_record.get('name','')) }}" placeholder="Enter member name"></div>
-            <div class="field"><label for="sample_mobile">Mobile Number</label><input id="sample_mobile" name="phone" value="{{ edit_record.get('phone', edit_record.get('mobile','')) }}" placeholder="01XXXXXXXXX"></div>
-            <div class="field"><label for="sample_email">Email Address</label><input id="sample_email" name="email" type="email" value="{{ edit_record.get('email','') }}" placeholder="member@example.com"></div>
-            {% if edit_record.get('role','')|upper == 'MEMBER' %}
-            <div class="field member-id-mode-field">
-              <label for="member_id_mode">Member ID Mode</label>
-              <select id="member_id_mode" name="member_id_mode" onchange="toggleMemberIdMode()">
-                <option value="automatic" {% if edit_record.get('member_id_mode','automatic')|lower != 'manual' %}selected{% endif %}>Automatic — Locked</option>
-                <option value="manual" {% if edit_record.get('member_id_mode','')|lower == 'manual' %}selected{% endif %}>Admin Manual — Editable</option>
-              </select>
+                <!-- Navigation Tabs -->
+                <nav class="flex space-x-2">
+                    <button id="nav-dashboard-btn" onclick="switchView('dashboard')" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-brand-900 text-white flex items-center gap-2">
+                        <i class="fa-solid fa-address-book"></i>
+                        <span class="hidden sm:inline">Member Directory</span>
+                    </button>
+                    <button id="nav-register-btn" onclick="openRegistrationForm()" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-brand-600 hover:bg-brand-500 text-white flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Register Member</span>
+                    </button>
+                </nav>
             </div>
-            <div class="field">
-              <label for="sample_member_id">Member ID</label>
-              <input id="sample_member_id" name="member_id" class="member-id-input" value="{{ edit_record.get('member_id','') }}" {% if edit_record.get('member_id_mode','automatic')|lower != 'manual' %}readonly{% endif %} required>
-              <small id="member-id-help" class="member-id-help">{% if edit_record.get('member_id_mode','')|lower == 'manual' %}Admin can edit this unique ID.{% else %}Automatically assigned and locked.{% endif %}</small>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- Notification / Toast Container -->
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 1: MEMBER DASHBOARD & LIST            -->
+        <!-- ========================================== -->
+        <section id="dashboard-view" class="space-y-6">
+
+            <!-- KPI Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Total Members</span>
+                        <i class="fa-solid fa-users text-brand-600"></i>
+                    </div>
+                    <div id="stat-total" class="text-2xl font-bold text-slate-800">0</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Active</span>
+                        <i class="fa-solid fa-user-check text-emerald-500"></i>
+                    </div>
+                    <div id="stat-active" class="text-2xl font-bold text-emerald-600">0</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Male</span>
+                        <i class="fa-solid fa-mars text-blue-500"></i>
+                    </div>
+                    <div id="stat-male" class="text-2xl font-bold text-blue-600">0</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Female</span>
+                        <i class="fa-solid fa-venus text-pink-500"></i>
+                    </div>
+                    <div id="stat-female" class="text-2xl font-bold text-pink-600">0</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Blood Donors</span>
+                        <i class="fa-solid fa-droplet text-red-500"></i>
+                    </div>
+                    <div id="stat-donors" class="text-2xl font-bold text-red-600">0</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all">
+                    <div class="flex items-center justify-between text-slate-500 mb-1">
+                        <span class="text-xs font-semibold uppercase">Freedom Fighters</span>
+                        <i class="fa-solid fa-medal text-amber-500"></i>
+                    </div>
+                    <div id="stat-ff" class="text-2xl font-bold text-amber-600">0</div>
+                </div>
             </div>
-            {% else %}
-            <div class="field"><label>Member ID</label><input class="member-id-input" value="{{ edit_record.get('member_id','Not applicable for this role') }}" readonly></div>
-            {% endif %}
-            <div class="field"><label for="sample_blood_group">Blood Group</label><select id="sample_blood_group" name="blood_group"><option value="">Select blood group</option>{% for bg in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}<option value="{{ bg }}" {% if edit_record.get('blood_group','') == bg %}selected{% endif %}>{{ bg }}</option>{% endfor %}</select></div>
-          </div>
-        </section>
-        <section class="member-section">
-          <h3 class="member-section-title"><span>⌖</span>Address Information</h3>
-          <div class="member-form-grid">
-            <div class="field"><label for="sample_present_address">Present Address</label><textarea id="sample_present_address" name="present_address" placeholder="Enter present address">{{ edit_record.get('present_address','') }}</textarea></div>
-            <div class="field"><label for="sample_permanent_address">Permanent Address</label><textarea id="sample_permanent_address" name="permanent_address" placeholder="Enter permanent address">{{ edit_record.get('permanent_address','') }}</textarea></div>
-          </div>
-        </section>
-        <section class="member-section">
-          <h3 class="member-section-title"><span>⚙</span>Account Information</h3>
-          <div class="member-form-grid">
-            <div class="field"><label for="sample_role">Role</label><select id="sample_role" name="role">{% for r in roles %}<option value="{{ r }}" {% if edit_record.get('role','')|upper == r %}selected{% endif %}>{{ r.replace('_',' ').title() }}</option>{% endfor %}</select></div>
-            <div class="field"><label for="sample_account_status">Account Status</label><select id="sample_account_status" name="status"><option value="Active" {% if edit_record.get('status','Active')|lower == 'active' %}selected{% endif %}>Active</option><option value="Inactive" {% if edit_record.get('status','')|lower == 'inactive' %}selected{% endif %}>Inactive</option><option value="Suspended" {% if edit_record.get('status','')|lower == 'suspended' %}selected{% endif %}>Suspended</option></select></div>
-            <div class="field"><label for="sample_approval_status">Approval Status</label><select id="sample_approval_status" name="approval_status"><option value="Approved" {% if edit_record.get('approval_status','Approved')|lower == 'approved' %}selected{% endif %}>Approved</option><option value="Pending" {% if edit_record.get('approval_status','')|lower == 'pending' %}selected{% endif %}>Pending</option><option value="Rejected" {% if edit_record.get('approval_status','')|lower == 'rejected' %}selected{% endif %}>Rejected</option></select></div>
-            <div class="field"><label for="sample_account_locked">Account Lock</label><select id="sample_account_locked" name="account_locked"><option value="false" {% if not edit_record.get('account_locked',False) %}selected{% endif %}>🔓 Unlocked</option><option value="true" {% if edit_record.get('account_locked',False) %}selected{% endif %}>🔒 Locked</option></select></div>
-          </div>
-          <div class="member-account-actions">
-            <div class="member-account-actions-copy"><strong>Account Actions</strong><span>Deactivate to temporarily disable access, or delete this account permanently.</span></div>
-            <div class="member-account-actions-buttons">
-              {% if edit_record.get('status','Active')|lower == 'inactive' %}
-              <button class="btn btn-green" type="button" onclick="openMemberActionConfirm('activate')">Activate Account</button>
-              {% else %}
-              <button class="btn btn-deactivate" type="button" onclick="openMemberActionConfirm('deactivate')">Deactivate Account</button>
-              {% endif %}
-              <button class="btn btn-red" type="button" onclick="openMemberActionConfirm('delete')">Delete Account</button>
+
+            <!-- Controls: Filters, Search, Layout & Export -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <!-- Search Input -->
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Search by name, phone, NID, profession..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all">
+                    </div>
+
+                    <!-- Layout Toggle & Export Actions -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <!-- Display View Switches -->
+                        <div class="bg-slate-100 p-1 rounded-lg border border-slate-200 flex items-center">
+                            <button id="view-table-btn" onclick="setViewMode('table')" class="px-3 py-1.5 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-table-list"></i> Table
+                            </button>
+                            <button id="view-grid-btn" onclick="setViewMode('grid')" class="px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-800 transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-border-all"></i> Cards
+                            </button>
+                        </div>
+
+                        <!-- Data Export Buttons -->
+                        <div class="dropdown relative inline-block text-left">
+                            <button onclick="toggleExportMenu()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-300 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-download"></i> Export <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                            </button>
+                            <div id="export-menu" class="hidden absolute right-0 mt-2 w-36 bg-white border border-slate-200 rounded-lg shadow-lg z-20 overflow-hidden">
+                                <a href="#" onclick="exportData('csv')" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 border-b border-slate-100"><i class="fa-solid fa-file-csv mr-2 text-emerald-600"></i>CSV File</a>
+                                <a href="#" onclick="exportData('json')" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"><i class="fa-solid fa-file-code mr-2 text-blue-600"></i>JSON Data</a>
+                            </div>
+                        </div>
+
+                        <button onclick="resetFilters()" class="px-3 py-2 text-xs font-medium text-slate-600 hover:text-red-600 transition-colors">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dropdown Filters Bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2 border-t border-slate-100">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">District</label>
+                        <select id="filter-district" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500">
+                            <option value="">All Districts</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Blood Group</label>
+                        <select id="filter-blood" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500">
+                            <option value="">All Groups</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Gender</label>
+                        <select id="filter-gender" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500">
+                            <option value="">All Genders</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Organization">Organization</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">ID Type</label>
+                        <select id="filter-idtype" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500">
+                            <option value="">All ID Types</option>
+                            <option value="NID">NID</option>
+                            <option value="Passport">Passport</option>
+                            <option value="Birth Certificate">Birth Certificate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Special Status</label>
+                        <select id="filter-special" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg p-2 focus:ring-1 focus:ring-brand-500">
+                            <option value="">All Statuses</option>
+                            <option value="Freedom Fighter">Freedom Fighter</option>
+                            <option value="Donor">Donor Member</option>
+                            <option value="Executive">Executive Member</option>
+                            <option value="Life Member">Life Member</option>
+                            <option value="Student">Student</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-          </div>
+
+            <!-- Member Listing Container -->
+            <div id="members-container">
+                <!-- Table View Mode -->
+                <div id="table-wrapper" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-600 border-b border-slate-200 text-xs font-semibold uppercase">
+                                <tr>
+                                    <th class="px-4 py-3.5">Member</th>
+                                    <th class="px-4 py-3.5">Identity / ID</th>
+                                    <th class="px-4 py-3.5">Contact</th>
+                                    <th class="px-4 py-3.5">Location</th>
+                                    <th class="px-4 py-3.5">Profession</th>
+                                    <th class="px-4 py-3.5">Blood Group</th>
+                                    <th class="px-4 py-3.5 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="member-table-body" class="divide-y divide-slate-100">
+                                <!-- Dynamic rows insertion -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Grid View Mode (Hidden by default) -->
+                <div id="grid-wrapper" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic cards insertion -->
+                </div>
+
+                <!-- Empty State View -->
+                <div id="empty-state" class="hidden bg-white p-12 rounded-xl border border-slate-200 text-center space-y-3">
+                    <i class="fa-solid fa-users-slash text-4xl text-slate-300"></i>
+                    <h3 class="text-base font-semibold text-slate-700">No Members Found</h3>
+                    <p class="text-xs text-slate-500 max-w-sm mx-auto">No results matching your query or filter parameters. Try clearing your search parameters.</p>
+                    <button onclick="resetFilters()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 text-brand-700 hover:bg-brand-100 text-xs font-semibold rounded-lg transition-colors">
+                        Reset Filters
+                    </button>
+                </div>
+            </div>
         </section>
-      </div>
-      <div class="member-edit-footer">
-        <div class="member-edit-note">Automatic IDs are server-controlled. Manual IDs must be unique and are saved to MongoDB.</div>
-        <div class="member-edit-buttons"><a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status) }}">Back</a><button class="btn btn-update" type="submit">Update Member</button></div>
-      </div>
-    </form>
-  </section>
-  <script>
-  function toggleMemberIdMode(){
-    const mode=document.getElementById('member_id_mode');
-    const id=document.getElementById('sample_member_id');
-    const help=document.getElementById('member-id-help');
-    if(!mode||!id)return;
-    const automatic=mode.value==='automatic';
-    id.readOnly=automatic;
-    id.required=!automatic;
-    id.classList.toggle('is-locked',automatic);
-    help.textContent=automatic?'Automatically assigned and locked.':'Admin can edit this unique ID.';
-    if(automatic) id.value={{ edit_record.get('member_id','')|tojson }};
-  }
-  </script>
-  <div id="member-action-confirm" class="member-confirm-backdrop" role="dialog" aria-modal="true" aria-labelledby="member-action-title" aria-describedby="member-action-description">
-    <div class="member-confirm-dialog">
-      <div class="member-confirm-icon" id="member-action-icon">!</div>
-      <h3 id="member-action-title">Confirm account action</h3>
-      <p id="member-action-description">Are you sure you want to continue?</p>
-      <div class="member-confirm-buttons">
-        <button class="btn btn-neutral" type="button" onclick="closeMemberActionConfirm()">No, Cancel</button>
-        <button class="btn btn-red" id="member-action-yes" type="button" onclick="confirmMemberAction()">Yes, Continue</button>
-      </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: MULTI-STEP REGISTRATION FORM       -->
+        <!-- ========================================== -->
+        <section id="form-view" class="hidden space-y-6">
+            <!-- Form Header & Return Nav -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div>
+                    <h2 id="form-title" class="text-xl font-bold text-slate-800">New Member Registration</h2>
+                    <p class="text-xs text-slate-500">Fill in all details to create or update a profile.</p>
+                </div>
+                <button onclick="switchView('dashboard')" class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                </button>
+            </div>
+
+            <!-- Step Progress Indicator -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center max-w-3xl mx-auto relative">
+                    <!-- Progress Bar Line -->
+                    <div class="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0"></div>
+                    <div id="step-progress-bar" class="absolute top-1/2 left-0 h-1 bg-brand-600 -translate-y-1/2 z-0 transition-all duration-300" style="width: 0%;"></div>
+
+                    <!-- Step Indicators -->
+                    <button type="button" onclick="goToStep(1)" class="step-indicator z-10 flex flex-col items-center gap-1 group focus:outline-none">
+                        <div id="step-node-1" class="w-8 h-8 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center ring-4 ring-white shadow transition-all">1</div>
+                        <span class="text-[11px] font-semibold text-brand-700 hidden sm:inline">Identity</span>
+                    </button>
+                    <button type="button" onclick="goToStep(2)" class="step-indicator z-10 flex flex-col items-center gap-1 group focus:outline-none">
+                        <div id="step-node-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center ring-4 ring-white transition-all">2</div>
+                        <span class="text-[11px] font-semibold text-slate-500 hidden sm:inline">Personal</span>
+                    </button>
+                    <button type="button" onclick="goToStep(3)" class="step-indicator z-10 flex flex-col items-center gap-1 group focus:outline-none">
+                        <div id="step-node-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center ring-4 ring-white transition-all">3</div>
+                        <span class="text-[11px] font-semibold text-slate-500 hidden sm:inline">Contact</span>
+                    </button>
+                    <button type="button" onclick="goToStep(4)" class="step-indicator z-10 flex flex-col items-center gap-1 group focus:outline-none">
+                        <div id="step-node-4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center ring-4 ring-white transition-all">4</div>
+                        <span class="text-[11px] font-semibold text-slate-500 hidden sm:inline">Address</span>
+                    </button>
+                    <button type="button" onclick="goToStep(5)" class="step-indicator z-10 flex flex-col items-center gap-1 group focus:outline-none">
+                        <div id="step-node-5" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center ring-4 ring-white transition-all">5</div>
+                        <span class="text-[11px] font-semibold text-slate-500 hidden sm:inline">Profession</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Registration Form Element -->
+            <form id="member-form" onsubmit="handleFormSubmit(event)" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                <input type="hidden" id="field-id" value="">
+
+                <!-- STEP 1: Basic Identity Information -->
+                <div id="form-step-1" class="form-step space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card text-brand-600"></i> Step 1: Basic Identity Information
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name (English) <span class="text-red-500">*</span></label>
+                            <input type="text" id="field-name" required placeholder="e.g. Md. Rafiqul Islam" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Name in Local Language / Bangla</label>
+                            <input type="text" id="field-name-bn" placeholder="e.g. মোঃ রফিকুল ইসলাম" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Gender <span class="text-red-500">*</span></label>
+                            <select id="field-gender" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Organization">Organization</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">National Identity Document Type <span class="text-red-500">*</span></label>
+                            <select id="field-id-type" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="NID">National ID (NID)</option>
+                                <option value="Passport">Passport</option>
+                                <option value="Birth Certificate">Digital Birth Certificate</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Document Identification Number <span class="text-red-500">*</span></label>
+                            <input type="text" id="field-id-number" required placeholder="e.g. 19901234567890" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Personal & Family Information -->
+                <div id="form-step-2" class="form-step hidden space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-brand-600"></i> Step 2: Personal & Family Information
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                            <input type="date" id="field-dob" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Blood Group <span class="text-red-500">*</span></label>
+                            <select id="field-blood" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Religion</label>
+                            <select id="field-religion" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Islam">Islam</option>
+                                <option value="Hinduism">Hinduism</option>
+                                <option value="Buddhism">Buddhism</option>
+                                <option value="Christianity">Christianity</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Highest Educational Level</label>
+                            <select id="field-education" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Secondary/SSC">Secondary / SSC</option>
+                                <option value="Higher Secondary/HSC">Higher Secondary / HSC</option>
+                                <option value="Bachelor Degree">Bachelor Degree (Honours)</option>
+                                <option value="Master Degree">Master Degree</option>
+                                <option value="Doctorate/PhD">Doctorate / PhD</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Membership Status</label>
+                            <select id="field-status" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Pending">Pending Approval</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Special Category Status</label>
+                            <select id="field-special" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="General">General Member</option>
+                                <option value="Freedom Fighter">Freedom Fighter</option>
+                                <option value="Donor">Donor Member</option>
+                                <option value="Executive">Executive Member</option>
+                                <option value="Life Member">Life Member</option>
+                                <option value="Student">Student</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Father's Name</label>
+                            <input type="text" id="field-father" placeholder="Father's Full Name" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Mother's Name</label>
+                            <input type="text" id="field-mother" placeholder="Mother's Full Name" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Marital Status</label>
+                            <select id="field-marital" onchange="toggleSpouseField()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
+                            </select>
+                        </div>
+                        <div id="spouse-wrapper" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Spouse Name</label>
+                            <input type="text" id="field-spouse" placeholder="Spouse Full Name" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div id="marriage-wrapper" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Marriage Anniversary Date</label>
+                            <input type="date" id="field-marriage-date" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Contact Details -->
+                <div id="form-step-3" class="form-step hidden space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-phone text-brand-600"></i> Step 3: Contact Information
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Primary Mobile Number <span class="text-red-500">*</span></label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-300 bg-slate-100 text-slate-500 text-xs font-semibold">+880</span>
+                                <input type="tel" id="field-mobile-1" required placeholder="1700000000" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-r-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Secondary Mobile Number</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-300 bg-slate-100 text-slate-500 text-xs font-semibold">+880</span>
+                                <input type="tel" id="field-mobile-2" placeholder="1800000000" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-r-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Primary Email Address</label>
+                            <input type="email" id="field-email-1" placeholder="member@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Secondary Email Address</label>
+                            <input type="email" id="field-email-2" placeholder="alternate@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Preferred Calling Time</label>
+                            <select id="field-call-time" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Anytime">Anytime</option>
+                                <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                                <option value="Afternoon (12 PM - 5 PM)">Afternoon (12 PM - 5 PM)</option>
+                                <option value="Evening (5 PM - 9 PM)">Evening (5 PM - 9 PM)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Communication Preference</label>
+                            <div class="flex items-center gap-4 py-2">
+                                <label class="inline-flex items-center text-xs text-slate-700 cursor-pointer">
+                                    <input type="checkbox" value="SMS" class="field-pref rounded text-brand-600 focus:ring-brand-500" checked>
+                                    <span class="ml-1.5">SMS</span>
+                                </label>
+                                <label class="inline-flex items-center text-xs text-slate-700 cursor-pointer">
+                                    <input type="checkbox" value="Email" class="field-pref rounded text-brand-600 focus:ring-brand-500" checked>
+                                    <span class="ml-1.5">Email</span>
+                                </label>
+                                <label class="inline-flex items-center text-xs text-slate-700 cursor-pointer">
+                                    <input type="checkbox" value="Phone Call" class="field-pref rounded text-brand-600 focus:ring-brand-500">
+                                    <span class="ml-1.5">Phone Call</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Address Details -->
+                <div id="form-step-4" class="form-step hidden space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-brand-600"></i> Step 4: Residential & Geographical Addresses
+                    </h3>
+
+                    <!-- Present Address Block -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Present Address</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Country</label>
+                                <input type="text" id="field-present-country" value="Bangladesh" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">District <span class="text-red-500">*</span></label>
+                                <select id="field-present-district" required onchange="populateUpazilas('present')" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                                    <!-- Dynamic District Dropdown -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Thana / Upazila <span class="text-red-500">*</span></label>
+                                <select id="field-present-upazila" required class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                                    <option value="">Select Upazila</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Street Address / Union / Village / House</label>
+                                <input type="text" id="field-present-street" placeholder="House 12, Road 4, Sector 3..." class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permanent Address Block -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Permanent Address</h4>
+                            <label class="inline-flex items-center text-xs text-brand-700 font-semibold cursor-pointer">
+                                <input type="checkbox" id="field-same-address" onchange="copyAddress()" class="rounded text-brand-600 focus:ring-brand-500">
+                                <span class="ml-1.5">Same as Present Address</span>
+                            </label>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Country</label>
+                                <input type="text" id="field-perm-country" value="Bangladesh" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">District</label>
+                                <select id="field-perm-district" onchange="populateUpazilas('perm')" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                                    <!-- Dynamic District Dropdown -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Thana / Upazila</label>
+                                <select id="field-perm-upazila" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                                    <option value="">Select Upazila</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Street Address / Union / Village / House</label>
+                                <input type="text" id="field-perm-street" placeholder="Village name, Post code..." class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GPS Coordinates (Optional) -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">GPS Coordinates (Latitude, Longitude)</label>
+                        <input type="text" id="field-gps" placeholder="e.g. 23.8103, 90.4125" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- STEP 5: Profession & Additional Information -->
+                <div id="form-step-5" class="form-step hidden space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-briefcase text-brand-600"></i> Step 5: Profession & Notes
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Occupation / Profession</label>
+                            <input type="text" id="field-occupation" placeholder="e.g. Software Engineer, Doctor, Business" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Designation / Title</label>
+                            <input type="text" id="field-designation" placeholder="e.g. Senior Officer, Director" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Organization / Employer Name</label>
+                            <input type="text" id="field-institution" placeholder="e.g. Acme Corp Bangladesh" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Workplace Address</label>
+                            <input type="text" id="field-workplace" placeholder="Work office location..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Additional Notes / Information</label>
+                            <textarea id="field-notes" rows="3" placeholder="Enter any extra details, skills, or remarks..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Controls Footer -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                    <button type="button" id="prev-step-btn" onclick="nextStep(-1)" class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Previous
+                    </button>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="next-step-btn" onclick="nextStep(1)" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-1 shadow-sm">
+                            Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                        </button>
+                        <button type="submit" id="submit-btn" class="hidden px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Member Profile
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: FULL MEMBER PROFILE VIEW          -->
+    <!-- ========================================== -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100">
+            <div id="profile-modal-content">
+                <!-- Dynamic Content Insertion -->
+            </div>
+        </div>
     </div>
-  </div>
-  <script>
-  let pendingMemberAction = null;
-  function openMemberActionConfirm(action){
-    pendingMemberAction = action;
-    const modal=document.getElementById('member-action-confirm');
-    const title=document.getElementById('member-action-title');
-    const description=document.getElementById('member-action-description');
-    const yes=document.getElementById('member-action-yes');
-    const icon=document.getElementById('member-action-icon');
-    if(action==='delete'){
-      title.textContent='Delete this account permanently?';
-      description.textContent='This will permanently delete the account from MongoDB. This action cannot be undone. Choose Yes to delete or No to cancel.';
-      yes.textContent='Yes, Delete'; icon.textContent='!';
-    }else if(action==='deactivate'){
-      title.textContent='Deactivate this account?';
-      description.textContent='This account will be marked Inactive and access should be disabled. You can cancel now by choosing No.';
-      yes.textContent='Yes, Deactivate'; icon.textContent='!';
-    }else{
-      title.textContent='Activate this account?';
-      description.textContent='This account will be marked Active again. Do you want to continue?';
-      yes.textContent='Yes, Activate'; icon.textContent='✓';
-    }
-    modal.classList.add('is-open');
-    yes.focus();
-  }
-  function closeMemberActionConfirm(){pendingMemberAction=null;document.getElementById('member-action-confirm').classList.remove('is-open');}
-  function confirmMemberAction(){
-    if(!pendingMemberAction)return;
-    const form=document.querySelector('.member-edit-card form');
-    const actionInput=form&&form.querySelector('input[name="action"]');
-    if(!form||!actionInput)return;
-    actionInput.value=pendingMemberAction;
-    form.querySelectorAll('input,select,textarea,button').forEach(el=>{if(el.name!=='action'&&el.name!=='record_id')el.disabled=true;});
-    form.submit();
-  }
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMemberActionConfirm();});
-  document.getElementById('member-action-confirm')?.addEventListener('click',function(e){if(e.target===this)closeMemberActionConfirm();});
-  </script>
-  {% endif %}
 
-  <section class="card">
-    <div class="card-heading"><h2>Accounts</h2><span class="hint">{% if filters.branch %}Branch: {{ filters.branch }} · {{ records|length }} record(s){% else %}No branch selected{% endif %}</span></div>
-    {% if not filters.branch %}
-      <div class="empty-state"><strong>Select a branch to continue</strong>Choose a branch above, then apply filters to view accounts for that branch.</div>
-    {% else %}
-      <div class="table-wrap">
-        <table class="member-table">
-          <thead><tr><th>SL</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Branch</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody>
-          {% for r in records %}
-            {% set role_name = (r.get('role','Unknown')|string).replace('_',' ').title() %}
-            {% set state = r.get('status','Active')|string %}
-            <tr>
-              <td>{{ loop.index }}</td>
-              <td>{{ r.get('full_name', r.get('name','—')) }}</td>
-              <td>{{ r.get('username','—') }}</td>
-              <td>{{ r.get('email','—') or '—' }}</td>
-              <td>{{ r.get('phone','—') or '—' }}</td>
-              <td>{{ r.get('branch_name', r.get('branch', r.get('branchName','—'))) or '—' }}</td>
-              <td><span class="role-pill">{{ role_name }}</span></td>
-              <td><span class="status-pill {% if state|lower == 'active' %}status-active{% elif state|lower == 'inactive' %}status-inactive{% else %}status-suspended{% endif %}">{{ state }}</span></td>
-              <td><div class="actions">
-                <a class="btn btn-neutral" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, view=r.get('_id','')) }}">View</a>
-                <a class="btn btn-blue" href="{{ url_for('system_super_administrator_member_management_bp.page', branch=filters.branch, search=filters.search, role=filters.role, status=filters.status, edit=r.get('_id','')) }}">Edit</a>
-              </div></td>
-            </tr>
-          {% else %}
-            <tr><td colspan="9"><div class="empty-state"><strong>No accounts found</strong>Try another search or filter for this branch.</div></td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% endif %}
-  </section>
-</main>
-</div></div>
+    <!-- ========================================== -->
+    <!-- MODAL 2: PRINTABLE ID CARD                 -->
+    <!-- ========================================== -->
+    <div id="idcard-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                <h3 class="font-bold text-slate-800">Digital Member ID Card</h3>
+                <button onclick="closeModal('idcard-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
 
-<script>
-(function () {
-  const profileMenu = document.getElementById('ssaProfileMenu');
-  const profileToggle = document.getElementById('ssaProfileToggle');
-  const profileDropdown = document.getElementById('ssaProfileDropdown');
-  if (!profileMenu || !profileToggle || !profileDropdown) return;
+            <!-- ID Card View Container -->
+            <div id="idCardPrintArea" class="bg-gradient-to-br from-brand-800 to-brand-900 text-white p-6 rounded-2xl shadow-xl space-y-4 border-2 border-amber-400 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                
+                <!-- Card Header -->
+                <div class="flex justify-between items-start border-b border-brand-700/60 pb-3">
+                    <div>
+                        <h4 class="font-bold text-sm tracking-wider uppercase">Member Central</h4>
+                        <p class="text-[10px] text-brand-200">Official Identity Card</p>
+                    </div>
+                    <span class="bg-amber-400 text-slate-900 font-bold text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">Verified</span>
+                </div>
 
-  function closeProfileMenu() {
-    profileMenu.classList.remove('is-open');
-    profileToggle.setAttribute('aria-expanded', 'false');
-  }
+                <!-- Card Body -->
+                <div class="flex items-center gap-4 py-2">
+                    <div class="w-20 h-20 bg-white/10 rounded-full border-2 border-amber-400 flex items-center justify-center text-3xl text-brand-100 shadow-inner flex-shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="space-y-1 overflow-hidden">
+                        <h3 id="card-name" class="font-bold text-base truncate">Member Name</h3>
+                        <p id="card-designation" class="text-xs text-brand-200 truncate">Occupation / Title</p>
+                        <p id="card-id" class="text-[11px] font-mono text-amber-300">ID: #00000</p>
+                    </div>
+                </div>
 
-  profileToggle.addEventListener('click', function (event) {
-    event.preventDefault();
-    const shouldOpen = !profileMenu.classList.contains('is-open');
-    profileMenu.classList.toggle('is-open', shouldOpen);
-    profileToggle.setAttribute('aria-expanded', String(shouldOpen));
-  });
+                <!-- Card Info Grid -->
+                <div class="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-brand-700/60">
+                    <div>
+                        <span class="text-brand-300 block text-[9px] uppercase">Blood Group</span>
+                        <span id="card-blood" class="font-bold text-red-300">O+</span>
+                    </div>
+                    <div>
+                        <span class="text-brand-300 block text-[9px] uppercase">District</span>
+                        <span id="card-district" class="font-bold">Dhaka</span>
+                    </div>
+                    <div>
+                        <span class="text-brand-300 block text-[9px] uppercase">Mobile</span>
+                        <span id="card-mobile" class="font-mono">+8801700000000</span>
+                    </div>
+                    <div>
+                        <span class="text-brand-300 block text-[9px] uppercase">Status</span>
+                        <span id="card-status" class="font-bold text-emerald-300">Active</span>
+                    </div>
+                </div>
+            </div>
 
-  document.addEventListener('click', function (event) {
-    if (!profileMenu.contains(event.target)) closeProfileMenu();
-  });
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="window.print()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Print ID Card
+                </button>
+            </div>
+        </div>
+    </div>
 
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape') closeProfileMenu();
-  });
-})();
-</script>
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Sample Bangladesh Districts & Upazilas Data Matrix
+        const districtData = {
+            "Dhaka": ["Dhanmondi", "Gulshan", "Mirpur", "Uttara", "Savara", "Keraniganj"],
+            "Chattogram": ["Panchlaish", "Kotwali", "Hathazari", "Sitakunda", "Patiya"],
+            "Sylhet": ["Kotwali", "Beanibazar", "Golapganj", "Sreemangal"],
+            "Rajshahi": ["Boalia", "Rajpara", "Paba", "Puthia"],
+            "Khulna": ["Sonadanga", "Khalishpur", "Rupsha", "Dighalia"],
+            "Barishal": ["Kotwali", "Agailjhara", "Babuganj", "Gournadi"],
+            "Rangpur": ["Kotwali", "Mithapukur", "Pirganj", "Badarganj"],
+            "Mymensingh": ["Kotwali", "Bhaluka", "Gafargaon", "Muktagachha"]
+        };
 
-<script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
+        // Initial Sample Seed Data
+        const seedMembers = [
+            {
+                id: "MEM-1001",
+                name: "Tanvir Ahmed",
+                nameBn: "তানভীর আহমেদ",
+                gender: "Male",
+                idType: "NID",
+                idNumber: "1991269283741029",
+                dob: "1991-05-14",
+                blood: "A+",
+                religion: "Islam",
+                education: "Bachelor Degree",
+                status: "Active",
+                special: "Freedom Fighter",
+                father: "Md. Rafiqul Ahmed",
+                mother: "Begum Salma Ahmed",
+                marital: "Married",
+                spouse: "Nusrat Jahan",
+                marriageDate: "2018-02-14",
+                mobile1: "1711223344",
+                mobile2: "1811223344",
+                email1: "tanvir.ahmed@example.com",
+                email2: "",
+                callTime: "Anytime",
+                pref: ["SMS", "Email"],
+                presCountry: "Bangladesh",
+                presDistrict: "Dhaka",
+                presUpazila: "Gulshan",
+                presStreet: "House 45, Road 11, Block D",
+                permCountry: "Bangladesh",
+                permDistrict: "Dhaka",
+                permUpazila: "Gulshan",
+                permStreet: "House 45, Road 11, Block D",
+                gps: "23.7925, 90.4078",
+                occupation: "Software Engineer",
+                designation: "Lead Developer",
+                institution: "Tech BD Ltd.",
+                workplace: "Gulshan 2, Dhaka",
+                notes: "Founding member of tech community."
+            },
+            {
+                id: "MEM-1002",
+                name: "Sabrina Yasmin",
+                nameBn: "সবরিনা ইয়াসমিন",
+                gender: "Female",
+                idType: "Passport",
+                idNumber: "A08374619",
+                dob: "1995-09-21",
+                blood: "O+",
+                religion: "Islam",
+                education: "Master Degree",
+                status: "Active",
+                special: "Donor",
+                father: "Kazi Jalal Uddin",
+                mother: "Razia Begum",
+                marital: "Single",
+                spouse: "",
+                marriageDate: "",
+                mobile1: "1922334455",
+                mobile2: "",
+                email1: "sabrina.y@example.com",
+                email2: "",
+                callTime: "Evening (5 PM - 9 PM)",
+                pref: ["Email"],
+                presCountry: "Bangladesh",
+                presDistrict: "Chattogram",
+                presUpazila: "Panchlaish",
+                presStreet: "45 CDA Avenue",
+                permCountry: "Bangladesh",
+                permDistrict: "Chattogram",
+                permUpazila: "Panchlaish",
+                permStreet: "45 CDA Avenue",
+                gps: "",
+                occupation: "Doctor",
+                designation: "Assistant Professor",
+                institution: "Chittagong Medical College",
+                workplace: "Panchlaish, Chattogram",
+                notes: "Regular blood donor."
+            }
+        ];
+
+        // State Storage Variable
+        let members = [];
+        let currentStep = 1;
+        let viewMode = 'table';
+
+        // Initializer On Page Load
+        window.onload = function() {
+            loadMembers();
+            initDropdowns();
+            renderDashboard();
+        };
+
+        // Load Members from LocalStorage or Seed Data
+        function loadMembers() {
+            const stored = localStorage.getItem('bg_members_data_en');
+            if (stored) {
+                try {
+                    members = JSON.parse(stored);
+                } catch(e) {
+                    members = seedMembers;
+                }
+            } else {
+                members = seedMembers;
+                saveMembers();
+            }
+        }
+
+        // Save Members to LocalStorage
+        function saveMembers() {
+            localStorage.setItem('bg_members_data_en', JSON.stringify(members));
+        }
+
+        // Initialize District & Upazila Dropdowns
+        function initDropdowns() {
+            const presDist = document.getElementById('field-present-district');
+            const permDist = document.getElementById('field-perm-district');
+            const filterDist = document.getElementById('filter-district');
+
+            let distOptions = '<option value="">Select District</option>';
+            let filterOptions = '<option value="">All Districts</option>';
+
+            Object.keys(districtData).sort().forEach(d => {
+                distOptions += `<option value="${d}">${d}</option>`;
+                filterOptions += `<option value="${d}">${d}</option>`;
+            });
+
+            presDist.innerHTML = distOptions;
+            permDist.innerHTML = distOptions;
+            filterDist.innerHTML = filterOptions;
+        }
+
+        // Populate Upazilas dynamically
+        function populateUpazilas(type) {
+            const distSelect = document.getElementById(`field-${type}-district`);
+            const upazilaSelect = document.getElementById(`field-${type}-upazila`);
+            const selectedDist = distSelect.value;
+
+            let options = '<option value="">Select Upazila</option>';
+            if (selectedDist && districtData[selectedDist]) {
+                districtData[selectedDist].forEach(u => {
+                    options += `<option value="${u}">${u}</option>`;
+                });
+            }
+            upazilaSelect.innerHTML = options;
+        }
+
+        // Auto-Copy Present Address to Permanent Address
+        function copyAddress() {
+            const same = document.getElementById('field-same-address').checked;
+            if (same) {
+                document.getElementById('field-perm-country').value = document.getElementById('field-present-country').value;
+                document.getElementById('field-perm-district').value = document.getElementById('field-present-district').value;
+                populateUpazilas('perm');
+                document.getElementById('field-perm-upazila').value = document.getElementById('field-present-upazila').value;
+                document.getElementById('field-perm-street').value = document.getElementById('field-present-street').value;
+            }
+        }
+
+        // Toggle Spouse & Marriage Date inputs
+        function toggleSpouseField() {
+            const marital = document.getElementById('field-marital').value;
+            const spouseWrap = document.getElementById('spouse-wrapper');
+            const marriageWrap = document.getElementById('marriage-wrapper');
+            if (marital === 'Married') {
+                spouseWrap.classList.remove('hidden');
+                marriageWrap.classList.remove('hidden');
+            } else {
+                spouseWrap.classList.add('hidden');
+                marriageWrap.classList.add('hidden');
+            }
+        }
+
+        // View Switcher (Dashboard vs Form)
+        function switchView(view) {
+            const dashView = document.getElementById('dashboard-view');
+            const formView = document.getElementById('form-view');
+            const navDashBtn = document.getElementById('nav-dashboard-btn');
+            const navRegBtn = document.getElementById('nav-register-btn');
+
+            if (view === 'dashboard') {
+                dashView.classList.remove('hidden');
+                formView.classList.add('hidden');
+                navDashBtn.classList.replace('bg-brand-600', 'bg-brand-900');
+                renderDashboard();
+            } else {
+                dashView.classList.add('hidden');
+                formView.classList.remove('hidden');
+                navDashBtn.classList.replace('bg-brand-900', 'bg-brand-600');
+            }
+        }
+
+        // Open Form for Registration
+        function openRegistrationForm(id = null) {
+            resetForm();
+            if (id) {
+                const member = members.find(m => m.id === id);
+                if (member) populateForm(member);
+                document.getElementById('form-title').innerText = 'Edit Member Profile';
+            } else {
+                document.getElementById('form-title').innerText = 'New Member Registration';
+            }
+            switchView('form');
+            goToStep(1);
+        }
+
+        // Reset Registration Form
+        function resetForm() {
+            document.getElementById('member-form').reset();
+            document.getElementById('field-id').value = '';
+            toggleSpouseField();
+        }
+
+        // Populate Form Fields for Editing
+        function populateForm(m) {
+            document.getElementById('field-id').value = m.id;
+            document.getElementById('field-name').value = m.name;
+            document.getElementById('field-name-bn').value = m.nameBn || '';
+            document.getElementById('field-gender').value = m.gender;
+            document.getElementById('field-id-type').value = m.idType;
+            document.getElementById('field-id-number').value = m.idNumber;
+
+            document.getElementById('field-dob').value = m.dob;
+            document.getElementById('field-blood').value = m.blood;
+            document.getElementById('field-religion').value = m.religion || 'Islam';
+            document.getElementById('field-education').value = m.education || 'Bachelor Degree';
+            document.getElementById('field-status').value = m.status;
+            document.getElementById('field-special').value = m.special || 'General';
+            document.getElementById('field-father').value = m.father || '';
+            document.getElementById('field-mother').value = m.mother || '';
+            document.getElementById('field-marital').value = m.marital || 'Single';
+            toggleSpouseField();
+            document.getElementById('field-spouse').value = m.spouse || '';
+            document.getElementById('field-marriage-date').value = m.marriageDate || '';
+
+            document.getElementById('field-mobile-1').value = m.mobile1;
+            document.getElementById('field-mobile-2').value = m.mobile2 || '';
+            document.getElementById('field-email-1').value = m.email1 || '';
+            document.getElementById('field-email-2').value = m.email2 || '';
+            document.getElementById('field-call-time').value = m.callTime || 'Anytime';
+
+            document.getElementById('field-present-country').value = m.presCountry || 'Bangladesh';
+            document.getElementById('field-present-district').value = m.presDistrict || '';
+            populateUpazilas('present');
+            document.getElementById('field-present-upazila').value = m.presUpazila || '';
+            document.getElementById('field-present-street').value = m.presStreet || '';
+
+            document.getElementById('field-perm-country').value = m.permCountry || 'Bangladesh';
+            document.getElementById('field-perm-district').value = m.permDistrict || '';
+            populateUpazilas('perm');
+            document.getElementById('field-perm-upazila').value = m.permUpazila || '';
+            document.getElementById('field-perm-street').value = m.permStreet || '';
+            document.getElementById('field-gps').value = m.gps || '';
+
+            document.getElementById('field-occupation').value = m.occupation || '';
+            document.getElementById('field-designation').value = m.designation || '';
+            document.getElementById('field-institution').value = m.institution || '';
+            document.getElementById('field-workplace').value = m.workplace || '';
+            document.getElementById('field-notes').value = m.notes || '';
+        }
+
+        // Multi-Step Form Navigation Logic
+        function goToStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.form-step').forEach((s, idx) => {
+                if (idx + 1 === step) {
+                    s.classList.remove('hidden');
+                } else {
+                    s.classList.add('hidden');
+                }
+            });
+
+            // Update Step Indicators Style
+            for (let i = 1; i <= 5; i++) {
+                const node = document.getElementById(`step-node-${i}`);
+                if (i <= step) {
+                    node.className = 'w-8 h-8 rounded-full bg-brand-600 text-white font-bold text-xs flex items-center justify-center ring-4 ring-white shadow transition-all';
+                } else {
+                    node.className = 'w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center ring-4 ring-white transition-all';
+                }
+            }
+
+            // Update Progress Bar
+            const percent = ((step - 1) / 4) * 100;
+            document.getElementById('step-progress-bar').style.width = `${percent}%`;
+
+            // Button visibility controls
+            document.getElementById('prev-step-btn').disabled = (step === 1);
+            if (step === 5) {
+                document.getElementById('next-step-btn').classList.add('hidden');
+                document.getElementById('submit-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('next-step-btn').classList.remove('hidden');
+                document.getElementById('submit-btn').classList.add('hidden');
+            }
+        }
+
+        function nextStep(direction) {
+            const next = currentStep + direction;
+            if (next >= 1 && next <= 5) {
+                goToStep(next);
+            }
+        }
+
+        // Form Submit Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const prefs = Array.from(document.querySelectorAll('.field-pref:checked')).map(cb => cb.value);
+            const existingId = document.getElementById('field-id').value;
+
+            const memberData = {
+                id: existingId || `MEM-${Math.floor(1000 + Math.random() * 9000)}`,
+                name: document.getElementById('field-name').value,
+                nameBn: document.getElementById('field-name-bn').value,
+                gender: document.getElementById('field-gender').value,
+                idType: document.getElementById('field-id-type').value,
+                idNumber: document.getElementById('field-id-number').value,
+
+                dob: document.getElementById('field-dob').value,
+                blood: document.getElementById('field-blood').value,
+                religion: document.getElementById('field-religion').value,
+                education: document.getElementById('field-education').value,
+                status: document.getElementById('field-status').value,
+                special: document.getElementById('field-special').value,
+                father: document.getElementById('field-father').value,
+                mother: document.getElementById('field-mother').value,
+                marital: document.getElementById('field-marital').value,
+                spouse: document.getElementById('field-spouse').value,
+                marriageDate: document.getElementById('field-marriage-date').value,
+
+                mobile1: document.getElementById('field-mobile-1').value,
+                mobile2: document.getElementById('field-mobile-2').value,
+                email1: document.getElementById('field-email-1').value,
+                email2: document.getElementById('field-email-2').value,
+                callTime: document.getElementById('field-call-time').value,
+                pref: prefs,
+
+                presCountry: document.getElementById('field-present-country').value,
+                presDistrict: document.getElementById('field-present-district').value,
+                presUpazila: document.getElementById('field-present-upazila').value,
+                presStreet: document.getElementById('field-present-street').value,
+
+                permCountry: document.getElementById('field-perm-country').value,
+                permDistrict: document.getElementById('field-perm-district').value,
+                permUpazila: document.getElementById('field-perm-upazila').value,
+                permStreet: document.getElementById('field-perm-street').value,
+                gps: document.getElementById('field-gps').value,
+
+                occupation: document.getElementById('field-occupation').value,
+                designation: document.getElementById('field-designation').value,
+                institution: document.getElementById('field-institution').value,
+                workplace: document.getElementById('field-workplace').value,
+                notes: document.getElementById('field-notes').value
+            };
+
+            if (existingId) {
+                const idx = members.findIndex(m => m.id === existingId);
+                if (idx !== -1) members[idx] = memberData;
+                showToast('Member profile updated successfully!', 'success');
+            } else {
+                members.unshift(memberData);
+                showToast('New member registered successfully!', 'success');
+            }
+
+            saveMembers();
+            switchView('dashboard');
+        }
+
+        // Render Dashboard Statistics & Lists
+        function renderDashboard() {
+            updateStats();
+            applyFilters();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = members.length;
+            document.getElementById('stat-active').innerText = members.filter(m => m.status === 'Active').length;
+            document.getElementById('stat-male').innerText = members.filter(m => m.gender === 'Male').length;
+            document.getElementById('stat-female').innerText = members.filter(m => m.gender === 'Female').length;
+            document.getElementById('stat-donors').innerText = members.filter(m => m.special === 'Donor').length;
+            document.getElementById('stat-ff').innerText = members.filter(m => m.special === 'Freedom Fighter').length;
+        }
+
+        // Filter and Search Engine
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const dist = document.getElementById('filter-district').value;
+            const blood = document.getElementById('filter-blood').value;
+            const gender = document.getElementById('filter-gender').value;
+            const idtype = document.getElementById('filter-idtype').value;
+            const special = document.getElementById('filter-special').value;
+
+            const filtered = members.filter(m => {
+                const matchQuery = !query || 
+                    m.name.toLowerCase().includes(query) ||
+                    (m.nameBn && m.nameBn.includes(query)) ||
+                    m.mobile1.includes(query) ||
+                    m.idNumber.includes(query) ||
+                    (m.occupation && m.occupation.toLowerCase().includes(query));
+
+                const matchDist = !dist || m.presDistrict === dist;
+                const matchBlood = !blood || m.blood === blood;
+                const matchGender = !gender || m.gender === gender;
+                const matchIdType = !idtype || m.idType === idtype;
+                const matchSpecial = !special || m.special === special;
+
+                return matchQuery && matchDist && matchBlood && matchGender && matchIdType && matchSpecial;
+            });
+
+            renderTable(filtered);
+            renderGrid(filtered);
+
+            const emptyState = document.getElementById('empty-state');
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-district').value = '';
+            document.getElementById('filter-blood').value = '';
+            document.getElementById('filter-gender').value = '';
+            document.getElementById('filter-idtype').value = '';
+            document.getElementById('filter-special').value = '';
+            applyFilters();
+        }
+
+        // Render Table View
+        function renderTable(list) {
+            const tbody = document.getElementById('member-table-body');
+            if (list.length === 0) {
+                tbody.innerHTML = '';
+                return;
+            }
+
+            tbody.innerHTML = list.map(m => `
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                ${m.name.charAt(0)}
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-800 hover:text-brand-700 cursor-pointer" onclick="viewProfile('${m.id}')">${m.name}</div>
+                                <div class="text-[11px] text-slate-400">${m.nameBn || m.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">${m.idType}</span>
+                        <div class="text-xs font-mono text-slate-500 mt-0.5">${m.idNumber}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-xs font-mono text-slate-700">+880 ${m.mobile1}</div>
+                        <div class="text-[11px] text-slate-400 truncate max-w-[140px]">${m.email1 || 'N/A'}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-xs text-slate-700 font-medium">${m.presDistrict || 'N/A'}</div>
+                        <div class="text-[11px] text-slate-400">${m.presUpazila || ''}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-xs text-slate-700">${m.occupation || 'N/A'}</div>
+                        <div class="text-[11px] text-slate-400">${m.institution || ''}</div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-red-50 text-red-600 border border-red-100">${m.blood}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <button onclick="viewProfile('${m.id}')" title="View Profile" class="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors"><i class="fa-solid fa-eye"></i></button>
+                            <button onclick="openRegistrationForm('${m.id}')" title="Edit Member" class="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="showIdCard('${m.id}')" title="Generate ID Card" class="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-slate-100 rounded-lg transition-colors"><i class="fa-solid fa-id-badge"></i></button>
+                            <button onclick="deleteMember('${m.id}')" title="Delete Member" class="p-1.5 text-slate-500 hover:text-red-600 hover:bg-slate-100 rounded-lg transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Grid View
+        function renderGrid(list) {
+            const grid = document.getElementById('grid-wrapper');
+            grid.innerHTML = list.map(m => `
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all space-y-3">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-800 font-bold text-sm flex items-center justify-center">
+                                ${m.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 hover:text-brand-700 cursor-pointer" onclick="viewProfile('${m.id}')">${m.name}</h4>
+                                <p class="text-xs text-slate-400">${m.occupation || 'N/A'}</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-red-50 text-red-600 border border-red-100">${m.blood}</span>
+                    </div>
+
+                    <div class="text-xs space-y-1 pt-2 border-t border-slate-100 text-slate-600">
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">ID (${m.idType}):</span>
+                            <span class="font-mono">${m.idNumber}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">Mobile:</span>
+                            <span class="font-mono">+880 ${m.mobile1}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-400">District:</span>
+                            <span>${m.presDistrict || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">${m.status}</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="viewProfile('${m.id}')" class="px-2 py-1 text-xs text-slate-600 hover:bg-slate-100 rounded">View</button>
+                            <button onclick="openRegistrationForm('${m.id}')" class="px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded">Edit</button>
+                            <button onclick="showIdCard('${m.id}')" class="px-2 py-1 text-xs text-amber-600 hover:bg-amber-50 rounded">ID Card</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View Mode Toggle (Table / Grid)
+        function setViewMode(mode) {
+            viewMode = mode;
+            const tblBtn = document.getElementById('view-table-btn');
+            const grdBtn = document.getElementById('view-grid-btn');
+            const tblWrap = document.getElementById('table-wrapper');
+            const grdWrap = document.getElementById('grid-wrapper');
+
+            if (mode === 'table') {
+                tblWrap.classList.remove('hidden');
+                grdWrap.classList.add('hidden');
+                tblBtn.className = "px-3 py-1.5 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all flex items-center gap-1";
+                grdBtn.className = "px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-800 transition-all flex items-center gap-1";
+            } else {
+                tblWrap.classList.add('hidden');
+                grdWrap.classList.remove('hidden');
+                grdBtn.className = "px-3 py-1.5 text-xs font-medium rounded-md bg-white shadow-sm text-slate-800 transition-all flex items-center gap-1";
+                tblBtn.className = "px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:text-slate-800 transition-all flex items-center gap-1";
+            }
+        }
+
+        // View Full Profile Modal
+        function viewProfile(id) {
+            const m = members.find(x => x.id === id);
+            if (!m) return;
+
+            const modalContent = document.getElementById('profile-modal-content');
+            modalContent.innerHTML = `
+                <div class="p-6 space-y-6">
+                    <div class="flex justify-between items-start pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-brand-100 text-brand-800 font-bold text-xl flex items-center justify-center">
+                                ${m.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-800">${m.name}</h3>
+                                <p class="text-xs text-slate-500">${m.nameBn || 'No local name provided'}</p>
+                                <span class="inline-block mt-1 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-brand-50 text-brand-700 border border-brand-200">${m.status} Member</span>
+                            </div>
+                        </div>
+                        <button onclick="closeModal('profile-modal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                        <div class="space-y-3">
+                            <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-1">Identity & Personal</h4>
+                            <div><span class="text-slate-400 block">System ID:</span> <span class="font-mono font-bold">${m.id}</span></div>
+                            <div><span class="text-slate-400 block">ID Document (${m.idType}):</span> <span class="font-mono">${m.idNumber}</span></div>
+                            <div><span class="text-slate-400 block">Gender / Blood Group:</span> <span>${m.gender} / <strong class="text-red-600">${m.blood}</strong></span></div>
+                            <div><span class="text-slate-400 block">Date of Birth:</span> <span>${m.dob}</span></div>
+                            <div><span class="text-slate-400 block">Education:</span> <span>${m.education || 'N/A'}</span></div>
+                            <div><span class="text-slate-400 block">Special Category:</span> <span>${m.special || 'General'}</span></div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-1">Contact & Profession</h4>
+                            <div><span class="text-slate-400 block">Mobile 1:</span> <span class="font-mono">+880 ${m.mobile1}</span></div>
+                            <div><span class="text-slate-400 block">Mobile 2:</span> <span class="font-mono">${m.mobile2 ? '+880 ' + m.mobile2 : 'N/A'}</span></div>
+                            <div><span class="text-slate-400 block">Email:</span> <span>${m.email1 || 'N/A'}</span></div>
+                            <div><span class="text-slate-400 block">Occupation / Title:</span> <span>${m.occupation || 'N/A'} (${m.designation || 'N/A'})</span></div>
+                            <div><span class="text-slate-400 block">Institution / Employer:</span> <span>${m.institution || 'N/A'}</span></div>
+                        </div>
+
+                        <div class="md:col-span-2 space-y-3 pt-2 border-t border-slate-100">
+                            <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-1">Address Details</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <span class="text-slate-400 block font-semibold">Present Address:</span>
+                                    <p>${m.presStreet || ''}, ${m.presUpazila || ''}, ${m.presDistrict || ''}, ${m.presCountry || 'Bangladesh'}</p>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block font-semibold">Permanent Address:</span>
+                                    <p>${m.permStreet || ''}, ${m.permUpazila || ''}, ${m.permDistrict || ''}, ${m.permCountry || 'Bangladesh'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-4 border-t border-slate-100">
+                        <button onclick="closeModal('profile-modal')" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-semibold">Close</button>
+                        <button onclick="closeModal('profile-modal'); openRegistrationForm('${m.id}')" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold">Edit Member</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        // Digital ID Card Preview Modal
+        function showIdCard(id) {
+            const m = members.find(x => x.id === id);
+            if (!m) return;
+
+            document.getElementById('card-name').innerText = m.name;
+            document.getElementById('card-designation').innerText = m.occupation || 'Member';
+            document.getElementById('card-id').innerText = `ID: #${m.id}`;
+            document.getElementById('card-blood').innerText = m.blood;
+            document.getElementById('card-district').innerText = m.presDistrict || 'N/A';
+            document.getElementById('card-mobile').innerText = `+880 ${m.mobile1}`;
+            document.getElementById('card-status').innerText = m.status;
+
+            document.getElementById('idcard-modal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // Delete Member Record
+        function deleteMember(id) {
+            if (confirm("Are you sure you want to delete this member record? This action cannot be undone.")) {
+                members = members.filter(m => m.id !== id);
+                saveMembers();
+                renderDashboard();
+                showToast("Member record deleted successfully.", "error");
+            }
+        }
+
+        // Export Functions (CSV / JSON)
+        function toggleExportMenu() {
+            document.getElementById('export-menu').classList.toggle('hidden');
+        }
+
+        function exportData(type) {
+            toggleExportMenu();
+            if (type === 'json') {
+                const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
+                downloadBlob(blob, 'members_data.json');
+            } else if (type === 'csv') {
+                const headers = ["ID", "Name", "Gender", "ID Type", "ID Number", "Mobile", "Email", "District", "Blood Group", "Status"];
+                const rows = members.map(m => [
+                    m.id, `"${m.name}"`, m.gender, m.idType, `"${m.idNumber}"`, `"${m.mobile1}"`, `"${m.email1}"`, `"${m.presDistrict}"`, m.blood, m.status
+                ]);
+                const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                downloadBlob(blob, 'members_export.csv');
+            }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white';
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+
+            toast.className = `${bgClass} px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-xs font-semibold transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
