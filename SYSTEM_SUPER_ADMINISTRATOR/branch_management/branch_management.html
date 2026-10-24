@@ -1,1411 +1,1412 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Branch Management</title>
-<link rel="stylesheet" href="/static/app.css">
-
-<style>
-:root {
-    color-scheme: light;
-    --bg: #f3f7fc;
-    --surface: #ffffff;
-    --text: #243b53;
-    --muted: #788ba0;
-    --border: #dfe8f1;
-    --green: #168453;
-    --blue: #287bc0;
-    --red: #dc4545;
-}
-
-* { box-sizing: border-box; }
-
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 400;
-}
-
-.ssa-sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 280px;
-    background: #fff;
-    border-right: 1px solid #dce5ef;
-    box-shadow: 2px 0 12px rgba(16,44,80,.06);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-}
-
-.ssa-brand {
-    padding: 16px 16px 16px;
-    border-bottom: 1px solid #e7edf4;
-}
-
-.ssa-brand-title {
-    font-size: 17px;
-    font-weight: 400;
-    color: #12355e;
-    line-height: 1.5;
-}
-
-.ssa-brand-scope {
-    font-size: 10px;
-    color: #6f8299;
-    margin-top: 5px;
-    letter-spacing: .5px;
-}
-
-.ssa-nav {
-    padding: 12px 10px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
-}
-
-.ssa-nav-group {
-    font-size: 10px;
-    font-weight: 400;
-    color: #8b9aab;
-    text-transform: uppercase;
-    padding: 10px 9px 6px;
-    letter-spacing: .7px;
-}
-
-.ssa-nav a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #314b68;
-    padding: 10px;
-    border-radius: 8px;
-    margin: 2px 0;
-    font-size: 13px;
-    font-weight: 400;
-    white-space: nowrap;
-}
-
-.ssa-nav a:hover {
-    background: #eef6ff;
-    color: #0d65bd;
-}
-
-.ssa-nav a.active {
-    background: #e9f3ff;
-    color: #0b67c0;
-}
-
-.ssa-ico {
-    width: 16px;
-    min-width: 16px;
-    text-align: center;
-    font-size: 17px;
-}
-
-.ssa-profile {
-    flex: 0 0 auto;
-    border-top: 1px solid #e7edf4;
-    padding: 12px 13px;
-    background: #fbfdff;
-}
-
-.ssa-profile-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #15385f;
-}
-
-.ssa-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #e9f3ff;
-    display: grid;
-    place-items: center;
-    color: #126ac1;
-    font-size: 13px;
-    font-weight: 400;
-    flex-shrink: 0;
-}
-
-.ssa-profile strong {
-    font-size: 12px;
-    font-weight: 400;
-}
-
-.ssa-profile small {
-    display: block;
-    color: #8291a3;
-    margin-top: 4px;
-    font-size: 11px;
-}
-
-.ssa-logout {
-    display: block;
-    text-decoration: none;
-    margin-top: 10px;
-    text-align: center;
-    background: #ef4444;
-    color: #fff;
-    border-radius: 8px;
-    padding: 9px;
-    font-size: 13px;
-    font-weight: 400;
-}
-
-.ssa-logout:hover { background: #dc3030; }
-
-.ssa-content {
-    margin-left: 280px;
-    width: calc(100% - 280px);
-    min-height: 100vh;
-    min-width: 0;
-}
-
-.page {
-    width: 100%;
-    max-width: none;
-    padding: 26px;
-    margin: 0;
-}
-
-.branch-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 25px;
-}
-
-.branch-header h1 {
-    margin: 0 0 8px;
-    color: #193751;
-    font-size: 28px;
-    line-height: 1.3;
-    font-weight: 400;
-}
-
-.branch-header p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.7;
-    font-weight: 400;
-}
-
-.page-identity {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: #fff;
-    font-size: 12px;
-}
-
-.page-identity strong {
-    font-weight: 400;
-    color: #15385f;
-}
-
-.page-identity span { color: var(--muted); }
-
-.notice {
-    padding: 13px 16px;
-    margin-bottom: 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.6;
-    font-weight: 400;
-    overflow-wrap: anywhere;
-}
-
-.notice.success {
-    color: #176b46;
-    background: #e5f7ed;
-    border: 1px solid #c6ecd7;
-}
-
-.notice.error {
-    color: #a12d35;
-    background: #fff0f0;
-    border: 1px solid #f4d0d0;
-}
-
-.branch-card {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    padding: 25px;
-    margin-bottom: 23px;
-    box-shadow: 0 5px 16px rgba(30,64,100,.04);
-}
-
-.section-heading {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    margin-bottom: 23px;
-    width: 100%;
-}
-
-.section-icon {
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: #e4f6ec;
-    color: #168453;
-    font-size: 21px;
-}
-
-.section-icon.blue {
-    background: #e8f1ff;
-    color: #2867b2;
-}
-
-.section-icon.purple {
-    background: #f0e9ff;
-    color: #7651b5;
-}
-
-.section-icon.orange {
-    background: #fff1db;
-    color: #b87516;
-}
-
-.section-heading h2 {
-    font-size: 19px;
-    font-weight: 400;
-    color: #193751;
-    margin: 0 0 5px;
-}
-
-.section-heading p {
-    color: #8191a4;
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.branch-form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-    gap: 22px 16px;
-    width: 100%;
-    min-width: 0;
-}
-
-.branch-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-    min-width: 0;
-}
-
-.branch-field.full-width { grid-column: 1 / -1; }
-
-.branch-field label {
-    color: #344d65;
-    font-size: 14px;
-    line-height: 1.5;
-    font-weight: 400;
-}
-
-.required { color: #dc4545; }
-
-.branch-field input,
-.branch-field select,
-.branch-field textarea {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    min-height: 46px;
-    padding: 12px 14px;
-    border: 1px solid #d6e1ec;
-    border-radius: 9px;
-    background: #fff;
-    color: #263f58;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 400;
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-}
-
-.branch-field textarea {
-    min-height: 100px;
-    resize: vertical;
-    line-height: 1.6;
-}
-
-.branch-field input:focus,
-.branch-field select:focus,
-.branch-field textarea:focus {
-    border-color: #50a0df;
-    box-shadow: 0 0 0 3px rgba(59,143,211,.12);
-}
-
-.branch-field input::placeholder,
-.branch-field textarea::placeholder {
-    color: #9aa9b8;
-}
-
-.branch-field input[readonly] {
-    background: #f1f5f9;
-    color: #70849a;
-}
-
-.field-help {
-    font-size: 12px;
-    color: #8292a4;
-    line-height: 1.7;
-    font-weight: 400;
-}
-
-.subsection {
-    margin-top: 30px;
-    padding-top: 26px;
-    border-top: 1px solid #edf1f6;
-}
-
-.branch-status-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.branch-status-option {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    min-height: 44px;
-    padding: 10px 17px;
-    border: 1px solid #dce6ef;
-    border-radius: 9px;
-    color: #344d65;
-    background: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 400;
-}
-
-.branch-status-option input {
-    width: 16px;
-    height: 16px;
-    min-height: auto;
-    margin: 0;
-    accent-color: #168453;
-}
-
-.branch-form-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    width: 100%;
-    padding-top: 23px;
-    margin-top: 25px;
-    border-top: 1px solid #e8eef5;
-}
-
-.branch-btn {
-    min-height: 44px;
-    padding: 11px 22px;
-    border-radius: 9px;
-    border: 1px solid transparent;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: background .2s;
-}
-
-.branch-btn-reset {
-    background: #fff;
-    color: #50657a;
-    border-color: #d6e1ec;
-}
-
-.branch-btn-reset:hover { background: #f3f7fb; }
-
-.branch-btn-save {
-    background: #168453;
-    color: #fff;
-}
-
-.branch-btn-save:hover { background: #116c43; }
-
-.records-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-bottom: 16px;
-}
-
-.records-heading h2 {
-    color: #193751;
-    font-size: 16px;
-    font-weight: 400;
-    margin: 0 0 6px;
-}
-
-.records-heading p {
-    margin: 0;
-    color: #8191a4;
-    font-size: 13px;
-    font-weight: 400;
-}
-
-.branch-search {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.branch-search input {
-    width: 240px;
-    max-width: 100%;
-    min-height: 43px;
-    padding: 10px 13px;
-    border: 1px solid #d6e1ec;
-    border-radius: 9px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 400;
-    outline: none;
-}
-
-.branch-search input:focus { border-color: #50a0df; }
-
-.branch-search button {
-    min-height: 43px;
-    border: 0;
-    border-radius: 9px;
-    padding: 10px 19px;
-    background: #287bc0;
-    color: #fff;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 400;
-    cursor: pointer;
-}
-
-.record-table-wrap {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    border: 1px solid #dfe7f0;
-    border-radius: 11px;
-    background: #fff;
-}
-
-.record-table {
-    width: 100%;
-    min-width: 1050px;
-    border-collapse: collapse;
-    font-size: 13px;
-    background: #fff;
-}
-
-.record-table th {
-    padding: 17px;
-    text-align: left;
-    background: #f3f7fb;
-    color: #344d65;
-    font-weight: 400;
-    border-bottom: 1px solid #dfe7f0;
-    white-space: nowrap;
-}
-
-.record-table td {
-    padding: 14px 17px;
-    border-bottom: 1px solid #e9eef4;
-    color: #455b70;
-    vertical-align: middle;
-    font-weight: 400;
-}
-
-.record-table tbody tr:hover { background: #f8fbff; }
-
-.record-table tbody tr:last-child td { border-bottom: 0; }
-
-.record-table .empty {
-    text-align: center;
-    padding: 30px;
-    color: #8292a4;
-}
-
-.status-pill {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 16px;
-    background: #e5f7ed;
-    color: #176b46;
-    font-size: 12px;
-    font-weight: 400;
-}
-
-.status-pill.inactive {
-    background: #f1f3f6;
-    color: #687789;
-}
-
-.inline-action { margin: 0; }
-
-.record-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.update-btn {
-    padding: 8px 13px;
-    border: 0;
-    border-radius: 7px;
-    background: #e8f1ff;
-    color: #1d65ad;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 400;
-    cursor: pointer;
-}
-
-.update-btn:hover { background: #d7e8ff; }
-
-.danger {
-    padding: 8px 13px;
-    border: 0;
-    border-radius: 7px;
-    background: #fff0f0;
-    color: #c83737;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 400;
-    cursor: pointer;
-}
-
-.danger:hover { background: #ffdddd; }
-
-/* Ensure the Delete label remains clearly visible in every browser/theme. */
-button.danger,
-form button.danger,
-.danger[type="submit"] {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 64px;
-    min-height: 34px;
-    padding: 8px 13px;
-    background: #fff0f0 !important;
-    color: #b4232d !important;
-    -webkit-text-fill-color: #b4232d !important;
-    font-size: 12px !important;
-    font-weight: 400 !important;
-    line-height: 1.4 !important;
-    white-space: nowrap;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-button.danger:hover,
-form button.danger:hover {
-    background: #ffdddd !important;
-    color: #921b24 !important;
-    -webkit-text-fill-color: #921b24 !important;
-}
-
-@media (max-width: 900px) {
-    .page { padding: 16px; }
-    .branch-card { padding: 16px; }
-}
-
-@media (max-width: 600px) {
-    .ssa-sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        bottom: auto;
-    }
-
-    .ssa-nav { max-height: 300px; }
-
-    .ssa-content {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .page { padding: 12px; }
-
-    .branch-header h1 { font-size: 24px; }
-
-    .branch-card { padding: 16px; }
-
-    .branch-form-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 17px;
-    }
-
-    .branch-field.full-width { grid-column: 1 / -1; }
-
-    .branch-form-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-
-    .branch-form-actions button { width: 100%; }
-
-    .branch-search { width: 100%; }
-
-    .branch-search input {
-        width: 100%;
-        flex: 1;
-    }
-}
-
-/* Create New Branch: light, bright and normal-weight typography */
-.create-branch-card .section-heading h2,
-.create-branch-card .section-heading p,
-.create-branch-card .branch-field label,
-.create-branch-card .branch-field input,
-.create-branch-card .branch-field select,
-.create-branch-card .branch-field textarea,
-.create-branch-card .branch-field option,
-.create-branch-card .field-help,
-.create-branch-card .branch-status-option,
-.create-branch-card .branch-btn {
-    font-weight: 400 !important;
-}
-
-.create-branch-card .section-heading h2 {
-    color: #496782;
-}
-
-.create-branch-card .section-heading p,
-.create-branch-card .field-help {
-    color: #8498ac;
-}
-
-.create-branch-card .branch-field label,
-.create-branch-card .branch-status-option {
-    color: #607991;
-}
-
-.create-branch-card .branch-field input,
-.create-branch-card .branch-field select,
-.create-branch-card .branch-field textarea {
-    color: #536b82;
-}
-
-.create-branch-card .branch-field input::placeholder,
-.create-branch-card .branch-field textarea::placeholder {
-    color: #a0afbd;
-    opacity: 1;
-    font-weight: 400;
-}
-
-
-/* Clean, consistent Create New Branch form layout */
-.create-branch-card {
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-}
-
-.create-branch-card #branchForm {
-    display: block;
-    width: 100%;
-    min-width: 0;
-}
-
-.create-branch-card .branch-form-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    align-items: start;
-    gap: 22px 24px;
-    width: 100%;
-    min-width: 0;
-    margin-bottom: 26px;
-}
-
-.create-branch-card .branch-field,
-.create-branch-card .branch-field.full-width {
-    grid-column: auto;
-    width: 100%;
-    min-width: 0;
-}
-
-.create-branch-card .branch-field.full-width {
-    grid-column: 1 / -1;
-}
-
-.create-branch-card .section-heading.subsection {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    clear: both;
-    margin: 30px 0 16px;
-}
-
-.create-branch-card .branch-field input,
-.create-branch-card .branch-field select,
-.create-branch-card .branch-field textarea {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
-}
-
-.create-branch-card .branch-field textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.create-branch-card .branch-form-actions {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-@media (max-width: 760px) {
-    .create-branch-card .branch-form-grid {
-        grid-template-columns: minmax(0, 1fr) !important;
-        gap: 17px;
-    }
-
-    .create-branch-card .branch-field.full-width {
-        grid-column: 1 / -1;
-    }
-
-    .create-branch-card .branch-form-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-}
-
-
-/* Sidebar Profile trigger + expandable Profile/Logout menu */
-.ssa-profile-trigger{width:100%;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;padding:9px 10px;border:1px solid #cfe0f4;border-radius:12px;background:#eaf3ff;color:#173c67;cursor:pointer;font:inherit}
-.ssa-profile-trigger:hover{background:#e1efff}
-.ssa-profile-details{display:block;min-width:0;flex:1}
-.ssa-profile-details strong{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:400!important;color:#173c67!important;font-size:12px}
-.ssa-profile-details small{display:block;font-weight:400!important;color:#657f9f!important;white-space:normal;line-height:1.3;font-size:10px}
-.ssa-avatar{flex:0 0 34px;font-weight:400!important}
-.ssa-profile-chevron{font-size:11px;color:#6d829d;transition:transform .18s ease}
-.ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)}
-.ssa-profile-menu{display:none;margin-top:7px;padding:5px;border:1px solid #e0eaf5;border-radius:10px;background:#fff}
-.ssa-profile-menu.open{display:block}
-.ssa-profile-menu a{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:400;color:#245078}
-.ssa-profile-menu a:hover{background:#eef6ff;color:#0868c9}
-.ssa-profile-menu .ssa-logout{margin-top:4px;background:#fff1f2;color:#e11d48!important}
-.ssa-profile-menu .ssa-logout:hover{background:#ffe4e6;color:#be123c!important}
-</style>
-<style id="ssa-unified-sidebar-style">
-/* Shared System Super Administrator sidebar: based on Home HTML dimensions and colours. */
-.ssa-sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:280px!important;height:100vh!important;background:#fff!important;border-right:1px solid #dce5ef!important;box-shadow:2px 0 12px rgba(16,44,80,.05)!important;display:flex!important;flex-direction:column!important;z-index:10000!important;color:#102c50!important;font-family:Arial,Helvetica,sans-serif!important;font-size:14px!important;font-weight:400!important;line-height:1.4!important;overflow:hidden!important}
-.ssa-sidebar *{box-sizing:border-box!important;font-family:Arial,Helvetica,sans-serif!important}
-.ssa-sidebar .ssa-brand{display:block!important;flex:0 0 auto!important;padding:16px 18px 13px!important;border-bottom:1px solid #e7edf4!important;background:#fff!important}
-.ssa-sidebar .ssa-brand-title{font-size:16px!important;font-weight:700!important;color:#12355e!important;line-height:1.25!important;letter-spacing:0!important}
-.ssa-sidebar .ssa-brand-subtitle{font-size:12px!important;font-weight:400!important;color:#314b68!important;margin-top:4px!important;line-height:1.3!important}
-.ssa-sidebar .ssa-brand-scope{font-size:10px!important;font-weight:400!important;color:#6f8299!important;margin-top:4px!important;letter-spacing:.4px!important;text-transform:none!important}
-.ssa-sidebar .ssa-nav{padding:8px 10px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;min-height:0!important;display:block!important}
-.ssa-sidebar .ssa-nav-group{font-size:10px!important;font-weight:700!important;color:#8b9aab!important;text-transform:uppercase!important;padding:9px 10px 6px!important;letter-spacing:.7px!important}
-.ssa-sidebar .ssa-nav a,.ssa-sidebar .ssa-nav summary{display:flex!important;align-items:center!important;gap:10px!important;text-decoration:none!important;color:#314b68!important;padding:8px 10px!important;border-radius:8px!important;margin:2px 0!important;font-size:13px!important;font-weight:400!important;line-height:1.35!important;white-space:normal!important;cursor:pointer!important;list-style:none!important}
-.ssa-sidebar .ssa-nav summary::-webkit-details-marker{display:none!important}
-.ssa-sidebar .ssa-nav summary:after{content:'⌄';margin-left:auto;color:#8298b0;font-size:11px}
-.ssa-sidebar .ssa-nav a:hover,.ssa-sidebar .ssa-nav summary:hover{background:#eef6ff!important;color:#0d65bd!important}
-.ssa-sidebar .ssa-nav a.active,.ssa-sidebar .ssa-nav summary.active{background:#e9f3ff!important;color:#0b67c0!important;font-weight:700!important}
-.ssa-sidebar .ssa-ico{width:18px!important;min-width:18px!important;text-align:center!important;font-size:15px!important;font-weight:400!important;color:inherit!important}
-.ssa-sidebar .ssa-subnav{padding:0 0 4px 27px!important}
-.ssa-sidebar .ssa-subnav a{font-size:12px!important;padding:7px 9px!important;margin:1px 0!important;color:#58728c!important}
-.ssa-sidebar .ssa-profile{position:relative!important;flex:0 0 auto!important;margin-top:auto!important;border-top:1px solid #e7edf4!important;padding:10px 12px!important;background:#fbfdff!important}
-.ssa-sidebar .ssa-profile-trigger{display:flex!important;align-items:center!important;gap:9px!important;width:100%!important;border:1px solid transparent!important;border-radius:10px!important;padding:7px!important;background:transparent!important;color:#45627e!important;text-align:left!important;font:inherit!important;font-weight:400!important;cursor:pointer!important}
-.ssa-sidebar .ssa-profile-trigger:hover,.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"]{background:#eef6ff!important;border-color:#d7e8fb!important}
-.ssa-sidebar .ssa-avatar{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;background:#e9f3ff!important;display:grid!important;place-items:center!important;color:#4a8bc8!important;font-size:13px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-copy{display:block!important;min-width:0!important;flex:1!important}
-.ssa-sidebar .ssa-profile-name{display:block!important;color:#45627e!important;font-size:12px!important;font-weight:400!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:175px!important}
-.ssa-sidebar .ssa-profile-role{display:block!important;color:#8298b0!important;margin-top:3px!important;font-size:10px!important;font-weight:400!important}
-.ssa-sidebar .ssa-profile-chevron{margin-left:auto!important;color:#8298b0!important;font-size:11px!important;transition:transform .15s ease!important}
-.ssa-sidebar .ssa-profile-trigger[aria-expanded="true"] .ssa-profile-chevron{transform:rotate(180deg)!important}
-.ssa-sidebar .ssa-profile-dropdown{display:none!important;position:absolute!important;left:12px!important;right:12px!important;bottom:calc(100% - 3px)!important;margin:0!important;padding:5px!important;border:1px solid #e1eaf4!important;border-radius:10px!important;background:#fff!important;box-shadow:0 8px 24px rgba(16,44,80,.12)!important;z-index:10001!important}
-.ssa-sidebar .ssa-profile-dropdown.is-open{display:block!important}
-.ssa-sidebar .ssa-profile-dropdown a{display:block!important;padding:10px!important;border-radius:7px!important;text-decoration:none!important;font-size:12px!important;font-weight:400!important;color:#4b7fae!important;background:#f5f9ff!important;margin:2px 0!important}
-.ssa-sidebar .ssa-profile-dropdown a.logout-option{background:#fff3f3!important;color:#df5c66!important}
-.ssa-sidebar .ssa-profile-dropdown a:hover{filter:brightness(.97)!important}
-@media(max-width:650px){.ssa-sidebar{position:relative!important;width:100%!important;height:auto!important;min-height:0!important}.ssa-sidebar .ssa-nav{max-height:60vh}.ssa-sidebar .ssa-profile{margin-top:0!important}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Management & Member System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-<body>
-<div class="ssa-shell">
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-<aside class="ssa-sidebar">
-<div class="ssa-brand"><div class="ssa-brand-title">MAIN MENU</div><div class="ssa-brand-subtitle">Multi system</div><div class="ssa-brand-scope">System Super Administrator</div><div class="ssa-brand-scope">Global Authority</div></div>
-<nav class="ssa-nav"><div class="ssa-nav-group">Main Menu</div>
-<a class="" href="/system_super_administrator/"><span class="ssa-ico">⌂</span>Home</a>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↗</span>Income</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/income-management" title="New Income">New Income</a>
-<a href="/system_super_administrator/income-management" title="Income List">Income List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">↘</span>Expense</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/expense-management" title="New Expense">New Expense</a>
-<a href="/system_super_administrator/expense-management" title="Expense List">Expense List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">☷</span>Meal Manager</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/meal-management" title="New Meal">New Meal</a>
-<a href="/system_super_administrator/meal-management" title="Meal List">Meal List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▣</span>Savings</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/savings-management" title="New Savings">New Savings</a>
-<a href="/system_super_administrator/savings-management" title="Savings List">Savings List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▤</span>Information Directory</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/information-directory" title="New Information">New Information</a>
-<a href="/system_super_administrator/information-directory" title="Information List">Information List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♡</span>Blood Donor</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/blood-donor-management" title="New Donor">New Donor</a>
-<a href="/system_super_administrator/blood-donor-management" title="Donor List">Donor List</a>
-<a href="/system_super_administrator/blood-donor-management" title="Blood Request">Blood Request</a>
-<a href="/system_super_administrator/blood-donor-management" title="Reports">Reports</a>
-</div></details>
-<details class="ssa-nav-item" open><summary class="active"><span class="ssa-ico">▥</span>Branch System</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/branch-management" title="New Branch">New Branch</a>
-<a href="/system_super_administrator/branch-management" title="Branch List">Branch List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">♟</span>Member</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/member-management" title="New Member">New Member</a>
-<a href="/system_super_administrator/member-management" title="Member List">Member List</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">৳</span>Financial Section</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/financial-management" title="Member Wise">Member Wise</a>
-<a href="/system_super_administrator/financial-management" title="Branch Wise">Branch Wise</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▥</span>Reports</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/reports" title="Generate">Generate</a>
-<a href="/system_super_administrator/reports" title="Download XLSX">Download XLSX</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">⚿</span>Access Power</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/access-management" title="Member">Member</a>
-<a href="/system_super_administrator/access-management" title="Branch">Branch</a>
-</div></details>
-<details class="ssa-nav-item" ><summary class=""><span class="ssa-ico">▱</span>Documentation</summary><div class="ssa-subnav">
-<a href="/system_super_administrator/documentation" title="Writeable / Noteable">Writeable / Noteable</a>
-</div></details>
-<a class="" href="/system_super_administrator/notifications"><span class="ssa-ico">●</span>Notifications</a>
-<div class="ssa-nav-group">Account</div>
-<a class="" href="/system_super_administrator/settings"><span class="ssa-ico">⚙</span>Settings</a>
-</nav>
-<div class="ssa-profile" id="ssaUnifiedProfile"><button class="ssa-profile-trigger" type="button" id="ssaUnifiedProfileTrigger" aria-expanded="false" aria-controls="ssaUnifiedProfileDropdown"><span class="ssa-avatar">MM</span><span class="ssa-profile-copy"><span class="ssa-profile-name">Md. Momin Mondal (Central)</span><span class="ssa-profile-role">System Super Administrator</span></span><span class="ssa-profile-chevron" aria-hidden="true">⌃</span></button><div class="ssa-profile-dropdown" id="ssaUnifiedProfileDropdown"><a href="/system_super_administrator/profile">Profile</a><a href="/system_super_administrator/settings">Settings</a><a class="logout-option" href="/logout">Logout</a></div></div></aside>
-
-<div class="ssa-content">
-<main class="page">
-
-    <header class="branch-header">
-        <div>
-            <h1>Branch Management</h1>
-            <p>Manage branch information, administration and location.</p>
-        </div>
-        <div class="page-identity">
-            <strong>{{ session.get('username', 'blue') }}</strong>
-            <span>System Super Administrator</span>
-        </div>
-    </header>
-
-    {% if message %}
-    <div class="notice success">{{ message }}</div>
-    {% endif %}
-
-    {% if error %}
-    <div class="notice error">{{ error }}</div>
-    {% endif %}
-
-    {% if show_form %}
-    <section class="branch-card create-branch-card">
-        <div class="section-heading">
-            <div class="section-icon">▦</div>
-            <div>
-                <h2>Create New Branch</h2>
-                <p>Enter the branch details in the sections below.</p>
-            </div>
-        </div>
-
-        <form method="post" id="branchForm">
-            <div class="branch-form-grid">
-
-                <div class="branch-field">
-                    <label for="branch_reg_no">
-                        Registration No. <span class="required">*</span>
-                    </label>
-                    <input
-                        id="branch_reg_no"
-                        name="branch_reg_no"
-                        placeholder="Enter registration number"
-                        required
-                    >
-                    <span class="field-help">
-                        Must be unique for each branch.
-                    </span>
-                </div>
-
-                <div class="branch-field">
-                    <label for="branch_name">
-                        Branch Name <span class="required">*</span>
-                    </label>
-                    <input
-                        id="branch_name"
-                        name="branch_name"
-                        placeholder="Enter full branch name"
-                        required
-                    >
-                </div>
-
-                <div class="branch-field full-width">
-                    <label for="branch_admin">
-                        Branch Admin <span class="required">*</span>
-                    </label>
-                    <select id="branch_admin" name="branch_admin" required>
-                        <option value="">Select Branch Admin</option>
-                        {% for x in options.members %}
-                            {% if x is mapping %}
-                            <option value="{{ x.get('value', x.get('_id', x.get('username', ''))) }}">
-                                {{ x.get('name', x.get('label', 'Unknown member')) }}
-                                {% if x.get('username') %} | Username: {{ x.get('username') }}{% endif %}
-                                {% if x.get('mobile') or x.get('phone') or x.get('phone_number') %} | Mobile: {{ x.get('mobile', x.get('phone', x.get('phone_number', ''))) }}{% endif %}
-                                {% if x.get('email') %} | Email: {{ x.get('email') }}{% endif %}
-                            </option>
-                            {% else %}
-                            <option value="{{ x }}">{{ x }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                    <span class="field-help">
-                        Select the member responsible for managing this branch.
-                    </span>
-                </div>
-
-            </div>
-
-            <div class="section-heading subsection">
-                <div class="section-icon blue">⌖</div>
-                <div>
-                    <h2>Branch Location</h2>
-                    <p>Specify the division, district and full address.</p>
-                </div>
-            </div>
-
-            <div class="branch-form-grid">
-                <div class="branch-field">
-                    <label for="division">
-                        Division <span class="required">*</span>
-                    </label>
-                    <select id="division" name="division" required>
-                        <option value="">Select Division</option>
-                        <option value="Dhaka">Dhaka</option>
-                        <option value="Chattogram">Chattogram</option>
-                        <option value="Rajshahi">Rajshahi</option>
-                        <option value="Khulna">Khulna</option>
-                        <option value="Barishal">Barishal</option>
-                        <option value="Sylhet">Sylhet</option>
-                        <option value="Rangpur">Rangpur</option>
-                        <option value="Mymensingh">Mymensingh</option>
-                    </select>
-                </div>
-
-                <div class="branch-field">
-                    <label for="district">
-                        District <span class="required">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="district"
-                        name="district"
-                        list="districtSuggestions"
-                        placeholder="Select Division First"
-                        autocomplete="off"
-                        required
-                        disabled
-                    >
-                    <datalist id="districtSuggestions"></datalist>
-                    <span class="field-help">
-                        Select a division, then choose or type a district name.
-                    </span>
-                </div>
-
-                <div class="branch-field full-width">
-                    <label for="location">
-                        Branch Address <span class="required">*</span>
-                    </label>
-                    <textarea
-                        id="location"
-                        name="location"
-                        placeholder="Enter house, road, area, post office and full address"
-                        required
-                    ></textarea>
-                </div>
-            </div>
-
-            <div class="section-heading subsection">
-                <div class="section-icon purple">✉</div>
-                <div>
-                    <h2>Contact Information</h2>
-                    <p>Official contact details for this branch.</p>
-                </div>
-            </div>
-
-            <div class="branch-form-grid">
-                <div class="branch-field">
-                    <label for="phone">
-                        Phone Number <span class="required">*</span>
-                    </label>
-                    <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="Enter phone number"
-                        required
-                    >
-                </div>
-
-                <div class="branch-field">
-                    <label for="email">Official Email</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="branch@example.com"
-                    >
-                </div>
-            </div>
-
-            <div class="section-heading subsection">
-                <div class="section-icon orange">⚙</div>
-                <div>
-                    <h2>Branch Settings</h2>
-                    <p>Configure branch status and additional information.</p>
-                </div>
-            </div>
-
-            <div class="branch-form-grid">
-                <div class="branch-field full-width">
-                    <label>Branch Status</label>
-                    <div class="branch-status-options">
-                        <label class="branch-status-option">
-                            <input
-                                type="radio"
-                                name="status"
-                                value="Active"
-                                checked
-                            >
-                            Active
-                        </label>
-
-                        <label class="branch-status-option">
-                            <input
-                                type="radio"
-                                name="status"
-                                value="Inactive"
-                            >
-                            Inactive
-                        </label>
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                        <i class="fa-solid font-bold fa-building-user text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight tracking-wide text-white">BranchOS</h1>
+                        <p class="text-xs text-slate-400 font-medium">Enterprise Branch & Member Portal</p>
                     </div>
                 </div>
 
-                <div class="branch-field full-width">
-                    <label for="description">Description</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        placeholder="Add additional branch information (optional)"
-                    ></textarea>
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/50">
+                    <button onclick="switchTab('branchList')" id="tab-branchList" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 text-white bg-blue-600 shadow-sm">
+                        <i class="fa-solid fa-city text-sm"></i> Branch Directory
+                    </button>
+                    <button onclick="switchTab('addBranch')" id="tab-addBranch" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                        <i class="fa-solid fa-square-plus text-sm"></i> Add New Branch
+                    </button>
+                    <button onclick="switchTab('memberList')" id="tab-memberList" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                        <i class="fa-solid fa-users text-sm"></i> Member Directory
+                    </button>
+                    <button onclick="switchTab('addMember')" id="tab-addMember" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                        <i class="fa-solid fa-user-plus text-sm"></i> Register Member
+                    </button>
+                </nav>
+
+                <!-- Quick Right Actions -->
+                <div class="flex items-center gap-2">
+                    <button onclick="exportDataToCSV()" class="px-3 py-1.5 text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-csv text-emerald-400"></i> Export CSV
+                    </button>
+                    <button onclick="resetToSampleData()" class="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-red-900/30 border border-slate-700 hover:border-red-700/50 rounded-lg transition" title="Reset Demo Data">
+                        <i class="fa-solid fa-rotate text-slate-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Row -->
+        <div class="md:hidden flex overflow-x-auto bg-slate-800 p-2 gap-1 border-t border-slate-700 custom-scrollbar">
+            <button onclick="switchTab('branchList')" id="mob-tab-branchList" class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap text-white bg-blue-600">🏢 Branches</button>
+            <button onclick="switchTab('addBranch')" id="mob-tab-addBranch" class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap text-slate-300 hover:bg-slate-700">➕ New Branch</button>
+            <button onclick="switchTab('memberList')" id="mob-tab-memberList" class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap text-slate-300 hover:bg-slate-700">📋 Members</button>
+            <button onclick="switchTab('addMember')" id="mob-tab-addMember" class="px-3 py-1.5 text-xs font-semibold rounded-md whitespace-nowrap text-slate-300 hover:bg-slate-700">👤 Add Member</button>
+        </div>
+    </header>
+
+    <!-- Main Content View Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- =================================================================== -->
+        <!-- TAB 1: BRANCH LIST & DIRECTORY                                      -->
+        <!-- =================================================================== -->
+        <section id="view-branchList" class="tab-content block space-y-6">
+            
+            <!-- Page Header Banner -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Branch Directory & Operations</h2>
+                    <p class="text-sm text-slate-500 mt-1">Manage network branches, operational status, capacity, and linked member directory.</p>
+                </div>
+                <button onclick="switchTab('addBranch')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-500/20 transition self-start md:self-auto">
+                    <i class="fa-solid fa-plus"></i> Add New Branch
+                </button>
+            </div>
+
+            <!-- Analytics KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Branches</p>
+                        <h3 id="kpi-total-branches" class="text-2xl font-extrabold text-slate-900 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Active Operational</p>
+                        <h3 id="kpi-active-branches" class="text-2xl font-extrabold text-emerald-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Assigned Members</p>
+                        <h3 id="kpi-total-assigned-members" class="text-2xl font-extrabold text-indigo-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Sub-Branches & Booths</p>
+                        <h3 id="kpi-sub-branches" class="text-2xl font-extrabold text-amber-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="branch-form-actions">
-                <button type="reset" class="branch-btn branch-btn-reset">
-                    Reset Form
+            <!-- Filter & Control Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-4 items-center justify-between">
+                <!-- Search Box -->
+                <div class="relative w-full lg:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                    <input type="text" id="branch-search-input" oninput="renderBranchList()" placeholder="Search branch code, name, city, manager..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                </div>
+
+                <!-- Dropdown Filters -->
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <!-- District Filter -->
+                    <select id="branch-filter-district" onchange="renderBranchList()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-medium">
+                        <option value="ALL">All Districts</option>
+                    </select>
+
+                    <!-- Branch Type Filter -->
+                    <select id="branch-filter-type" onchange="renderBranchList()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-medium">
+                        <option value="ALL">All Branch Types</option>
+                        <option value="Head Office">Head Office</option>
+                        <option value="Regional Office">Regional Office</option>
+                        <option value="Sub-Branch">Sub-Branch</option>
+                        <option value="Agent Booth">Agent Booth</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select id="branch-filter-status" onchange="renderBranchList()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-medium">
+                        <option value="ALL">All Statuses</option>
+                        <option value="Active">Active Only</option>
+                        <option value="Inactive">Inactive Only</option>
+                    </select>
+
+                    <!-- View Switcher Toggle -->
+                    <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 ml-auto lg:ml-0">
+                        <button onclick="setBranchLayout('grid')" id="btn-layout-grid" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-blue-600 bg-white shadow-sm">
+                            <i class="fa-solid fa-border-all mr-1"></i> Cards
+                        </button>
+                        <button onclick="setBranchLayout('table')" id="btn-layout-table" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition text-slate-600 hover:text-slate-900">
+                            <i class="fa-solid fa-list mr-1"></i> Table
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Branch Display Container -->
+            <div id="branch-container-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated Cards -->
+            </div>
+
+            <div id="branch-container-table" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4">Branch Details</th>
+                                <th class="px-6 py-4">Type</th>
+                                <th class="px-6 py-4">Location</th>
+                                <th class="px-6 py-4">Manager & Contact</th>
+                                <th class="px-6 py-4 text-center">Members</th>
+                                <th class="px-6 py-4 text-center">Status</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="branch-table-tbody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Table Rows dynamically injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State Display -->
+            <div id="branch-empty-state" class="hidden bg-white p-12 text-center rounded-2xl border border-dashed border-slate-300">
+                <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-building-circle-xmark"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-800">No Branches Found</h3>
+                <p class="text-xs text-slate-500 mt-1">Try adjusting your filters or search terms.</p>
+            </div>
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- TAB 2: ADD NEW BRANCH FORM                                          -->
+        <!-- =================================================================== -->
+        <section id="view-addBranch" class="tab-content hidden space-y-6 max-w-5xl mx-auto">
+            
+            <!-- Page Title -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">➕ Register New Operational Branch</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Enter official branch details, location coordinates, manager, and capacity specs.</p>
+                </div>
+                <button onclick="switchTab('branchList')" class="px-3.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory
                 </button>
-
-                <button
-                    type="submit"
-                    class="branch-btn branch-btn-save"
-                    name="action"
-                    value="save"
-                >
-                    + Create Branch
-                </button>
-            </div>
-        </form>
-    </section>
-    {% else %}
-    <section class="branch-card new-branch-action">
-        <div class="records-heading">
-            <div>
-                <h2>Branch Management</h2>
-                <p>View existing branches or create a new branch.</p>
-            </div>
-            <a class="branch-btn branch-btn-save" href="{{ url_for(request.endpoint, new=1) }}" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">+ New Branch</a>
-        </div>
-    </section>
-    {% endif %}
-
-    <section class="branch-card">
-        <div class="records-heading">
-            <div>
-                <h2>Branch Records</h2>
-                <p>Search and manage existing branches.</p>
             </div>
 
-            <form method="get" class="branch-search">
-                <input
-                    name="search"
-                    type="search"
-                    placeholder="Search branches..."
-                    value="{{ request.args.get('search', '') }}"
-                >
-                <button type="submit">Search</button>
+            <form id="addBranchForm" onsubmit="handleCreateBranch(event)" class="space-y-6">
+                
+                <!-- CARD 1: Basic Branch Information -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-sm">1</div>
+                        <h3 class="font-bold text-slate-800 text-base">Basic Branch Information</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Branch Code -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Branch Code <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-code" required placeholder="e.g. BR-DHK-001" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 uppercase font-mono">
+                        </div>
+
+                        <!-- Branch Name -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Official Branch Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-name" required placeholder="e.g. Dhaka Central Regional Office" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Branch Type -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Branch Type <span class="text-red-500">*</span></label>
+                            <select id="form-branch-type" required class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                <option value="Head Office">Head Office</option>
+                                <option value="Regional Office" selected>Regional Office</option>
+                                <option value="Sub-Branch">Sub-Branch</option>
+                                <option value="Agent Booth">Agent Booth</option>
+                            </select>
+                        </div>
+
+                        <!-- Opening Date -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Establishment Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="form-branch-date" required class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Status Toggle -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Operational Status</label>
+                            <select id="form-branch-status" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-semibold text-emerald-600">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive / Pending</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: Location & Address -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 font-bold flex items-center justify-center text-sm">2</div>
+                        <h3 class="font-bold text-slate-800 text-base">Location & Geographic Details</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- District -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">District / Region <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-district" required placeholder="e.g. Dhaka, Chittagong, Sylhet" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Upazila / Thana -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Upazila / Thana <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-thana" required placeholder="e.g. Motijheel, Agrabad" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Capacity -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Member Capacity</label>
+                            <input type="number" id="form-branch-capacity" placeholder="e.g. 500" min="10" value="500" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Detailed Street Address -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Street Address & Landmark <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-address" required placeholder="e.g. Level 4, City Tower, 12 Commercial Area" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- GPS Coordinates -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">GPS Coordinates (Lat, Long)</label>
+                            <input type="text" id="form-branch-gps" placeholder="e.g. 23.7272, 90.4093" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: Contact & Management -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center text-sm">3</div>
+                        <h3 class="font-bold text-slate-800 text-base">Contact & Operational Timing</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Manager Name -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Branch Manager Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="form-branch-manager" required placeholder="e.g. Tanvir Hasan" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Phone -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Official Phone Number <span class="text-red-500">*</span></label>
+                            <input type="tel" id="form-branch-phone" required placeholder="e.g. +880 1711 000111" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Official Email Address <span class="text-red-500">*</span></label>
+                            <input type="email" id="form-branch-email" required placeholder="e.g. dhaka@branchos.com" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Operating Hours -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Opening Time</label>
+                            <input type="time" id="form-branch-open-time" value="09:00" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Closing Time</label>
+                            <input type="time" id="form-branch-close-time" value="17:00" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                        </div>
+
+                        <!-- Weekly Holiday -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Weekly Holiday</label>
+                            <select id="form-branch-holiday" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                                <option value="Friday">Friday Only</option>
+                                <option value="Friday & Saturday" selected>Friday & Saturday</option>
+                                <option value="Sunday">Sunday Only</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button Bar -->
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" onclick="switchTab('branchList')" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save & Activate Branch
+                    </button>
+                </div>
             </form>
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- TAB 3: MEMBER DIRECTORY                                             -->
+        <!-- =================================================================== -->
+        <section id="view-memberList" class="tab-content hidden space-y-6">
+            
+            <!-- Header Banner -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Member Directory</h2>
+                    <p class="text-sm text-slate-500 mt-1">Manage all registered members mapped across active organization branches.</p>
+                </div>
+                <button onclick="switchTab('addMember')" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-500/20 transition self-start md:self-auto">
+                    <i class="fa-solid fa-user-plus"></i> Register New Member
+                </button>
+            </div>
+
+            <!-- Member Filters Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-4 items-center justify-between">
+                <!-- Search Box -->
+                <div class="relative w-full lg:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                    <input type="text" id="member-search-input" oninput="renderMemberList()" placeholder="Search member ID, name, mobile, email..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                </div>
+
+                <!-- Dropdowns -->
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                    <!-- Branch Filter Dropdown -->
+                    <select id="member-filter-branch" onchange="renderMemberList()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-medium">
+                        <option value="ALL">All Assigned Branches</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select id="member-filter-status" onchange="renderMemberList()" class="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-medium">
+                        <option value="ALL">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Suspended">Suspended</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Member Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4">Member Info</th>
+                                <th class="px-6 py-4">Assigned Branch</th>
+                                <th class="px-6 py-4">Contact</th>
+                                <th class="px-6 py-4">Join Date</th>
+                                <th class="px-6 py-4 text-center">Status</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-table-tbody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Dynamically Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State Display -->
+            <div id="member-empty-state" class="hidden bg-white p-12 text-center rounded-2xl border border-dashed border-slate-300">
+                <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-800">No Members Found</h3>
+                <p class="text-xs text-slate-500 mt-1">Try clearing filters or search keywords.</p>
+            </div>
+        </section>
+
+
+        <!-- =================================================================== -->
+        <!-- TAB 4: REGISTER NEW MEMBER FORM                                     -->
+        <!-- =================================================================== -->
+        <section id="view-addMember" class="tab-content hidden space-y-6 max-w-4xl mx-auto">
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">👤 Member Registration & Branch Assignment</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Register a new member and map them to an operational active branch.</p>
+                </div>
+                <button onclick="switchTab('memberList')" class="px-3.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory
+                </button>
+            </div>
+
+            <form id="addMemberForm" onsubmit="handleRegisterMember(event)" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Member Full Name -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-member-name" required placeholder="e.g. Rafiqul Islam" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    </div>
+
+                    <!-- Member ID -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Member ID <span class="text-red-500">*</span></label>
+                        <input type="text" id="form-member-id" required placeholder="e.g. MEM-2026-88" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono">
+                    </div>
+
+                    <!-- Branch Assignment Dropdown -->
+                    <div class="md:col-span-2 bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+                        <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider mb-1.5">
+                            <i class="fa-solid fa-building-circle-check text-blue-600 mr-1"></i> Branch Assignment <span class="text-red-500">*</span>
+                        </label>
+                        <select id="form-member-branch-code" required class="w-full px-3.5 py-2.5 text-sm bg-white border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-slate-800">
+                            <!-- Populated Dynamically -->
+                        </select>
+                        <p class="text-xs text-blue-600 mt-1.5">This member will be mapped to the selected branch's quota and manager roster.</p>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
+                        <input type="tel" id="form-member-phone" required placeholder="e.g. +880 1819 001122" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    </div>
+
+                    <!-- Email Address -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                        <input type="email" id="form-member-email" placeholder="e.g. rafiq@example.com" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    </div>
+
+                    <!-- NID / Passport -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">NID / Passport Number</label>
+                        <input type="text" id="form-member-nid" placeholder="e.g. 19882691234567" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono">
+                    </div>
+
+                    <!-- Membership Status -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                        <select id="form-member-status" class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending Approval</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Action Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="switchTab('memberList')" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> Complete Member Registration
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- MODALS & OVERLAYS                                                   -->
+    <!-- =================================================================== -->
+
+    <!-- VIEW BRANCH DETAILS MODAL -->
+    <div id="branchDetailsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div id="modal-branch-details-content">
+                <!-- Injected via JavaScript -->
+            </div>
         </div>
+    </div>
 
-        <div class="record-table-wrap">
-            <table class="record-table">
-                <thead>
-                    <tr>
-                        <th>Registration No.</th>
-                        <th>Branch Name</th>
-                        <th>Branch Admin</th>
-                        <th>Division</th>
-                        <th>District</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for r in records %}
-                    <tr>
-                        <td>{{ r.get('branch_reg_no', '') }}</td>
-                        <td>{{ r.get('branch_name', r.get('name', '')) }}</td>
-                        <td>{{ r.get('branch_admin', '') }}</td>
-                        <td>{{ r.get('division', '') }}</td>
-                        <td>{{ r.get('district', '') }}</td>
-                        <td>{{ r.get('phone', '') }}</td>
-                        <td>{{ r.get('email', '') }}</td>
-                        <td>{{ r.get('location', '') }}</td>
-                        <td>
-                            {% if r.get('status', '') == 'Active' %}
-                                <span class="status-pill">Active</span>
-                            {% else %}
-                                <span class="status-pill inactive">
-                                    {{ r.get('status', 'Inactive') }}
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="record-actions">
-                                <form method="post" class="inline-action">
-                                    <input type="hidden" name="action" value="update">
-                                    <input type="hidden" name="record_id" value="{{ r.get('_id', '') }}">
-                                    <input type="hidden" name="source_collection" value="{{ r.get('_source_collection', 'branches') }}">
-                                    <button class="update-btn" type="submit">Update</button>
-                                </form>
-
-                                <form
-                                    method="post"
-                                    class="inline-action"
-                                    onsubmit="return confirm('Are you sure you want to delete this branch?');"
-                                >
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="record_id" value="{{ r.get('_id', '') }}">
-                                    <input type="hidden" name="source_collection" value="{{ r.get('_source_collection', 'branches') }}">
-                                    <button class="danger" type="submit">Delete</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="10" class="empty">
-                            No branch records found.
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <!-- DIGITAL MEMBER ID CARD MODAL -->
+    <div id="memberCardModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative">
+            <button onclick="closeModal('memberCardModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-member-card-content">
+                <!-- Digital Member Card Injected Here -->
+            </div>
         </div>
-    </section>
+    </div>
 
-</main>
-</div>
-</div>
+    <!-- Application Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            &copy; 2026 BranchOS Enterprise Management System. All Rights Reserved.
+        </div>
+    </footer>
 
-<script>
-"use strict";
 
-const districtMap = {
-    Dhaka: [
-        "Dhaka", "Faridpur", "Gazipur", "Gopalganj",
-        "Kishoreganj", "Madaripur", "Manikganj",
-        "Munshiganj", "Narayanganj", "Narsingdi",
-        "Rajbari", "Shariatpur", "Tangail"
-    ],
-    Chattogram: [
-        "Bandarban", "Brahmanbaria", "Chandpur",
-        "Chattogram", "Cumilla", "Cox's Bazar",
-        "Feni", "Khagrachhari", "Lakshmipur",
-        "Noakhali", "Rangamati"
-    ],
-    Rajshahi: [
-        "Bogura", "Joypurhat", "Naogaon", "Natore",
-        "Chapainawabganj", "Pabna", "Rajshahi", "Sirajganj"
-    ],
-    Khulna: [
-        "Bagerhat", "Chuadanga", "Jashore", "Jhenaidah",
-        "Khulna", "Kushtia", "Magura", "Meherpur",
-        "Narail", "Satkhira"
-    ],
-    Barishal: [
-        "Barguna", "Barishal", "Bhola",
-        "Jhalokathi", "Patuakhali", "Pirojpur"
-    ],
-    Sylhet: [
-        "Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"
-    ],
-    Rangpur: [
-        "Dinajpur", "Gaibandha", "Kurigram", "Lalmonirhat",
-        "Nilphamari", "Panchagarh", "Rangpur", "Thakurgaon"
-    ],
-    Mymensingh: [
-        "Jamalpur", "Mymensingh", "Netrokona", "Sherpur"
-    ]
-};
+    <!-- =================================================================== -->
+    <!-- JAVASCRIPT LOGIC & STATE MANAGEMENT                                 -->
+    <!-- =================================================================== -->
+    <script>
+        // Default Initial Sample Data
+        const INITIAL_BRANCHES = [
+            {
+                code: "BR-DHK-001",
+                name: "Dhaka Central Main Branch",
+                type: "Head Office",
+                date: "2021-01-15",
+                status: "Active",
+                district: "Dhaka",
+                thana: "Motijheel C/A",
+                address: "Plot 14, Globe Tower, Motijheel Commercial Area",
+                gps: "23.7272, 90.4093",
+                capacity: 1000,
+                manager: "Kazi Nazrul Islam",
+                phone: "+880 1711 100200",
+                email: "dhaka.head@branchos.com",
+                openTime: "09:00",
+                closeTime: "17:00",
+                holiday: "Friday & Saturday"
+            },
+            {
+                code: "BR-CTG-002",
+                name: "Chittagong Port Regional Office",
+                type: "Regional Office",
+                date: "2022-03-10",
+                status: "Active",
+                district: "Chittagong",
+                thana: "Agrabad",
+                address: "45 Sheikh Mujib Road, Agrabad C/A",
+                gps: "22.3242, 91.8123",
+                capacity: 750,
+                manager: "Shahidul Alam",
+                phone: "+880 1819 222333",
+                email: "ctg.regional@branchos.com",
+                openTime: "09:00",
+                closeTime: "17:00",
+                holiday: "Friday"
+            },
+            {
+                code: "BR-SYL-003",
+                name: "Sylhet Zindabazar Sub-Branch",
+                type: "Sub-Branch",
+                date: "2023-06-20",
+                status: "Active",
+                district: "Sylhet",
+                thana: "Zindabazar",
+                address: "City Centre, 2nd Floor, Zindabazar",
+                gps: "24.8949, 91.8687",
+                capacity: 350,
+                manager: "Mahbubur Rahman",
+                phone: "+880 1611 444555",
+                email: "sylhet@branchos.com",
+                openTime: "09:30",
+                closeTime: "17:30",
+                holiday: "Friday"
+            },
+            {
+                code: "BR-KHU-004",
+                name: "Khulna Rupsha Agent Booth",
+                type: "Agent Booth",
+                date: "2024-02-01",
+                status: "Inactive",
+                district: "Khulna",
+                thana: "Rupsha",
+                address: "Station Road, Near Rupsha Bridge",
+                gps: "22.8157, 89.5681",
+                capacity: 200,
+                manager: "Anwar Hossain",
+                phone: "+880 1912 777888",
+                email: "khulna.booth@branchos.com",
+                openTime: "09:00",
+                closeTime: "16:00",
+                holiday: "Friday"
+            }
+        ];
 
-const branchForm = document.getElementById("branchForm");
-const divisionSelect = document.getElementById("division");
-const districtInput = document.getElementById("district");
-const districtSuggestions =
-    document.getElementById("districtSuggestions");
+        const INITIAL_MEMBERS = [
+            {
+                id: "MEM-2026-01",
+                name: "Tanvir Ahmed",
+                branchCode: "BR-DHK-001",
+                phone: "+880 1700 112233",
+                email: "tanvir.dhk@gmail.com",
+                nid: "1990261122334455",
+                status: "Active",
+                joinedDate: "2024-01-10"
+            },
+            {
+                id: "MEM-2026-02",
+                name: "Nusrat Jahan",
+                branchCode: "BR-DHK-001",
+                phone: "+880 1800 223344",
+                email: "nusrat.jahan@yahoo.com",
+                nid: "1994269988776655",
+                status: "Active",
+                joinedDate: "2024-02-15"
+            },
+            {
+                id: "MEM-2026-03",
+                name: "Kamrul Hasan",
+                branchCode: "BR-CTG-002",
+                phone: "+880 1900 334455",
+                email: "kamrul.ctg@gmail.com",
+                nid: "19881512349876",
+                status: "Active",
+                joinedDate: "2024-03-01"
+            },
+            {
+                id: "MEM-2026-04",
+                name: "Sultana Parveen",
+                branchCode: "BR-SYL-003",
+                phone: "+880 1600 445566",
+                email: "sultana.syl@gmail.com",
+                nid: "19929155667788",
+                status: "Pending",
+                joinedDate: "2025-01-05"
+            }
+        ];
 
-function updateDistrictSuggestions() {
-    const districts = districtMap[divisionSelect.value] || [];
+        // Global State Variables
+        let branches = [];
+        let members = [];
+        let currentBranchLayout = 'grid'; // 'grid' | 'table'
 
-    districtInput.value = "";
-    districtSuggestions.replaceChildren();
+        // Window Onload Initialization
+        window.onload = function() {
+            loadState();
+            populateDistrictFilter();
+            populateBranchSelectOptions();
+            renderBranchList();
+            renderMemberList();
+            generateAutoBranchCode();
+        };
 
-    districts.forEach(function (districtName) {
-        const option = document.createElement("option");
-        option.value = districtName;
-        districtSuggestions.appendChild(option);
-    });
+        // State Persistence Handlers
+        function loadState() {
+            const storedBranches = localStorage.getItem('branchos_branches');
+            const storedMembers = localStorage.getItem('branchos_members');
 
-    districtInput.disabled = districts.length === 0;
-    districtInput.placeholder = districts.length
-        ? "Type or select a district"
-        : "Select Division First";
+            branches = storedBranches ? JSON.parse(storedBranches) : [...INITIAL_BRANCHES];
+            members = storedMembers ? JSON.parse(storedMembers) : [...INITIAL_MEMBERS];
 
-    districtInput.setCustomValidity("");
-}
-
-if (branchForm && divisionSelect && districtInput && districtSuggestions) {
-divisionSelect.addEventListener("change", updateDistrictSuggestions);
-
-districtInput.addEventListener("input", function () {
-    districtInput.setCustomValidity("");
-});
-
-branchForm.addEventListener("submit", function (event) {
-    const districts = districtMap[divisionSelect.value] || [];
-    const selectedDistrict = districtInput.value.trim();
-
-    const validDistrict = districts.find(function (districtName) {
-        return districtName.toLowerCase() === selectedDistrict.toLowerCase();
-    });
-
-    if (!validDistrict) {
-        event.preventDefault();
-        districtInput.setCustomValidity(
-            "Please select a valid district for the selected division."
-        );
-        districtInput.reportValidity();
-        districtInput.focus();
-        return;
-    }
-
-    // Normalize capitalization to the canonical district name.
-    districtInput.value = validDistrict;
-    districtInput.setCustomValidity("");
-});
-
-branchForm.addEventListener("reset", function () {
-    window.setTimeout(function () {
-        updateDistrictSuggestions();
-    }, 0);
-});
-
-updateDistrictSuggestions();
-}
-</script>
-
-<script>
-(function () {
-    const trigger = document.getElementById('sidebarProfileTrigger');
-    const menu = document.getElementById('sidebarProfileMenu');
-    const wrapper = document.getElementById('sidebarProfile');
-    if (!trigger || !menu || !wrapper) return;
-
-    function setMenuOpen(open) {
-        trigger.setAttribute('aria-expanded', String(open));
-        menu.setAttribute('aria-hidden', String(!open));
-        menu.classList.toggle('open', open);
-    }
-
-    trigger.addEventListener('click', function () {
-        setMenuOpen(trigger.getAttribute('aria-expanded') !== 'true');
-    });
-
-    document.addEventListener('click', function (event) {
-        if (!wrapper.contains(event.target)) setMenuOpen(false);
-    });
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            setMenuOpen(false);
-            trigger.focus();
+            saveState();
         }
-    });
-})();
-</script>
 
-<script id="ssa-unified-sidebar-script">(function(){var b=document.getElementById('ssaUnifiedProfileTrigger');var d=document.getElementById('ssaUnifiedProfileDropdown');if(!b||!d)return;b.addEventListener('click',function(e){e.preventDefault();var open=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!open));d.classList.toggle('is-open',!open);});document.addEventListener('click',function(e){if(!e.target.closest('#ssaUnifiedProfile')){b.setAttribute('aria-expanded','false');d.classList.remove('is-open');}});})();</script>
+        function saveState() {
+            localStorage.setItem('branchos_branches', JSON.stringify(branches));
+            localStorage.setItem('branchos_members', JSON.stringify(members));
+        }
+
+        function resetToSampleData() {
+            if(confirm("Are you sure you want to reset all branch and member records to sample demo data?")) {
+                branches = [...INITIAL_BRANCHES];
+                members = [...INITIAL_MEMBERS];
+                saveState();
+                populateDistrictFilter();
+                populateBranchSelectOptions();
+                renderBranchList();
+                renderMemberList();
+                showToast("System reset to sample demo data!", "success");
+            }
+        }
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show target
+            const targetView = document.getElementById(`view-${tabId}`);
+            if(targetView) targetView.classList.remove('hidden');
+
+            // Update Top Header Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-white', 'bg-blue-600', 'shadow-sm');
+                btn.classList.add('text-slate-300');
+            });
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if(activeTab) {
+                activeTab.classList.add('text-white', 'bg-blue-600', 'shadow-sm');
+                activeTab.classList.remove('text-slate-300');
+            }
+
+            // Sync with Mobile Header Buttons
+            document.querySelectorAll('[id^="mob-tab-"]').forEach(btn => {
+                btn.classList.remove('text-white', 'bg-blue-600');
+                btn.classList.add('text-slate-300');
+            });
+            const mobActive = document.getElementById(`mob-tab-${tabId}`);
+            if(mobActive) {
+                mobActive.classList.add('text-white', 'bg-blue-600');
+                mobActive.classList.remove('text-slate-300');
+            }
+
+            // Re-render views if needed
+            if(tabId === 'branchList') renderBranchList();
+            if(tabId === 'memberList') renderMemberList();
+            if(tabId === 'addMember') populateBranchSelectOptions();
+        }
+
+        // Branch Layout Toggle
+        function setBranchLayout(layout) {
+            currentBranchLayout = layout;
+            const gridContainer = document.getElementById('branch-container-grid');
+            const tableContainer = document.getElementById('branch-container-table');
+            const btnGrid = document.getElementById('btn-layout-grid');
+            const btnTable = document.getElementById('btn-layout-table');
+
+            if(layout === 'grid') {
+                gridContainer.classList.remove('hidden');
+                tableContainer.classList.add('hidden');
+                btnGrid.classList.add('text-blue-600', 'bg-white', 'shadow-sm');
+                btnGrid.classList.remove('text-slate-600');
+                btnTable.classList.remove('text-blue-600', 'bg-white', 'shadow-sm');
+                btnTable.classList.add('text-slate-600');
+            } else {
+                gridContainer.classList.add('hidden');
+                tableContainer.classList.remove('hidden');
+                btnTable.classList.add('text-blue-600', 'bg-white', 'shadow-sm');
+                btnTable.classList.remove('text-slate-600');
+                btnGrid.classList.remove('text-blue-600', 'bg-white', 'shadow-sm');
+                btnGrid.classList.add('text-slate-600');
+            }
+        }
+
+        // Auto Generate Branch Code Helper
+        function generateAutoBranchCode() {
+            const nextNum = branches.length + 1;
+            const codeInput = document.getElementById('form-branch-code');
+            if(codeInput && !codeInput.value) {
+                codeInput.value = `BR-DHK-00${nextNum}`;
+            }
+        }
+
+        // District Dropdown Population
+        function populateDistrictFilter() {
+            const districtSelect = document.getElementById('branch-filter-district');
+            const districts = [...new Set(branches.map(b => b.district))].sort();
+            
+            districtSelect.innerHTML = `<option value="ALL">All Districts</option>`;
+            districts.forEach(d => {
+                districtSelect.innerHTML += `<option value="${d}">${d}</option>`;
+            });
+        }
+
+        // Populate Branch Select Dropdowns in Member Forms/Filters
+        function populateBranchSelectOptions() {
+            const memberFilterBranch = document.getElementById('member-filter-branch');
+            const memberFormBranch = document.getElementById('form-member-branch-code');
+
+            let optionsHtml = `<option value="ALL">All Assigned Branches</option>`;
+            let formOptionsHtml = ``;
+
+            branches.forEach(b => {
+                optionsHtml += `<option value="${b.code}">${b.name} (${b.code})</option>`;
+                formOptionsHtml += `<option value="${b.code}">${b.name} — [${b.district}]</option>`;
+            });
+
+            if(memberFilterBranch) memberFilterBranch.innerHTML = optionsHtml;
+            if(memberFormBranch) memberFormBranch.innerHTML = formOptionsHtml || `<option value="">No Active Branches Available</option>`;
+        }
+
+        // ===================================================================
+        // RENDER BRANCH LIST & DASHBOARD
+        // ===================================================================
+        function renderBranchList() {
+            const searchQuery = document.getElementById('branch-search-input').value.toLowerCase().trim();
+            const selectedDistrict = document.getElementById('branch-filter-district').value;
+            const selectedType = document.getElementById('branch-filter-type').value;
+            const selectedStatus = document.getElementById('branch-filter-status').value;
+
+            // Calculate KPIs
+            const totalBranches = branches.length;
+            const activeBranches = branches.filter(b => b.status === 'Active').length;
+            const subBranches = branches.filter(b => b.type === 'Sub-Branch' || b.type === 'Agent Booth').length;
+            const totalAssignedMembers = members.length;
+
+            document.getElementById('kpi-total-branches').innerText = totalBranches;
+            document.getElementById('kpi-active-branches').innerText = activeBranches;
+            document.getElementById('kpi-sub-branches').innerText = subBranches;
+            document.getElementById('kpi-total-assigned-members').innerText = totalAssignedMembers;
+
+            // Filter Branches Logic
+            const filtered = branches.filter(b => {
+                const matchesSearch = b.name.toLowerCase().includes(searchQuery) ||
+                                      b.code.toLowerCase().includes(searchQuery) ||
+                                      b.district.toLowerCase().includes(searchQuery) ||
+                                      b.manager.toLowerCase().includes(searchQuery);
+
+                const matchesDistrict = (selectedDistrict === 'ALL') || (b.district === selectedDistrict);
+                const matchesType = (selectedType === 'ALL') || (b.type === selectedType);
+                const matchesStatus = (selectedStatus === 'ALL') || (b.status === selectedStatus);
+
+                return matchesSearch && matchesDistrict && matchesType && matchesStatus;
+            });
+
+            const gridContainer = document.getElementById('branch-container-grid');
+            const tableBody = document.getElementById('branch-table-tbody');
+            const emptyState = document.getElementById('branch-empty-state');
+
+            gridContainer.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(branch => {
+                // Count assigned members
+                const memberCount = members.filter(m => m.branchCode === branch.code).length;
+
+                // Status Badge Color
+                const statusBadge = branch.status === 'Active' 
+                    ? `<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active</span>`
+                    : `<span class="px-2.5 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200 inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive</span>`;
+
+                // Branch Type Badge Color
+                let typeBadgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
+                if(branch.type === 'Head Office') typeBadgeColor = 'bg-purple-50 text-purple-700 border-purple-200';
+                if(branch.type === 'Agent Booth') typeBadgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
+
+                // --- 1. RENDER GRID CARD ---
+                const cardHtml = `
+                    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden group">
+                        <!-- Top Header -->
+                        <div class="p-5 border-b border-slate-100 bg-gradient-to-b from-slate-50/50 to-white">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="font-mono text-xs font-bold px-2.5 py-1 bg-slate-900 text-white rounded-lg">${branch.code}</span>
+                                ${statusBadge}
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-lg group-hover:text-blue-600 transition-colors">${branch.name}</h3>
+                            <span class="inline-block mt-1 px-2.5 py-0.5 text-xs font-semibold rounded-md border ${typeBadgeColor}">${branch.type}</span>
+                        </div>
+
+                        <!-- Card Body Details -->
+                        <div class="p-5 space-y-3 text-xs text-slate-600 flex-1">
+                            <div class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-location-dot text-slate-400 mt-0.5 text-sm w-4"></i>
+                                <div>
+                                    <p class="font-medium text-slate-800">${branch.thana}, ${branch.district}</p>
+                                    <p class="text-slate-500 text-[11px] truncate max-w-[220px]">${branch.address}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-user-tie text-slate-400 text-sm w-4"></i>
+                                <span class="font-medium text-slate-800">${branch.manager} <span class="text-slate-400">(Manager)</span></span>
+                            </div>
+
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-phone text-slate-400 text-sm w-4"></i>
+                                <span class="font-mono text-slate-700">${branch.phone}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                                <span class="text-slate-500"><i class="fa-solid fa-clock mr-1 text-slate-400"></i> ${branch.openTime} - ${branch.closeTime}</span>
+                                <button onclick="filterMembersByBranch('${branch.code}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg transition inline-flex items-center gap-1.5">
+                                    <i class="fa-solid fa-users text-xs"></i> ${memberCount} Members
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card Actions Footer -->
+                        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <button onclick="viewBranchDetails('${branch.code}')" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg transition flex items-center gap-1">
+                                <i class="fa-solid fa-eye text-slate-500"></i> View
+                            </button>
+                            
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="filterMembersByBranch('${branch.code}')" class="px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition flex items-center gap-1">
+                                    Members
+                                </button>
+                                <button onclick="deleteBranch('${branch.code}')" class="p-1.5 text-xs text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete Branch">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                gridContainer.innerHTML += cardHtml;
+
+                // --- 2. RENDER TABLE ROW ---
+                const tableRowHtml = `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-slate-900">${branch.name}</div>
+                            <div class="font-mono text-xs text-slate-500">${branch.code} &bull; Est. ${branch.date}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-md border ${typeBadgeColor}">${branch.type}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-slate-800">${branch.district}</div>
+                            <div class="text-xs text-slate-500">${branch.thana}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-slate-800">${branch.manager}</div>
+                            <div class="font-mono text-xs text-slate-500">${branch.phone}</div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="filterMembersByBranch('${branch.code}')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-lg text-xs transition">
+                                ${memberCount} Members
+                            </button>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            ${statusBadge}
+                        </td>
+                        <td class="px-6 py-4 text-right space-x-1">
+                            <button onclick="viewBranchDetails('${branch.code}')" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition" title="View Details">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="deleteBranch('${branch.code}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete Branch">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += tableRowHtml;
+            });
+        }
+
+        // Create New Branch Form Submission
+        function handleCreateBranch(e) {
+            e.preventDefault();
+
+            const code = document.getElementById('form-branch-code').value.trim().toUpperCase();
+            const name = document.getElementById('form-branch-name').value.trim();
+
+            // Check uniqueness
+            if(branches.some(b => b.code === code)) {
+                showToast(`Branch code "${code}" already exists!`, "error");
+                return;
+            }
+
+            const newBranch = {
+                code: code,
+                name: name,
+                type: document.getElementById('form-branch-type').value,
+                date: document.getElementById('form-branch-date').value || new Date().toISOString().split('T')[0],
+                status: document.getElementById('form-branch-status').value,
+                district: document.getElementById('form-branch-district').value.trim(),
+                thana: document.getElementById('form-branch-thana').value.trim(),
+                capacity: parseInt(document.getElementById('form-branch-capacity').value) || 500,
+                address: document.getElementById('form-branch-address').value.trim(),
+                gps: document.getElementById('form-branch-gps').value.trim() || 'N/A',
+                manager: document.getElementById('form-branch-manager').value.trim(),
+                phone: document.getElementById('form-branch-phone').value.trim(),
+                email: document.getElementById('form-branch-email').value.trim(),
+                openTime: document.getElementById('form-branch-open-time').value,
+                closeTime: document.getElementById('form-branch-close-time').value,
+                holiday: document.getElementById('form-branch-holiday').value
+            };
+
+            branches.unshift(newBranch);
+            saveState();
+
+            // Reset Form & Redirect
+            document.getElementById('addBranchForm').reset();
+            generateAutoBranchCode();
+            populateDistrictFilter();
+            populateBranchSelectOptions();
+            showToast(`Branch "${name}" successfully activated!`, "success");
+            switchTab('branchList');
+        }
+
+        // Delete Branch Action
+        function deleteBranch(code) {
+            const branch = branches.find(b => b.code === code);
+            if(!branch) return;
+
+            const assignedCount = members.filter(m => m.branchCode === code).length;
+            if(assignedCount > 0) {
+                showToast(`Cannot delete branch "${branch.name}" because ${assignedCount} members are mapped to it!`, "error");
+                return;
+            }
+
+            if(confirm(`Are you sure you want to delete branch "${branch.name}" (${branch.code})?`)) {
+                branches = branches.filter(b => b.code !== code);
+                saveState();
+                populateDistrictFilter();
+                populateBranchSelectOptions();
+                renderBranchList();
+                showToast("Branch removed successfully.", "info");
+            }
+        }
+
+        // View Detailed Branch Drawer/Modal
+        function viewBranchDetails(code) {
+            const branch = branches.find(b => b.code === code);
+            if(!branch) return;
+
+            const branchMembers = members.filter(m => m.branchCode === code);
+
+            const contentHtml = `
+                <div class="bg-slate-900 text-white p-6 relative">
+                    <button onclick="closeModal('branchDetailsModal')" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <span class="font-mono text-xs font-bold px-2.5 py-1 bg-blue-600 rounded-md">${branch.code}</span>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700">${branch.type}</span>
+                    </div>
+                    <h3 class="text-xl font-bold mt-2">${branch.name}</h3>
+                    <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-location-dot mr-1"></i> ${branch.address}, ${branch.thana}, ${branch.district}</p>
+                </div>
+
+                <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div>
+                            <p class="text-[11px] font-semibold text-slate-500 uppercase">Status</p>
+                            <p class="font-bold text-sm text-slate-800 mt-0.5">${branch.status}</p>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-semibold text-slate-500 uppercase">Established</p>
+                            <p class="font-bold text-sm text-slate-800 mt-0.5">${branch.date}</p>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-semibold text-slate-500 uppercase">Member Capacity</p>
+                            <p class="font-bold text-sm text-blue-600 mt-0.5">${branchMembers.length} / ${branch.capacity}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Management & Operations</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                                <p class="text-xs text-slate-400">Branch Manager</p>
+                                <p class="font-semibold text-slate-800 mt-0.5">${branch.manager}</p>
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                                <p class="text-xs text-slate-400">Official Contact Phone</p>
+                                <p class="font-mono font-semibold text-slate-800 mt-0.5">${branch.phone}</p>
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                                <p class="text-xs text-slate-400">Email Address</p>
+                                <p class="font-semibold text-slate-800 mt-0.5">${branch.email}</p>
+                            </div>
+                            <div class="p-3 bg-white border border-slate-200 rounded-xl">
+                                <p class="text-xs text-slate-400">Timing & Holiday</p>
+                                <p class="font-semibold text-slate-800 mt-0.5">${branch.openTime} - ${branch.closeTime} (${branch.holiday})</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mapped Members (${branchMembers.length})</h4>
+                            <button onclick="closeModal('branchDetailsModal'); filterMembersByBranch('${branch.code}');" class="text-xs font-semibold text-blue-600 hover:underline">
+                                View Full Directory &rarr;
+                            </button>
+                        </div>
+                        ${branchMembers.length === 0 ? '<p class="text-xs text-slate-400 italic">No members assigned to this branch yet.</p>' : ''}
+                        <div class="space-y-2">
+                            ${branchMembers.slice(0, 4).map(m => `
+                                <div class="p-2.5 bg-slate-50 rounded-xl flex items-center justify-between text-xs">
+                                    <div>
+                                        <p class="font-bold text-slate-800">${m.name}</p>
+                                        <p class="font-mono text-[11px] text-slate-500">${m.id} &bull; ${m.phone}</p>
+                                    </div>
+                                    <span class="px-2 py-0.5 bg-white border border-slate-200 text-slate-700 rounded-md text-[11px] font-medium">${m.status}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
+                    <button onclick="closeModal('branchDetailsModal')" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 rounded-xl transition">
+                        Close
+                    </button>
+                    <button onclick="closeModal('branchDetailsModal'); filterMembersByBranch('${branch.code}');" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm transition">
+                        Open Member Directory
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('modal-branch-details-content').innerHTML = contentHtml;
+            document.getElementById('branchDetailsModal').classList.remove('hidden');
+        }
+
+
+        // ===================================================================
+        // RENDER MEMBER DIRECTORY
+        // ===================================================================
+        function renderMemberList() {
+            const searchQuery = document.getElementById('member-search-input').value.toLowerCase().trim();
+            const selectedBranch = document.getElementById('member-filter-branch').value;
+            const selectedStatus = document.getElementById('member-filter-status').value;
+
+            const filtered = members.filter(m => {
+                const matchesSearch = m.name.toLowerCase().includes(searchQuery) ||
+                                      m.id.toLowerCase().includes(searchQuery) ||
+                                      m.phone.toLowerCase().includes(searchQuery) ||
+                                      m.email.toLowerCase().includes(searchQuery);
+
+                const matchesBranch = (selectedBranch === 'ALL') || (m.branchCode === selectedBranch);
+                const matchesStatus = (selectedStatus === 'ALL') || (m.status === selectedStatus);
+
+                return matchesSearch && matchesBranch && matchesStatus;
+            });
+
+            const tbody = document.getElementById('member-table-tbody');
+            const emptyState = document.getElementById('member-empty-state');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(m => {
+                const branchObj = branches.find(b => b.code === m.branchCode);
+                const branchName = branchObj ? branchObj.name : m.branchCode;
+
+                const statusBadge = m.status === 'Active'
+                    ? `<span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>`
+                    : `<span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-50 text-amber-700 border border-amber-200">Pending</span>`;
+
+                const rowHtml = `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-slate-900">${m.name}</div>
+                            <div class="font-mono text-xs text-slate-500">${m.id}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-slate-800 text-xs">${branchName}</div>
+                            <div class="font-mono text-[11px] text-blue-600">${m.branchCode}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="font-mono text-xs text-slate-800">${m.phone}</div>
+                            <div class="text-xs text-slate-500">${m.email || 'N/A'}</div>
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-600 font-mono">
+                            ${m.joinedDate}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            ${statusBadge}
+                        </td>
+                        <td class="px-6 py-4 text-right space-x-1">
+                            <button onclick="viewDigitalIdCard('${m.id}')" class="px-2.5 py-1 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition" title="Digital ID Card">
+                                <i class="fa-solid fa-id-card mr-1"></i> ID Card
+                            </button>
+                            <button onclick="deleteMember('${m.id}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete Member">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += rowHtml;
+            });
+        }
+
+        // Filter Member Directory Directly by Branch Code
+        function filterMembersByBranch(branchCode) {
+            switchTab('memberList');
+            const branchSelect = document.getElementById('member-filter-branch');
+            if(branchSelect) {
+                branchSelect.value = branchCode;
+                renderMemberList();
+            }
+        }
+
+        // Register Member Form Submission
+        function handleRegisterMember(e) {
+            e.preventDefault();
+
+            const memberId = document.getElementById('form-member-id').value.trim();
+            if(members.some(m => m.id === memberId)) {
+                showToast(`Member ID "${memberId}" already exists!`, "error");
+                return;
+            }
+
+            const newMember = {
+                id: memberId,
+                name: document.getElementById('form-member-name').value.trim(),
+                branchCode: document.getElementById('form-member-branch-code').value,
+                phone: document.getElementById('form-member-phone').value.trim(),
+                email: document.getElementById('form-member-email').value.trim(),
+                nid: document.getElementById('form-member-nid').value.trim() || 'N/A',
+                status: document.getElementById('form-member-status').value,
+                joinedDate: new Date().toISOString().split('T')[0]
+            };
+
+            members.unshift(newMember);
+            saveState();
+
+            document.getElementById('addMemberForm').reset();
+            showToast(`Member "${newMember.name}" registered successfully!`, "success");
+            switchTab('memberList');
+        }
+
+        // Delete Member
+        function deleteMember(id) {
+            const member = members.find(m => m.id === id);
+            if(!member) return;
+
+            if(confirm(`Are you sure you want to delete member "${member.name}" (${member.id})?`)) {
+                members = members.filter(m => m.id !== id);
+                saveState();
+                renderMemberList();
+                renderBranchList();
+                showToast("Member record deleted.", "info");
+            }
+        }
+
+        // View Digital ID Card Modal
+        function viewDigitalIdCard(id) {
+            const m = members.find(mem => mem.id === id);
+            if(!m) return;
+
+            const branchObj = branches.find(b => b.code === m.branchCode);
+            const branchName = branchObj ? branchObj.name : m.branchCode;
+
+            const cardHtml = `
+                <div class="text-center border-b border-slate-100 pb-4 mb-4">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">Digital Membership Pass</span>
+                    <h3 class="font-extrabold text-slate-900 text-lg mt-2">BranchOS Network</h3>
+                </div>
+
+                <div class="bg-gradient-to-tr from-slate-900 to-slate-800 text-white rounded-2xl p-5 shadow-xl space-y-4 relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-blue-500/10 rounded-full blur-xl"></div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="font-mono text-xs bg-blue-600 px-2.5 py-0.5 rounded text-white font-bold">${m.id}</span>
+                        <span class="text-[10px] font-semibold uppercase text-emerald-400">● ${m.status}</span>
+                    </div>
+
+                    <div>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Member Name</p>
+                        <h4 class="text-lg font-bold text-white tracking-wide">${m.name}</h4>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-700/60">
+                        <div>
+                            <p class="text-[10px] text-slate-400">Assigned Branch</p>
+                            <p class="font-medium text-slate-200 truncate">${branchName}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400">Mobile Phone</p>
+                            <p class="font-mono text-slate-200">${m.phone}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 text-center">
+                    <p class="text-[11px] text-slate-400 font-mono">Issued: ${m.joinedDate} &bull; NID: ${m.nid}</p>
+                </div>
+            `;
+
+            document.getElementById('modal-member-card-content').innerHTML = cardHtml;
+            document.getElementById('memberCardModal').classList.remove('hidden');
+        }
+
+        // Close Modal Utility
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Export Data to CSV
+        function exportDataToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Branch Code,Branch Name,Type,District,Thana,Manager,Phone,Status,Members Assigned\n";
+
+            branches.forEach(b => {
+                const count = members.filter(m => m.branchCode === b.code).length;
+                csvContent += `"${b.code}","${b.name}","${b.type}","${b.district}","${b.thana}","${b.manager}","${b.phone}","${b.status}",${count}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `branch_directory_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast("Branch data exported to CSV!", "success");
+        }
+
+        // Toast Notification Trigger
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            let icon = 'fa-circle-info text-blue-500';
+            if(type === 'success') icon = 'fa-circle-check text-emerald-500';
+            if(type === 'error') icon = 'fa-triangle-exclamation text-red-500';
+
+            toast.className = `pointer-events-auto bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl border border-slate-800 flex items-center gap-3 transition-all duration-300 transform translate-y-2`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
